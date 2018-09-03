@@ -1,4 +1,4 @@
-console.log("anilist-mal-bars running")
+console.log("anilist-bars running")
 
 const BARS_COUNT = 5;
 const HEADING_TEXT = "Recent Progress";
