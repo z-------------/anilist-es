@@ -4,4 +4,4 @@ A Chrome Extension that adds a MAL-inspired "Recent Progress" section to AniList
 
 Work in progress.
 
-<div style="float: left"><img style="width: 300px" src="https://i.imgur.com/rvzniY9.png" /></div>
+![Screenshot](https://i.imgur.com/rvzniY9.png)
