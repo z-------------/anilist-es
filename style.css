@@ -1,0 +1,59 @@
+.amb_image {
+  background-size: cover;
+  height: 70px;
+  width: 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.amb:last-child {
+  padding-bottom: 0;
+}
+
+.amb:first-child {
+  padding-top: 0;
+}
+
+.amb {
+  display: flex;
+  padding: 10px 0 10px 0;
+}
+
+.amb_info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 15px;
+}
+
+.amb_bar-container {
+  width: 100%;
+  height: 11px;
+  border-radius: 11px;
+  background-color: rgb(var(--color-foreground-grey-dark));
+  overflow: hidden;
+}
+
+.amb_bar {
+  height: 100%;
+}
+
+.amb_status {
+  font-size: 1.1rem;
+}
+
+.amb .title {
+  color: rgb(var(--color-blue));
+}
+
+.amb_status {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amb_status time {
+  color: rgb(var(--color-text-lighter));
+}
