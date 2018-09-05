@@ -3,7 +3,7 @@
   "name": "Recent Progress Overview for AniList",
   "version": "0.0.0",
   "content_scripts": [{
-    "matches": ["*://anilist.co/*"],
+    "matches": ["*://anilist.co/user/*"],
     "css": ["style.css"],
     "js": ["script.js"]
   }]
