@@ -1,7 +1,6 @@
-console.log("anilist-bars running")
+console.log("anilist-bars running");
 
-const BARS_COUNT = 5;
-const HEADING_TEXT = "Recent Progress";
+let settings = {};
 
 let onNavigate = (function() {
   let handlers = [];
@@ -142,7 +141,7 @@ function displayProgressBars() {
     let item = activity[i];
     if (displayedSeries.indexOf(item.series.id) === -1 && (item.type === "watch" || item.type === "complete")) {
       displayedSeries.push(item.series.id);
-      if (displayedSeries.length === BARS_COUNT) {
+      if (displayedSeries.length === settings.barsCount) {
         break;
       }
     }
@@ -168,10 +167,10 @@ function displayProgressBars() {
     containerElem = document.createElement("div");
     containerElem.classList.add("amb-container");
     let sectionElem = document.getElementsByClassName("section")[0];
-    sectionElem.insertBefore(containerElem, sectionElem.children[1]);
+    sectionElem.insertBefore(containerElem, sectionElem.children[settings.insertIndex]);
   }
   containerElem.innerHTML = `
-<h2 class="section-header">${HEADING_TEXT}</h2>
+<h2 class="section-header">${settings.headingText}</h2>
 <div class="content-wrap"></div>`;
   let contentElem = containerElem.getElementsByClassName("content-wrap")[0];
 
@@ -249,10 +248,14 @@ function main() {
   }, 500);
 }
 
-main();
+getSettings().then(r => {
+  settings = r[0];
 
-onNavigate(function() {
-  if (window.location.pathname.slice(1).split("/")[0] === "user") {
-    main();
-  }
+  main();
+
+  onNavigate(function() {
+    if (window.location.pathname.slice(1).split("/")[0] === "user") {
+      main();
+    }
+  });
 });

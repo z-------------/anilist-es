@@ -1,0 +1,14 @@
+{
+  "insertIndex": {
+    "default": 1,
+    "label": "Position in page"
+  },
+  "headingText": {
+    "default": "Recent Progress",
+    "label": "Heading text"
+  },
+  "barsCount": {
+    "default": 5,
+    "label": "No. of progress bars"
+  }
+}

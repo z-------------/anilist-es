@@ -2,9 +2,19 @@
   "manifest_version": 2,
   "name": "Recent Progress Overview for AniList",
   "version": "0.0.0",
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [{
-    "matches": ["*://anilist.co/user/*"],
-    "css": ["style.css"],
-    "js": ["script.js"]
-  }]
+    "matches": [ "*://anilist.co/user/*" ],
+    "css": [ "style.css" ],
+    "js": [ "getSettings.js", "script.js" ]
+  }],
+  "web_accessible_resources": [
+    "defaults.json"
+  ],
+  "options_ui": {
+    "page": "options/index.html",
+    "open_in_tab": false
+  }
 }

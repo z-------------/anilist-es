@@ -1,0 +1,17 @@
+label {
+  display: flex;
+  margin-bottom: 0.5em;
+  justify-content: space-between;
+}
+
+input, button {
+  font: inherit;
+}
+
+input {
+  text-align: right;
+}
+
+input[type=number] {
+  max-width: 50px;
+}
