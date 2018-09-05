@@ -6,7 +6,7 @@
     "storage"
   ],
   "content_scripts": [{
-    "matches": [ "*://anilist.co/user/*" ],
+    "matches": [ "*://anilist.co/*" ],
     "css": [ "style.css" ],
     "js": [ "getSettings.js", "script.js" ]
   }],
