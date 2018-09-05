@@ -39,6 +39,7 @@
 
 .amb_bar {
   height: 100%;
+  background: linear-gradient(270deg, #02a9ff, #71cfff); /* same as AniList default. overridden if profile color is non-default. */
 }
 
 .amb_status {
