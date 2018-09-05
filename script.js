@@ -134,8 +134,6 @@ function getActivity() {
       });
     }
   });
-
-  console.log(activity)
 }
 
 function displayProgressBars() {
