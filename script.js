@@ -67,7 +67,7 @@ function getActivity() {
   [...document.getElementsByClassName("activity-entry")].forEach(elem => {
     let statusElem = elem.getElementsByClassName("status")[0];
     if (statusElem) {
-      let text = statusElem.textContent.trim().replace(/\n/g, "").replace(/\s{2,}/g, " ");
+      let text = statusElem.childNodes[0].textContent.trim();
 
       /* progress */
       let dMatches = text.match(/\d+/g);
