@@ -1,5 +1,7 @@
 console.log("anilist-bars running");
 
+const BULLET = "·";
+
 let settings = {};
 
 let onNavigate = (function() {
@@ -224,9 +226,9 @@ function displayProgressBars() {
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type}/${seriesID}">${seriesInfo.name}</a>`;
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
-<strong>${displayedUnits}</strong>/${unitsCount || "?"} &bull;
+<strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
 ${format}
-${seriesInfo.status === "PUBLISHING" ? `&bull; Publishing` : ""}
+${seriesInfo.status === "PUBLISHING" ? `${BULLET} Publishing` : ""}
 `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;
 
