@@ -222,13 +222,15 @@ function displayProgressBars() {
 
     let time = latestActivity.time;
 
+    console.log(seriesInfo)
+
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.image})`;
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type}/${seriesID}">${seriesInfo.name}</a>`;
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
 <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
 ${format}
-${seriesInfo.status === "PUBLISHING" ? `${BULLET} Publishing` : ""}
+${seriesInfo.status === "RELEASING" ? `${BULLET} Releasing` : ""}
 `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;
 
