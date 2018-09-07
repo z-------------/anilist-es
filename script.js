@@ -99,7 +99,7 @@ function getActivity() {
         getSeriesInfo({ id: seriesID, type: seriesType }).then(info => {
           seriesInfoGotCount++;
           Object.assign(series[seriesID], info);
-          if (Object.keys(series).length === seriesInfoGotCount) {
+          if (Object.keys(series).length === seriesInfoGotCount && document.getElementsByClassName("section")[0]) {
             displayProgressBars();
           }
         });
