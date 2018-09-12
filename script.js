@@ -65,7 +65,7 @@ query ($id: Int, $type: MediaType) {
 }
 
 function getActivity() {
-  [...document.getElementsByClassName("activity-anime_list"), ...document.getElementsByClassName("activity-manga_list")].forEach(elem => {
+  [...document.querySelectorAll(".activity-anime_list, .activity-manga_list")].forEach(elem => {
     let statusElem = elem.getElementsByClassName("status")[0];
     if (statusElem) {
       let text = statusElem.childNodes[0].textContent.trim();
