@@ -1,6 +1,7 @@
 onGotSettings(function() {
-  const CLASS_WAITING = "CLASS_WAITING";
-  const CLASS_ACTIVE = "CLASS_ACTIVE";
+  const CLASS_WAITING = "amc--waiting";
+  const CLASS_ACTIVE = "amc--active";
+  const CLASS_ATTACHED = "amc--attached";
 
   let format = {
     TV: "TV",
@@ -33,60 +34,13 @@ onGotSettings(function() {
     return count || "?";
   }
 
-  function showCard(info) {
-    let elem = document.createElement("div");
-    elem.classList.add("amc");
-    elem.dataset.id = info.id;
+  let infos = {};
 
-    let isAnime = info.type === "ANIME";
-
-    elem.innerHTML = `
-<div class="amc_cover">
-  <div class="amc_image" style="background-image: url(${info.coverImage.medium})"></div>
-  <div class="amc_underimage">
-    <div class="amc_rating">${info.averageScore}%</div>
-    <div class="amc_ranking amc_ranking--rated">⭐${info.rankings[0].rank}</div>
-    <div class="amc_ranking amc_ranking--popular">❤${info.rankings[1].rank}</div>
-  </div>
-</div>
-<div class="amc_info">
-  <div class="amc_title">${info.title.romaji}</div>
-  <div class="amc_description">${stripHTML(info.description).substring(0, 350)}…</div>
-  <div class="amc_stats">
-    ${
-      [
-        `<div class="amc_stats_format">${format[info.format]}</div>`,
-        isAnime
-          ? `<div class="amc_stats_episodes">${countFormat(info.episodes)} eps.</div>`
-          : `<div class="amc_stats_volumes">${countFormat(info.volumes)} vols.</div>`,
-        `<div class="amc_stats_season">${isAnime ? `${season[info.season]} ` : ""}${info.startDate.year}</div>`,
-        `<div class="amc_stats_genres">${info.genres.join(", ")}</div>`
-      ].join(`&nbsp;${BULLET}&nbsp;`)
-    }
-  </div>
-</div>
-    `;
-
-    document.body.appendChild(elem);
-  }
-
-  function hideCard(id) {
-    let elem = document.querySelector(`.amc[data-id=${id}]`);
-    if (elem) {
-      elem.parentElement.removeChild(elem);
-    }
-  }
-
-  document.body.addEventListener("mouseover", e => {
-    let elem = e.target;
-    if (elem.classList && elem.classList.contains("title") && !elem.classList.contains(CLASS_WAITING)) {
-      elem.classList.add(CLASS_WAITING);
-
-      let url = new URL(e.target.href);
-      let path = url.pathname.slice(1).split("/");
-      let id = Number(path[1]);
-      let type = path[0].toUpperCase();
-
+  function getInfo(id, type) {
+    let cacheKey = `${type}:${id}`;
+    if (infos.hasOwnProperty(cacheKey)) {
+      return Promise.resolve(infos[cacheKey]);
+    } else {
       let query = `
 query ($id: Int, $type: MediaType) {
   Media (id: $id, type: $type) {
@@ -129,21 +83,89 @@ query ($id: Int, $type: MediaType) {
         id: id, type: type
       };
 
-      setTimeout(function() {
-        api(query, variables).then(r => {
-          console.log(r);
+      return api(query, variables).then(r => {
+        infos[cacheKey] = r;
+        return r;
+      });
+    }
+  }
+
+  function showCard(info) {
+    let elem = document.createElement("div");
+    elem.classList.add("amc");
+    elem.dataset.id = info.id;
+
+    let isAnime = info.type === "ANIME";
+
+    elem.innerHTML = `
+<div class="amc_cover">
+  <div class="amc_image" style="background-image: url(${info.coverImage.medium})"></div>
+  <div class="amc_underimage">
+    <div class="amc_rating">${info.averageScore}%</div>
+    <div class="amc_rankings">
+      <div class="amc_ranking amc_ranking--rated">⭐${info.rankings[0].rank}</div>
+      <div class="amc_ranking amc_ranking--popular">❤️${info.rankings[1].rank}</div>
+    </div>
+  </div>
+</div>
+<div class="amc_info">
+  <h2 class="amc_title">
+    <a href="/${info.type.toLowerCase()}/${info.id}}">${info.title.romaji}</a>
+    <div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>
+  </h2>
+  <div class="amc_description">${stripHTML(info.description)}…</div>
+  <div class="amc_stats">
+    ${
+      [
+        `<div class="amc_stats_format">${format[info.format]}</div>`,
+        isAnime
+          ? `<div class="amc_stats_episodes">${countFormat(info.episodes)} eps.</div>`
+          : `<div class="amc_stats_volumes">${countFormat(info.volumes)} vols.</div>`,
+        `<div class="amc_stats_season">${info.startDate.year}</div>`,
+        `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>`
+      ].join(`&nbsp;${BULLET}&nbsp;`)
+    }
+  </div>
+</div>
+    `;
+
+    document.body.appendChild(elem);
+  }
+
+  function hideCard(id) {
+    let elem = document.querySelector(`.amc[data-id="${id}"]`);
+    if (elem) {
+      elem.parentElement.removeChild(elem);
+    }
+  }
+
+  document.body.addEventListener("mouseover", e => {
+    let elem = e.target;
+    if (elem.classList && elem.classList.contains("title") && !elem.classList.contains(CLASS_WAITING)) {
+      elem.classList.add(CLASS_WAITING);
+
+      let url = new URL(e.target.href);
+      let path = url.pathname.slice(1).split("/");
+      let id = Number(path[1]);
+      let type = path[0].toUpperCase();
+
+      let timeout = setTimeout(function() {
+        getInfo(id, type).then(r => {
           showCard(r);
           elem.classList.remove(CLASS_WAITING);
           elem.classList.add(CLASS_ACTIVE);
+          if (!elem.classList.contains(CLASS_ATTACHED)) {
+            elem.classList.add(CLASS_ATTACHED);
+            elem.addEventListener("mouseout", e => {
+              hideCard(id);
+            });
+          }
         });
       }, 500);
-    }
-  });
-
-  document.addEventListener("mouseout", e => {
-    let elem = e.target;
-    if (elem.classList && elem.classList.contains("title") && elem.classList.contains(CLASS_ACTIVE)) {
-      hideCard(elem.dataset.id);
+      elem.addEventListener("mouseout", e => {
+        clearTimeout(timeout);
+        elem.classList.remove(CLASS_WAITING);
+      });
     }
   });
 });
