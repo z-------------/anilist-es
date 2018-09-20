@@ -1,3 +1,5 @@
+/* bars */
+
 .amb_image {
   background-size: cover;
   height: 70px;
@@ -57,4 +59,56 @@
 
 .amb_status time {
   color: rgb(var(--color-text-lighter));
+}
+
+/* hovercards */
+
+.amc {
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  background-color: rgb(var(--color-background));
+  box-shadow: 5px 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  max-height: 250px;
+  width: 500px;
+  overflow: hidden;
+  font-size: 1.4rem;
+}
+
+.amc_stats {
+  display: flex;
+}
+
+.amc_image {
+  width: 100px;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+}
+
+.amc_underimage {
+  text-align: center;
+}
+
+.amc_cover {
+  padding: 15px;
+}
+
+.amc_info {
+  padding: 15px;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.amc_title {
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.amc_description {
+  overflow: hidden;
+  margin: 7px 0 7px 0;
 }

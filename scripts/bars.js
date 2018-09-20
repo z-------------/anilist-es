@@ -1,69 +1,3 @@
-console.log("anilist-bars running");
-
-const BULLET = "·";
-
-let settings = {};
-
-let onNavigate = (function() {
-  let handlers = [];
-  let oldURL = window.location.href;
-  let timer = setInterval(function() {
-    if (window.location.href !== oldURL) {
-      handlers.forEach(function(handler) { handler() });
-      oldURL = window.location.href;
-    }
-  }, 500);
-
-  return function(handler) {
-    handlers.push(handler);
-  }
-}());
-
-function api(query, variables) {
-  let options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      query: query,
-      variables: variables
-    })
-  };
-
-  return fetch("https://graphql.anilist.co", options)
-    .then(response => {
-      return response.json().then(json => {
-        return response.ok ? json : Promise.reject(json);
-      });
-    })
-    .then(json => {
-      return json.data.Media;
-    })
-    .catch(error => {
-      console.error(error);
-    });
-}
-
-function getSeriesInfo(info) {
-  let query = `
-query ($id: Int, $type: MediaType) {
-  Media (id: $id, type: $type) {
-    episodes
-    chapters
-    status
-    format
-  }
-}
-`;
-  let variables = {
-    id: info.id, type: info.type.toUpperCase()
-  };
-
-  return api(query, variables);
-}
-
 function getActivity() {
   [...document.querySelectorAll(".activity-anime_list, .activity-manga_list")].forEach(elem => {
     let statusElem = elem.getElementsByClassName("status")[0];
@@ -205,7 +139,7 @@ function displayProgressBars() {
     if (seriesInfo.format === "TV_SHORT") {
       format = "TV short";
     } else if (seriesInfo.format === "MOVIE") {
-      format = "Film";
+      format = "Movie";
     } else if (seriesInfo.format === "SPECIAL") {
       format = "Special";
     } else if (seriesInfo.format === "MUSIC") {
@@ -250,9 +184,7 @@ function main() {
   }, 500);
 }
 
-getSettings().then(r => {
-  settings = r[0];
-
+onGotSettings(function() {
   main();
 
   onNavigate(function() {
