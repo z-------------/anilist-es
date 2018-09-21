@@ -7,4 +7,5 @@ A Chrome Extension.
 
 Work in progress.
 
-![Screenshot](https://i.imgur.com/1NN6Ytg.png)
+![Screenshot 1](https://i.imgur.com/1NN6Ytg.png)
+![Screenshot 2](https://i.imgur.com/yU93KBQ.png)
