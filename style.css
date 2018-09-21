@@ -160,7 +160,7 @@
   width: calc(100% + 145px);
 }
 
-body:not(.site-theme-dark) .amc--nobannerimage .amc_title {
+.amc--nobannerimage .amc_title {
   color: rgb(var(--color-text));
 }
 
