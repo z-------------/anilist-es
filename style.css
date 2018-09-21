@@ -64,6 +64,8 @@
 /* hovercards */
 
 .amc {
+  --padding: 15px;
+
   position: fixed;
   top: 50px;
   left: 50px;
@@ -83,7 +85,7 @@
   align-items: center;
   position: absolute;
   bottom: 0;
-  margin-bottom: 15px;
+  margin-bottom: var(--padding);
   color: rgb(var(--color-text-lighter));
   font-size: 1.1rem;
 }
@@ -121,13 +123,13 @@
 }
 
 .amc_cover {
-  padding: 15px;
+  padding: var(--padding);
   display: flex;
   flex-direction: column;
 }
 
 .amc_info {
-  padding: 15px;
+  padding: var(--padding);
   padding-left: 0;
   display: flex;
   flex-direction: column;
@@ -142,7 +144,7 @@
 
   margin-left: -130px;
   padding-left: 130px;
-  margin-top: -15px;
+  margin-top: calc(var(--padding) * -1);
   padding-top: 2em;
   padding-bottom: 7px;
   width: calc(100% + 145px);
@@ -150,6 +152,10 @@
 
 body:not(.site-theme-dark) .amc--nobannerimage .amc_title {
   color: rgb(var(--color-text));
+}
+
+.amc--nobannerimage .amc_title {
+  padding-top: var(--padding);
 }
 
 .amc_title a:hover {
