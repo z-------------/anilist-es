@@ -185,11 +185,13 @@ function main() {
 }
 
 onGotSettings(function() {
-  main();
+  if (settings.barsEnable) {
+    main();
 
-  onNavigate(function() {
-    if (window.location.pathname.slice(1).split("/")[0] === "user") {
-      main();
-    }
-  });
+    onNavigate(function() {
+      if (window.location.pathname.slice(1).split("/")[0] === "user") {
+        main();
+      }
+    });
+  }
 });

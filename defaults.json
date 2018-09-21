@@ -1,14 +1,27 @@
 {
+  "barsEnable": {
+    "default": true,
+    "label": "Enable progress bars",
+    "order": 0
+  },
   "insertIndex": {
     "default": 1,
-    "label": "Position in page"
+    "label": "Position in page",
+    "order": 1
   },
   "headingText": {
     "default": "Recent Progress",
-    "label": "Heading text"
+    "label": "Heading text",
+    "order": 2
   },
   "barsCount": {
     "default": 5,
-    "label": "No. of progress bars"
+    "label": "No. of progress bars",
+    "order": 3
+  },
+  "cardsEnable": {
+    "default": true,
+    "label": "Enable infocards",
+    "order": 4
   }
 }

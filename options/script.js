@@ -11,7 +11,9 @@ getSettings().then(r => {
   let settings = r[0];
   let defaults = r[1];
 
-  let keys = Object.keys(settings).sort((a, b) => a.localeCompare(b));
+  let keys = Object.keys(settings).sort((a, b) => {
+    return a.order - b.order;
+  });
 
   for (let key of keys) {
     let elem = templateElem.cloneNode(true);
@@ -26,6 +28,7 @@ getSettings().then(r => {
       inputElem.setAttribute("step", "1");
     } else if (typeof settings[key] === "boolean") {
       inputElem.setAttribute("type", "checkbox");
+      inputElem.checked = settings[key];
     } else {
       inputElem.setAttribute("type", "text");
     }
