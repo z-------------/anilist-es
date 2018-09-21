@@ -68,7 +68,7 @@
   top: 50px;
   left: 50px;
   background-color: rgb(var(--color-background));
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0 29px rgba(49, 54, 68, .25);
   display: flex;
   width: 500px;
   height: 250px;
