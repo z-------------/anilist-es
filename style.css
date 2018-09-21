@@ -164,6 +164,7 @@ body:not(.site-theme-dark) .amc--nobannerimage .amc_title {
   height: 100%;
   background-size: cover;
   background-position: top center;
+  background-color: rgba(0, 0, 0, 0.5);
   filter: brightness(0.5);
   z-index: -1;
 }
