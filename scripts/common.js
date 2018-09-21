@@ -1,5 +1,3 @@
-console.log("anilist-bars running");
-
 let settings = {};
 
 const BULLET = "·";
