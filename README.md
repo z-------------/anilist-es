@@ -1,6 +1,9 @@
-# Recent Progress Overview for AniList
+# AniList Enhancement Suite
 
-A Chrome Extension that adds a MAL-inspired "Recent Progress" section to AniList user profiles.
+A Chrome Extension.
+
+* MAL-inspired "Recent Progress" section in profiles
+* Infocards upon hovering over anime/manga title
 
 Work in progress.
 
