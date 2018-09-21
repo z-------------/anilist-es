@@ -2,6 +2,7 @@ onGotSettings(function() {
   const CLASS_WAITING = "amc--waiting";
   const CLASS_ACTIVE = "amc--active";
   const CLASS_ATTACHED = "amc--attached";
+  const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
 
   let format = {
     TV: "TV",
@@ -96,6 +97,11 @@ query ($id: Int, $type: MediaType) {
     elem.dataset.id = info.id;
 
     let isAnime = info.type === "ANIME";
+    let hasBannerImage = !!info.bannerImage;
+
+    if (!hasBannerImage) {
+      elem.classList.add(CLASS_NOBANNERIMAGE);
+    }
 
     elem.innerHTML = `
 <div class="amc_cover">
@@ -111,7 +117,7 @@ query ($id: Int, $type: MediaType) {
 <div class="amc_info">
   <h2 class="amc_title">
     <a href="/${info.type.toLowerCase()}/${info.id}">${info.title.romaji}</a>
-    <div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>
+    ${info.bannerImage ? `<div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>` : ""}
   </h2>
   <div class="amc_description">${stripHTML(info.description)}</div>
   <div class="amc_stats">
