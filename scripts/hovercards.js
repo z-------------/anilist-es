@@ -94,6 +94,10 @@ onGotSettings(function() {
       }
     }
 
+    function iconObjectHTML(icon) {
+      return `<object class="amc_icon" type="image/svg+xml" data="${chrome.runtime.getURL(`img/${icon}.svg`)}"></object>`;
+    }
+
     function showCard(info, position) {
       let elem = document.createElement("div");
       elem.classList.add("amc");
@@ -120,8 +124,8 @@ onGotSettings(function() {
       ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
       ${hasRankings ? `
         <div class="amc_rankings">
-          <div class="amc_ranking amc_ranking--rated">⭐${info.rankings[0].rank}</div>
-          <div class="amc_ranking amc_ranking--popular">❤️${info.rankings[1].rank}</div>
+          <div class="amc_ranking amc_ranking--rated">${iconObjectHTML("star")}${info.rankings[0].rank}</div>
+          <div class="amc_ranking amc_ranking--popular">${iconObjectHTML("heart")}${info.rankings[1].rank}</div>
         </div>
         ` : ""}
     </div>
