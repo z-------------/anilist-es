@@ -91,10 +91,14 @@ query ($id: Int, $type: MediaType) {
     }
   }
 
-  function showCard(info) {
+  function showCard(info, position) {
     let elem = document.createElement("div");
     elem.classList.add("amc");
+    elem.classList.add(`amc--direction-${position.direction}`);
     elem.dataset.id = info.id;
+
+    elem.style.left = position.left + "px";
+    elem.style.top = position.top + "px";
 
     let isAnime = info.type === "ANIME";
     let hasBannerImage = !!info.bannerImage;
@@ -145,6 +149,27 @@ query ($id: Int, $type: MediaType) {
     }
   }
 
+  function calculatePosition(target) {
+    let cardHeight = 250;
+    let cardWidth = 500;
+    let marginY = 15;
+    let rects = target.getClientRects()[0];
+
+    let result = {};
+
+    if (rects.top - 2 * marginY - cardHeight < 0) {
+      result.direction = "down";
+      result.top = rects.bottom + marginY;
+    } else {
+      result.direction = "up";
+      result.top = rects.top - marginY - cardHeight;
+    }
+
+    result.left = rects.left + rects.width / 2 - cardWidth / 2;
+
+    return result;
+  }
+
   document.body.addEventListener("mouseover", e => {
     let elem = e.target;
     if (elem.classList && elem.classList.contains("title") && !elem.classList.contains(CLASS_WAITING)) {
@@ -157,7 +182,7 @@ query ($id: Int, $type: MediaType) {
 
       let timeout = setTimeout(function() {
         getInfo(id, type).then(r => {
-          showCard(r);
+          showCard(r, calculatePosition(elem));
           elem.classList.remove(CLASS_WAITING);
           elem.classList.add(CLASS_ACTIVE);
           if (!elem.classList.contains(CLASS_ATTACHED)) {
