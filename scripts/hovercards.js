@@ -153,7 +153,7 @@ onGotSettings(function() {
     function hideCard(id) {
       let elem = document.querySelector(`.amc[data-id="${id}"]`);
       if (elem) {
-        // elem.parentElement.removeChild(elem);
+        elem.parentElement.removeChild(elem);
       }
     }
 
