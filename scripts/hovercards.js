@@ -174,4 +174,10 @@ query ($id: Int, $type: MediaType) {
       });
     }
   });
+
+  onNavigate(function() {
+    [...document.getElementsByClassName("amc")].forEach(elem => {
+      elem.parentElement.removeChild(elem);
+    });
+  });
 });
