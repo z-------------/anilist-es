@@ -102,9 +102,9 @@ onGotSettings(function() {
       elem.style.top = position.top + "px";
 
       let isAnime = info.type === "ANIME";
-      let hasBannerImage = !!info.bannerImage;
+      let hasRankings = info.rankings[0] && info.rankings[1];
 
-      if (!hasBannerImage) {
+      if (!info.bannerImage) {
         elem.classList.add(CLASS_NOBANNERIMAGE);
       }
 
@@ -112,11 +112,13 @@ onGotSettings(function() {
   <div class="amc_cover">
     <div class="amc_image" style="background-image: url(${info.coverImage.medium})"></div>
     <div class="amc_underimage">
-      <div class="amc_rating">${info.averageScore}%</div>
-      <div class="amc_rankings">
-        <div class="amc_ranking amc_ranking--rated">⭐${info.rankings[0].rank}</div>
-        <div class="amc_ranking amc_ranking--popular">❤️${info.rankings[1].rank}</div>
-      </div>
+      ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
+      ${hasRankings ? `
+        <div class="amc_rankings">
+          <div class="amc_ranking amc_ranking--rated">⭐${info.rankings[0].rank}</div>
+          <div class="amc_ranking amc_ranking--popular">❤️${info.rankings[1].rank}</div>
+        </div>
+        ` : ""}
     </div>
   </div>
   <div class="amc_info">
@@ -124,16 +126,16 @@ onGotSettings(function() {
       <a href="/${info.type.toLowerCase()}/${info.id}">${info.title.romaji}</a>
       ${info.bannerImage ? `<div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>` : ""}
     </h2>
-    <div class="amc_description">${stripHTML(info.description)}</div>
+    <div class="amc_description">${stripHTML(info.description || "")}</div>
     <div class="amc_stats">
       ${
         [
-          `<div class="amc_stats_format">${format[info.format]}</div>`,
+          info.format ? `<div class="amc_stats_format">${format[info.format]}</div>` : "?",
           isAnime
             ? `<div class="amc_stats_episodes">${countFormat(info.episodes)} eps.</div>`
             : `<div class="amc_stats_volumes">${countFormat(info.volumes)} vols.</div>`,
-          `<div class="amc_stats_season">${info.startDate.year}</div>`,
-          `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>`
+          info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "?",
+          info.genres && info.genres.length ? `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>` : "?"
         ].join(`&nbsp;${BULLET}&nbsp;`)
       }
     </div>
