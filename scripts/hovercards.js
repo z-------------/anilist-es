@@ -3,7 +3,9 @@ onGotSettings(function() {
     const CLASS_WAITING = "amc--waiting";
     const CLASS_ACTIVE = "amc--active";
     const CLASS_ATTACHED = "amc--attached";
+
     const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
+    const CLASS_NONUMBERS = "amc--nonumbers";
 
     let format = {
       TV: "TV",
@@ -107,6 +109,9 @@ onGotSettings(function() {
       if (!info.bannerImage) {
         elem.classList.add(CLASS_NOBANNERIMAGE);
       }
+      if (!hasRankings && info.averageScore === null) {
+        elem.classList.add(CLASS_NONUMBERS);
+      }
 
       elem.innerHTML = `
   <div class="amc_cover">
@@ -148,7 +153,7 @@ onGotSettings(function() {
     function hideCard(id) {
       let elem = document.querySelector(`.amc[data-id="${id}"]`);
       if (elem) {
-        elem.parentElement.removeChild(elem);
+        // elem.parentElement.removeChild(elem);
       }
     }
 

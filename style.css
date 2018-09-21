@@ -65,6 +65,7 @@
 
 .amc {
   --padding: 15px;
+  --height: 250px;
 
   position: fixed;
   top: 50px;
@@ -73,11 +74,16 @@
   box-shadow: 0 0 29px rgba(49, 54, 68, .25);
   display: flex;
   width: 500px;
-  height: 250px;
+  height: var(--height);
   overflow: hidden;
   font-size: 1.4rem;
   border-radius: 4px;
   z-index: 999;
+}
+
+.amc.amc--nonumbers {
+  height: auto;
+  max-height: var(--height);
 }
 
 .amc_stats {
@@ -106,6 +112,10 @@
   justify-content: space-around;
   margin-top: 7px;
   position: relative;
+}
+
+.amc--nonumbers .amc_underimage {
+  margin-top: 0;
 }
 
 .amc_rating {
@@ -192,4 +202,8 @@ body:not(.site-theme-dark) .amc--nobannerimage .amc_title {
   width: 100%;
   height: 40px;
   background-image: linear-gradient(180deg, transparent, rgb(var(--color-foreground)));
+}
+
+.amc--nonumbers .amc_description {
+  height: 100px;
 }
