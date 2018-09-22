@@ -94,7 +94,7 @@ onGotSettings(function() {
       }
     }
 
-    function iconObjectHTML(icon) {
+    function icon(icon) {
       return `<object class="amc_icon" type="image/svg+xml" data="${chrome.runtime.getURL(`img/${icon}.svg`)}"></object>`;
     }
 
@@ -124,8 +124,8 @@ onGotSettings(function() {
       ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
       ${hasRankings ? `
         <div class="amc_rankings">
-          <div class="amc_ranking amc_ranking--rated">${iconObjectHTML("star")}${info.rankings[0].rank}</div>
-          <div class="amc_ranking amc_ranking--popular">${iconObjectHTML("heart")}${info.rankings[1].rank}</div>
+          <div class="amc_ranking amc_ranking--rated">${icon("star")} #${info.rankings[0].rank}</div>
+          <div class="amc_ranking amc_ranking--popular">${icon("heart")} #${info.rankings[1].rank}</div>
         </div>
         ` : ""}
     </div>
