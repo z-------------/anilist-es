@@ -148,6 +148,8 @@
 
 .amc_ranking {
   line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 .amc_rankings {
