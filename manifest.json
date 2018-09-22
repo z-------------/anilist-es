@@ -8,7 +8,7 @@
   "content_scripts": [{
     "matches": [ "*://anilist.co/*" ],
     "css": [ "style.css" ],
-    "js": [ "getSettings.js", "scripts/common.js", "scripts/bars.js", "scripts/hovercards.js" ]
+    "js": [ "getSettings.js", "scripts/common.js", "scripts/bars.js", "scripts/infocards.js" ]
   }],
   "web_accessible_resources": [
     "defaults.json",
