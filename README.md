@@ -11,8 +11,8 @@ Work in progress.
 
 ## Screenshots
 
-![Screenshot 1](https://i.imgur.com/dwxaa4f.png)
-![Screenshot 2](https://i.imgur.com/GCUXPte.png)
+![Screenshot 1](https://i.imgur.com/Cu72tRE.png)
+![Screenshot 2](https://i.imgur.com/KmCcTXQ.png)
 
 ## Install
 
