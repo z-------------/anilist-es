@@ -27,12 +27,9 @@ onGotSettings(function() {
       }
       type
       episodes
-      chapters
       volumes
-      duration
       status
       format
-      season
       startDate {
         year
       }
