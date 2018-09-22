@@ -191,7 +191,7 @@
 
 .amc_description {
   overflow: hidden;
-  height: 140px;
+  height: 150px;
   margin: 7px 0 7px 0;
   color: rgb(var(--color-text));
   line-height: 1.5;
