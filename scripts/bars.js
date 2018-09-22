@@ -135,25 +135,6 @@ function displayProgressBars() {
       elem.classList.add("episodecount-unknown");
     }
 
-    let format;
-    if (seriesInfo.format === "TV_SHORT") {
-      format = "TV short";
-    } else if (seriesInfo.format === "MOVIE") {
-      format = "Movie";
-    } else if (seriesInfo.format === "SPECIAL") {
-      format = "Special";
-    } else if (seriesInfo.format === "MUSIC") {
-      format = "Music video";
-    } else if (seriesInfo.format === "MANGA") {
-      format = "Manga";
-    } else if (seriesInfo.format === "NOVEL") {
-      format = "Novel";
-    } else if (seriesInfo.format === "ONE_SHOT") {
-      format = "One-shot";
-    } else {
-      format = seriesInfo.format;
-    }
-
     let time = latestActivity.time;
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.image})`;
@@ -161,7 +142,7 @@ function displayProgressBars() {
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
 <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
-${format}
+${strings.format[seriesInfo.format]}
 ${seriesInfo.status === "RELEASING" ? `${BULLET} Releasing` : ""}
 `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;

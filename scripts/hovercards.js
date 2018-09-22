@@ -7,33 +7,6 @@ onGotSettings(function() {
     const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
     const CLASS_NONUMBERS = "amc--nonumbers";
 
-    let format = {
-      TV: "TV",
-      TV_SHORT: "TV Short",
-      MOVIE: "Movie",
-      SPECIAL: "Special",
-      OVA: "OVA",
-      ONA: "ONA",
-      MUSIC: "Music",
-      MANGA: "Manga",
-      NOVEL: "Novel",
-      ONE_SHOT: "One Shot"
-    };
-
-    let status = {
-      FINISHED: "Finished",
-      RELEASING: "Releasing",
-      NOT_YET_RELEASED: "Not yet released",
-      CANCELLED: "Cancelled"
-    };
-
-    let season = {
-      SPRING: "Spring",
-      SUMMER: "Summer",
-      FALL: "Fall",
-      WINTER: "Winter"
-    };
-
     function countFormat(count) {
       return count || "?";
     }
@@ -139,7 +112,7 @@ onGotSettings(function() {
     <div class="amc_stats">
       ${
         [
-          info.format ? `<div class="amc_stats_format">${format[info.format]}</div>` : "?",
+          info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "?",
           isAnime
             ? `<div class="amc_stats_episodes">${countFormat(info.episodes)} eps.</div>`
             : `<div class="amc_stats_volumes">${countFormat(info.volumes)} vols.</div>`,

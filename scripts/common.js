@@ -79,3 +79,30 @@ getSettings().then(r => {
     handler(settings);
   });
 });
+
+let strings = {
+  format: {
+    TV: "TV",
+    TV_SHORT: "TV Short",
+    MOVIE: "Movie",
+    SPECIAL: "Special",
+    OVA: "OVA",
+    ONA: "ONA",
+    MUSIC: "Music",
+    MANGA: "Manga",
+    NOVEL: "Novel",
+    ONE_SHOT: "One Shot"
+  },
+  status: {
+    FINISHED: "Finished",
+    RELEASING: "Releasing",
+    NOT_YET_RELEASED: "Not yet released",
+    CANCELLED: "Cancelled"
+  },
+  season: {
+    SPRING: "Spring",
+    SUMMER: "Summer",
+    FALL: "Fall",
+    WINTER: "Winter"
+  }
+};
