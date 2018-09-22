@@ -143,7 +143,7 @@ function displayProgressBars() {
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
 <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
 ${strings.format[seriesInfo.format]}
-${seriesInfo.status === "RELEASING" ? `${BULLET} Releasing` : ""}
+${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
 `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;
 
