@@ -7,10 +7,6 @@ onGotSettings(function() {
     const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
     const CLASS_NONUMBERS = "amc--nonumbers";
 
-    function countFormat(count) {
-      return count || "?";
-    }
-
     let infos = {};
 
     function getInfo(id, type) {
@@ -111,8 +107,8 @@ onGotSettings(function() {
         [
           info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "?",
           isAnime
-            ? `<div class="amc_stats_episodes">${countFormat(info.episodes)} eps.</div>`
-            : `<div class="amc_stats_volumes">${countFormat(info.volumes)} vols.</div>`,
+            ? `<div class="amc_stats_episodes">${info.episodes || "?"} eps.</div>`
+            : `<div class="amc_stats_volumes">${info.volumes || "?"} vols.</div>`,
           info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "?",
           info.genres && info.genres.length ? `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>` : "?"
         ].join(`&nbsp;${BULLET}&nbsp;`)
