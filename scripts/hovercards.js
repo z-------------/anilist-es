@@ -95,7 +95,7 @@ onGotSettings(function() {
     }
 
     function icon(icon) {
-      return `<object class="amc_icon" type="image/svg+xml" data="${chrome.runtime.getURL(`img/${icon}.svg`)}"></object>`;
+      return `<img class="amc_icon" src="${chrome.runtime.getURL(`img/${icon}.svg`)}" />`;
     }
 
     function showCard(info, position) {
