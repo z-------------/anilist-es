@@ -170,7 +170,7 @@ onGotSettings(function() {
               });
             }
           });
-        }, 500);
+        }, settings.cardsHoverTimeout);
         elem.addEventListener("mouseout", e => {
           clearTimeout(timeout);
           elem.classList.remove(CLASS_WAITING);

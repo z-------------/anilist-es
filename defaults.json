@@ -23,5 +23,10 @@
     "default": true,
     "label": "Enable infocards",
     "order": 4
+  },
+  "cardsHoverTimeout": {
+    "default": 500,
+    "label": "Infocard hover timeout (ms)",
+    "order": 5
   }
 }
