@@ -32,7 +32,7 @@ onGotSettings(function() {
       description(asHtml: true)
       genres
       coverImage {
-        medium
+        large
       }
       bannerImage
       averageScore
@@ -85,7 +85,7 @@ onGotSettings(function() {
 
       elem.innerHTML = `
   <div class="amc_cover">
-    <div class="amc_image" style="background-image: url(${info.coverImage.medium})"></div>
+    <div class="amc_image" style="background-image: url(${info.coverImage.large})"></div>
     <div class="amc_underimage">
       ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
       ${hasRankings ? `
