@@ -127,6 +127,12 @@ onGotSettings(function() {
       }
     }
 
+    function hideAllCards() {
+      [...document.getElementsByClassName("amc")].forEach(elem => {
+        elem.parentElement.removeChild(elem);
+      });
+    }
+
     function calculatePosition(target) {
       let cardHeight = 250;
       let cardWidth = 500;
@@ -183,10 +189,6 @@ onGotSettings(function() {
       }
     });
 
-    onNavigate(function() {
-      [...document.getElementsByClassName("amc")].forEach(elem => {
-        elem.parentElement.removeChild(elem);
-      });
-    });
+    onNavigate(hideAllCards);
   }
 });
