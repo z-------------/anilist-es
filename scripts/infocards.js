@@ -150,10 +150,15 @@ onGotSettings(function() {
 
     document.body.addEventListener("mouseover", e => {
       let elem = e.target;
-      if (elem.classList && elem.classList.contains("title") && !elem.classList.contains(CLASS_WAITING)) {
+      if (
+        elem.classList &&
+        elem.classList.contains("title") &&
+        !elem.classList.contains(CLASS_WAITING) &&
+        elem.href
+      ) {
         elem.classList.add(CLASS_WAITING);
 
-        let url = new URL(e.target.href);
+        let url = new URL(elem.href);
         let path = url.pathname.slice(1).split("/");
         let id = Number(path[1]);
         let type = path[0].toUpperCase();
