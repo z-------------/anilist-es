@@ -1,88 +1,4 @@
-function getActivity() {
-  [...document.querySelectorAll(".activity-anime_list, .activity-manga_list")].forEach(elem => {
-    let statusElem = elem.getElementsByClassName("status")[0];
-    if (statusElem) {
-      let text = statusElem.childNodes[0].textContent.trim();
-
-      /* progress */
-      let dMatches = text.match(/\d+/g);
-      var progress;
-      if (dMatches) {
-        let progresses = dMatches.map(n => Number(n));
-        progress = progresses[progresses.length - 1];
-      } else {
-        progress = null;
-      }
-
-      /* series info */
-      let seriesName = statusElem.getElementsByClassName("title")[0].textContent.trim();
-      let seriesType = elem.classList.contains("activity-anime_list") ? "anime" : "manga";
-
-      let coverElem = elem.getElementsByClassName("cover")[0];
-      let seriesID = Number(coverElem.getAttribute("href").split("/")[2]);
-
-      let seriesImage = coverElem.style.backgroundImage.match(/"\S+"/)[0].slice(1, -1);
-
-      if (!series.hasOwnProperty(seriesID)) {
-        series[seriesID] = {
-          name: seriesName,
-          type: seriesType,
-          id: seriesID,
-          image: seriesImage
-        };
-        getSeriesInfo({ id: seriesID, type: seriesType }).then(info => {
-          seriesInfoGotCount++;
-          Object.assign(series[seriesID], info);
-          if (Object.keys(series).length === seriesInfoGotCount && document.getElementsByClassName("section")[0]) {
-            displayProgressBars();
-          }
-        });
-      }
-
-      /* activity type */
-      let words = text.toLowerCase().split(" ");
-      let firstWord = words[0];
-      var type;
-      if (firstWord === "watched" || firstWord === "read") {
-        type = "watch";
-      } else if (firstWord === "plans") {
-        type = "plan";
-      } else if (firstWord === "completed") {
-        type = "complete";
-      }
-
-      /* time */
-      let timeElem = elem.getElementsByTagName("time")[0];
-      let timestamp = timeElem.getAttribute("datetime");
-      let timeRelative = timeElem.textContent;
-      let timeAbsolute = timeElem.getAttribute("title");
-
-      activity.push({
-        progress: progress,
-        type: type,
-        series: series[seriesID],
-        time: {
-          timestamp: timestamp,
-          relative: timeRelative,
-          absolute: timeAbsolute
-        }
-      });
-    }
-  });
-}
-
-function displayProgressBars() {
-  let displayedSeries = [];
-  for (let i = 0; i < activity.length; i++) {
-    let item = activity[i];
-    if (displayedSeries.indexOf(item.series.id) === -1 && (item.type === "watch" || item.type === "complete")) {
-      displayedSeries.push(item.series.id);
-      if (displayedSeries.length === settings.barsCount) {
-        break;
-      }
-    }
-  }
-
+function displayProgressBars(progresses, seriesInfos) {
   let barTemplate = document.createElement("div");
   barTemplate.classList.add("amb");
   barTemplate.innerHTML = `
@@ -110,35 +26,32 @@ function displayProgressBars() {
 <div class="content-wrap"></div>`;
   let contentElem = containerElem.getElementsByClassName("content-wrap")[0];
 
-  displayedSeries.forEach(seriesID => {
+  progresses.forEach(progressItem => {
     let elem = barTemplate.cloneNode(true);
 
-    let latestActivity;
-    for (let i = 0; i < activity.length; i++) {
-      if (activity[i].series.id === seriesID) {
-        latestActivity = activity[i];
-        break;
-      }
-    }
-    let seriesInfo = series[seriesID];
+    let seriesID = progressItem.seriesID;
+    let seriesInfo = seriesInfos[seriesID];
 
     let displayedProgress;
-    let displayedUnits = latestActivity.progress;
+    let displayedUnits = progressItem.progress;
     let unitsCount = seriesInfo.episodes || seriesInfo.chapters;
-    if (latestActivity.type === "complete") {
+    if (progressItem.type === "complete") {
       displayedProgress = 1;
       displayedUnits = unitsCount || "?";
+    } else if (progressItem.type === "plan") {
+      displayedProgress = 0;
+      displayedUnits = 0;
     } else if (unitsCount) {
-      displayedProgress = latestActivity.progress / unitsCount;
+      displayedProgress = progressItem.progress / unitsCount;
     } else {
       displayedProgress = 0.5;
       elem.classList.add("episodecount-unknown");
     }
 
-    let time = latestActivity.time;
+    let time = progressItem.time;
 
-    elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.image})`;
-    elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type}/${seriesID}">${seriesInfo.name}</a>`;
+    elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
+    elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type.toLowerCase()}/${seriesID}">${seriesInfo.title.romaji}</a>`;
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
 <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
@@ -151,36 +64,111 @@ ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.sta
   });
 }
 
-function main() {
-  activity = [];
-  series = {};
-  seriesInfoGotCount = 0;
+function getSeriesInfos(progresses) { // not to be confused with getSeriesInfo()
+  let seriesInfos = {};
+  let seriesInfosGotCount = 0;
+  progresses.forEach(progressItem => {
+    getSeriesInfo(progressItem.seriesID, progressItem.seriesType).then(seriesInfo => {
+      seriesInfos[progressItem.seriesID] = seriesInfo;
+      seriesInfosGotCount++;
+      if (seriesInfosGotCount === progresses.length) {
+        displayProgressBars(progresses, seriesInfos);
+      }
+    });
+  });
+}
 
-  let timer = setInterval(function() {
-    getActivity();
-    let activityContainerElem = document.getElementsByClassName("activity-feed")[0];
-    if (activityContainerElem && activityContainerElem.children.length !== 0) {
-      clearInterval(timer);
-      onElementChange(activityContainerElem, changes => {
-        let change = changes[0];
-        if (
-          change.target.classList.contains("status") &&
-          change.addedNodes[0] instanceof Text || change.addedNodes[1] instanceof Text
-        ) {
-          getActivity();
-        }
-      });
+function getProgresses(activity) {
+  let seriesInProgresses = [];
+  let progresses = [];
+  for (let i = 0; i < activity.length; i++) {
+    let seriesID = activity[i].seriesID;
+    if (seriesInProgresses.indexOf(seriesID) === -1 && activity[i].type !== "plan") {
+      seriesInProgresses.push(seriesID);
+      progresses.push(activity[i]);
     }
-  }, 500);
+    if (progresses.length === settings.barsCount) break;
+  }
+  getSeriesInfos(progresses);
+}
+
+function getActivity() {
+  let activity = [];
+
+  [...document.getElementsByClassName("activity-entry")].forEach(elem => {
+    let statusElem = elem.getElementsByClassName("status")[0];
+    let text = statusElem.childNodes[0].textContent.trim();
+
+    let coverElem = elem.getElementsByClassName("cover")[0];
+    let seriesID = Number(coverElem.getAttribute("href").split("/")[2]);
+    let seriesType = elem.classList.contains("activity-anime_list") ? "ANIME" : "MANGA";
+
+    let dMatches = text.match(/\d+/g);
+    var progress;
+    if (dMatches) {
+      let progresses = dMatches.map(n => Number(n));
+      progress = progresses[progresses.length - 1];
+    } else {
+      progress = null;
+    }
+
+    let words = text.toLowerCase().split(" ");
+    let firstWord = words[0];
+    var type;
+    if (firstWord === "watched" || firstWord === "read") {
+      type = "watch";
+    } else if (firstWord === "plans") {
+      type = "plan";
+    } else if (firstWord === "completed") {
+      type = "complete";
+    }
+
+    let timeElem = elem.getElementsByTagName("time")[0];
+    let timestamp = timeElem.getAttribute("datetime");
+    let time = new Date(timestamp);
+    let timeRelative = timeElem.textContent;
+    let timeAbsolute = timeElem.getAttribute("title");
+
+    activity.push({
+      progress: progress,
+      seriesType: seriesType,
+      seriesID: seriesID,
+      type: type,
+      time: {
+        timestamp: timestamp,
+        time: time,
+        relative: timeRelative,
+        absolute: timeAbsolute
+      }
+    });
+  });
+
+  getProgresses(activity);
 }
 
 onGotSettings(function() {
   if (settings.barsEnable) {
-    main();
-
-    onNavigate(function() {
+    onElementChange(document.getElementsByClassName("page-content")[0], changes => {
       if (window.location.pathname.slice(1).split("/")[0] === "user") {
-        main();
+        for (let i = 0; i < changes.length; i++) {
+          let change = changes[i];
+          if (
+            (
+              change.addedNodes[0] &&
+              change.addedNodes[0] instanceof HTMLElement &&
+              change.addedNodes[0].classList.contains("activity-entry")
+            ) ||
+            (
+              change.target.classList &&
+              change.target.classList.contains("status") &&
+              change.addedNodes[0] &&
+              change.addedNodes[0] instanceof Text || change.addedNodes[1] instanceof Text
+            )
+          ) {
+            getActivity();
+            break;
+          }
+        }
       }
     });
   }

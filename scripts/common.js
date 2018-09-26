@@ -18,7 +18,7 @@ let onNavigate = (function() {
 }());
 
 let onElementChange = function(target, callback, options) {
-  if (!options) options = { attributes: true, childList: true, subtree: true };
+  if (!options) options = { attributes: false, childList: true, subtree: true };
   let observer = new MutationObserver(callback);
   observer.observe(target, options);
   return observer.disconnect;
@@ -55,22 +55,60 @@ function stripHTML(html) {
   return html.replace(/(<([^>]+)>)/ig, "");
 }
 
-function getSeriesInfo(info) {
-  let query = `
-query ($id: Int, $type: MediaType) {
-  Media (id: $id, type: $type) {
-    episodes
-    chapters
-    status
-    format
+function getSeriesInfo(id, type) {
+  return new Promise(function(resolve, reject) {
+    let cacheKey = `seriescache_${type}:${id}`;
+    chrome.storage.local.get([cacheKey], result => {
+      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < 86400000) { // 1 day
+        resolve(infos[cacheKey]);
+      } else {
+        let query = `
+  query ($id: Int, $type: MediaType) {
+    Media (id: $id, type: $type) {
+      id
+      title {
+        romaji(stylised: true)
+      }
+      type
+      episodes
+      chapters
+      volumes
+      status
+      format
+      startDate {
+        year
+      }
+      description(asHtml: true)
+      genres
+      coverImage {
+        large
+      }
+      bannerImage
+      averageScore
+      rankings {
+        rank
+        type
+        allTime
+      }
+      studios(isMain: true) {
+        nodes {
+          name
+        }
+      }
+    }
   }
-}
-  `;
-  let variables = {
-    id: info.id, type: info.type.toUpperCase()
-  };
+        `;
+        let variables = { id: id, type: type };
 
-  return api(query, variables);
+        api(query, variables).then(r => {
+          let newStorage = {};
+          newStorage[cacheKey] = Object.assign(r, { _dateFetched: new Date() });
+          chrome.storage.local.set(newStorage);
+          resolve(r);
+        });
+      }
+    });
+  });
 }
 
 let handlers = [];

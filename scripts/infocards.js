@@ -9,57 +9,6 @@ onGotSettings(function() {
 
     let infos = {};
 
-    function getInfo(id, type) {
-      let cacheKey = `${type}:${id}`;
-      if (infos.hasOwnProperty(cacheKey)) {
-        return Promise.resolve(infos[cacheKey]);
-      } else {
-        let query = `
-  query ($id: Int, $type: MediaType) {
-    Media (id: $id, type: $type) {
-      id
-      title {
-        romaji(stylised: true)
-      }
-      type
-      episodes
-      volumes
-      status
-      format
-      startDate {
-        year
-      }
-      description(asHtml: true)
-      genres
-      coverImage {
-        large
-      }
-      bannerImage
-      averageScore
-      rankings {
-        rank
-        type
-        allTime
-      }
-      studios(isMain: true) {
-        nodes {
-          name
-        }
-      }
-    }
-  }
-        `;
-        let variables = {
-          id: id, type: type
-        };
-
-        return api(query, variables).then(r => {
-          infos[cacheKey] = r;
-          return r;
-        });
-      }
-    }
-
     function icon(icon) {
       return `<img class="amc_icon" src="${chrome.runtime.getURL(`img/${icon}.svg`)}" />`;
     }
@@ -170,7 +119,7 @@ onGotSettings(function() {
         let type = path[0].toUpperCase();
 
         let timeout = setTimeout(function() {
-          getInfo(id, type).then(r => {
+          getSeriesInfo(id, type).then(r => {
             showCard(r, calculatePosition(elem));
             elem.classList.remove(CLASS_WAITING);
             elem.classList.add(CLASS_ACTIVE);
