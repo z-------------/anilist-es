@@ -17,6 +17,13 @@ let onNavigate = (function() {
   }
 }());
 
+let onElementChange = function(target, callback, options) {
+  if (!options) options = { attributes: true, childList: true, subtree: true };
+  let observer = new MutationObserver(callback);
+  observer.observe(target, options);
+  return observer.disconnect;
+};
+
 function api(query, variables) {
   let options = {
     method: "POST",

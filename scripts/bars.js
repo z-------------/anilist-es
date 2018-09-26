@@ -161,6 +161,15 @@ function main() {
     let activityContainerElem = document.getElementsByClassName("activity-feed")[0];
     if (activityContainerElem && activityContainerElem.children.length !== 0) {
       clearInterval(timer);
+      onElementChange(activityContainerElem, changes => {
+        let change = changes[0];
+        if (
+          change.target.classList.contains("status") &&
+          change.addedNodes[0] instanceof Text || change.addedNodes[1] instanceof Text
+        ) {
+          getActivity();
+        }
+      });
     }
   }, 500);
 }
