@@ -60,7 +60,7 @@ function getSeriesInfo(id, type) {
     let cacheKey = `seriescache_${type}:${id}`;
     chrome.storage.local.get([cacheKey], result => {
       if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < 86400000) { // 1 day
-        resolve(infos[cacheKey]);
+        resolve(result[cacheKey]);
       } else {
         let query = `
   query ($id: Int, $type: MediaType) {
@@ -102,7 +102,7 @@ function getSeriesInfo(id, type) {
 
         api(query, variables).then(r => {
           let newStorage = {};
-          newStorage[cacheKey] = Object.assign(r, { _dateFetched: new Date() });
+          newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r);
           chrome.storage.local.set(newStorage);
           resolve(r);
         });
