@@ -1,32 +1,38 @@
 {
+  "titleLanguage": {
+    "default": "romaji",
+    "options": [ "english", "native" ],
+    "label": "Title language",
+    "order": 0
+  },
   "barsEnable": {
     "default": true,
     "label": "Enable progress bars",
-    "order": 0
+    "order": 1
   },
   "insertIndex": {
     "default": 1,
     "label": "Position in page",
-    "order": 1
+    "order": 2
   },
   "headingText": {
     "default": "Recent Progress",
     "label": "Heading text",
-    "order": 2
+    "order": 3
   },
   "barsCount": {
     "default": 5,
     "label": "No. of progress bars",
-    "order": 3
+    "order": 4
   },
   "cardsEnable": {
     "default": true,
     "label": "Enable infocards",
-    "order": 4
+    "order": 5
   },
   "cardsHoverTimeout": {
     "default": 500,
     "label": "Infocard hover timeout (ms)",
-    "order": 5
+    "order": 6
   }
 }

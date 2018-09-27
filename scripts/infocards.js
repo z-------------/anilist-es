@@ -47,7 +47,7 @@ onGotSettings(function() {
   </div>
   <div class="amc_info">
     <h2 class="amc_title">
-      <a href="/${info.type.toLowerCase()}/${info.id}">${info.title.romaji}</a>
+      <a href="/${info.type.toLowerCase()}/${info.id}">${getTitle(info.title, settings.titleLanguage)}</a>
       ${info.bannerImage ? `<div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>` : ""}
     </h2>
     <div class="amc_description">${stripHTML(info.description || "")}</div>

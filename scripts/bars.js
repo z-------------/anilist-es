@@ -51,7 +51,7 @@ function displayProgressBars(progresses, seriesInfos) {
     let time = progressItem.time;
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
-    elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type.toLowerCase()}/${seriesID}">${seriesInfo.title.romaji}</a>`;
+    elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="/${seriesInfo.type.toLowerCase()}/${seriesID}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
 <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}

@@ -1,7 +1,7 @@
 let templateElem = document.createElement("label");
 templateElem.innerHTML = `
 <span></span>
-<input />
+<input class="input" />
 `;
 
 let settingsElem = document.getElementsByClassName("settings")[0];
@@ -22,7 +22,19 @@ getSettings().then(r => {
     elem.getElementsByTagName("span")[0].textContent = defaults[key].label;
 
     let inputElem = elem.getElementsByTagName("input")[0];
-    if (typeof settings[key] === "number") {
+    if (defaults[key].hasOwnProperty("options")) {
+      elem.removeChild(inputElem);
+      inputElem = document.createElement("select");
+      inputElem.classList.add("input");
+      let options = defaults[key].options.concat(defaults[key].default);
+      options.forEach(option => {
+        let optionElem = document.createElement("option");
+        optionElem.value = option;
+        optionElem.textContent = option;
+        inputElem.appendChild(optionElem);
+      });
+      elem.appendChild(inputElem);
+    } else if (typeof settings[key] === "number") {
       inputElem.setAttribute("type", "number");
       inputElem.setAttribute("min", "0");
       inputElem.setAttribute("step", "1");
@@ -44,7 +56,7 @@ saveButton.addEventListener("click", e => {
   [...document.getElementsByTagName("label")].forEach(labelElem => {
     let key = labelElem.dataset.key;
 
-    let inputElem = labelElem.getElementsByTagName("input")[0];
+    let inputElem = labelElem.getElementsByClassName("input")[0];
     let inputType = inputElem.getAttribute("type");
 
     let newValue = inputElem.value;

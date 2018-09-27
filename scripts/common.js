@@ -24,6 +24,14 @@ let onElementChange = function(target, callback, options) {
   return observer.disconnect;
 };
 
+function getTitle(titles, preferred) {
+  if (titles.hasOwnProperty(preferred)) {
+    return titles[preferred];
+  } else {
+    return titles[Object.keys(titles)[0]];
+  }
+}
+
 function api(query, variables) {
   let options = {
     method: "POST",
@@ -68,6 +76,8 @@ function getSeriesInfo(id, type) {
       id
       title {
         romaji(stylised: true)
+        english(stylised: true)
+        native(stylised: true)
       }
       type
       episodes
