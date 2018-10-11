@@ -38,9 +38,6 @@ function displayProgressBars(progresses, seriesInfos) {
     if (progressItem.type === "complete") {
       displayedProgress = 1;
       displayedUnits = unitsCount || "?";
-    } else if (progressItem.type === "plan") {
-      displayedProgress = 0;
-      displayedUnits = 0;
     } else if (unitsCount) {
       displayedProgress = progressItem.progress / unitsCount;
     } else {
@@ -83,7 +80,10 @@ function getProgresses(activity) {
   let progresses = [];
   for (let i = 0; i < activity.length; i++) {
     let seriesID = activity[i].seriesID;
-    if (seriesInProgresses.indexOf(seriesID) === -1 && activity[i].type !== "plan") {
+    if (seriesInProgresses.indexOf(seriesID) === -1 &&
+        activity[i].type !== "plan" &&
+        activity[i].type !== "pause"
+      ) {
       seriesInProgresses.push(seriesID);
       progresses.push(activity[i]);
     }
@@ -121,6 +121,8 @@ function getActivity() {
       type = "plan";
     } else if (firstWord === "completed") {
       type = "complete";
+    } else if (firstWord === "paused") {
+      type = "pause";
     }
 
     let timeElem = elem.getElementsByTagName("time")[0];
