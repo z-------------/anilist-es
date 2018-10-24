@@ -6,6 +6,7 @@ onGotSettings(function() {
 
     const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
     const CLASS_NONUMBERS = "amc--nonumbers";
+    const CLASS_NOARROW = "amc--noarrow";
 
     let infos = {};
 
@@ -30,6 +31,9 @@ onGotSettings(function() {
       }
       if (!hasRankings && info.averageScore === null) {
         elem.classList.add(CLASS_NONUMBERS);
+      }
+      if (position.isOffCenterX) {
+        elem.classList.add(CLASS_NOARROW);
       }
 
       elem.innerHTML = `
@@ -85,20 +89,28 @@ onGotSettings(function() {
     function calculatePosition(target) {
       let cardHeight = 250;
       let cardWidth = 500;
-      let marginY = 15;
-      let rects = target.getClientRects()[0];
+      let margin = 15;
+      let rect = target.getClientRects()[0];
 
       let result = {};
 
-      if (rects.top - 2 * marginY - cardHeight < 0) {
+      if (rect.top - 2 * margin - cardHeight < 0) {
         result.direction = "down";
-        result.top = rects.bottom + marginY;
+        result.top = rect.bottom + margin;
       } else {
         result.direction = "up";
-        result.top = rects.top - marginY - cardHeight;
+        result.top = rect.top - margin - cardHeight;
       }
 
-      result.left = rects.left + rects.width / 2 - cardWidth / 2;
+      if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
+        result.left = margin;
+        result.isOffCenterX = true;
+      } else if (rect.right + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
+        result.left = window.innerWidth - margin - cardWidth;
+        result.isOffCenterX = true;
+      } else {
+        result.left = rect.left + rect.width / 2 - cardWidth / 2;
+      }
 
       return result;
     }

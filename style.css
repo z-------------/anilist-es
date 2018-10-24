@@ -98,6 +98,10 @@
   margin-left: calc(var(--x) * -1);
 }
 
+.amc--noarrow:after {
+  content: none;
+}
+
 .amc.amc--direction-up:after {
   border-width: 6px var(--x) 0 var(--x);
   border-color: rgb(var(--color-foreground)) transparent transparent transparent;
