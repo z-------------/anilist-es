@@ -105,6 +105,7 @@ function getSeriesInfo(id, type) {
           name
         }
       }
+      siteUrl
     }
   }
         `;
