@@ -8,8 +8,6 @@ onGotSettings(function() {
     const CLASS_NONUMBERS = "amc--nonumbers";
     const CLASS_NOARROW = "amc--noarrow";
 
-    let infos = {};
-
     function icon(icon) {
       return `<img class="amc_icon" src="${chrome.runtime.getURL(`img/${icon}.svg`)}" />`;
     }
