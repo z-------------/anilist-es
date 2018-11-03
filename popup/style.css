@@ -1,0 +1,42 @@
+body {
+  background-color: rgb(237, 241, 245);
+  color: rgb(92, 114, 138);
+  font-size: 15px;
+  padding: 16px;
+  margin: 0;
+
+  width: 350px;
+}
+
+a {
+  color: rgb(61, 180, 242);
+}
+
+.amn {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background-color: rgb(250, 250, 250);
+  border-radius: 4px;
+  min-height: 70px;
+  position: relative;
+  padding-left: 60px;
+}
+
+.amn_text {
+  color: inherit;
+  text-decoration: none;
+  margin: 16px;
+}
+
+.amn_image {
+  width: 60px;
+  height: 100%;
+  background-color: lightgrey;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+}

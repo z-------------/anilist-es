@@ -32,7 +32,7 @@ function getTitle(titles, preferred) {
   }
 }
 
-function api(query, variables) {
+function api(query, variables, token) {
   let options = {
     method: "POST",
     headers: {
@@ -45,6 +45,10 @@ function api(query, variables) {
     })
   };
 
+  if (token) {
+    options.headers["Authorization"] = `Bearer ${token}`;
+  }
+
   return fetch("https://graphql.anilist.co", options)
     .then(response => {
       return response.json().then(json => {
@@ -52,7 +56,7 @@ function api(query, variables) {
       });
     })
     .then(json => {
-      return json.data.Media;
+      return json.data;
     })
     .catch(error => {
       console.error(error);
@@ -75,9 +79,9 @@ function getSeriesInfo(id, type) {
     Media (id: $id, type: $type) {
       id
       title {
-        romaji(stylised: true)
-        english(stylised: true)
-        native(stylised: true)
+        romaji (stylised: true)
+        english (stylised: true)
+        native (stylised: true)
       }
       type
       episodes
@@ -88,7 +92,7 @@ function getSeriesInfo(id, type) {
       startDate {
         year
       }
-      description(asHtml: true)
+      description (asHtml: true)
       genres
       coverImage {
         large
@@ -100,7 +104,7 @@ function getSeriesInfo(id, type) {
         type
         allTime
       }
-      studios(isMain: true) {
+      studios (isMain: true) {
         nodes {
           name
         }
@@ -113,7 +117,7 @@ function getSeriesInfo(id, type) {
 
         api(query, variables).then(r => {
           let newStorage = {};
-          newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r);
+          newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r.Media);
           chrome.storage.local.set(newStorage);
           resolve(r);
         });

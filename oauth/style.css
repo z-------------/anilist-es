@@ -1,0 +1,13 @@
+textarea, button {
+  display: block;
+}
+
+textarea {
+  min-height: 300px;
+  min-width: 500px;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}

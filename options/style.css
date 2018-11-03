@@ -1,3 +1,13 @@
+html {
+  display: flex;
+  justify-content: center;
+}
+
+body {
+  width: 350px;
+  max-width: 100%;
+}
+
 label {
   display: flex;
   margin-bottom: 0.5em;
