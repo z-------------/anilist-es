@@ -96,53 +96,55 @@ function getActivity() {
   let activity = [];
 
   [...document.getElementsByClassName("activity-entry")].forEach(elem => {
-    let statusElem = elem.getElementsByClassName("status")[0];
-    let text = statusElem.childNodes[0].textContent.trim();
+    if (!elem.classList.contains("activity-text") && !elem.classList.contains("activity-message")) {
+      let statusElem = elem.getElementsByClassName("status")[0];
+      let text = statusElem.childNodes[0].textContent.trim();
 
-    let coverElem = elem.getElementsByClassName("cover")[0];
-    let seriesID = Number(coverElem.getAttribute("href").split("/")[2]);
-    let seriesType = elem.classList.contains("activity-anime_list") ? "ANIME" : "MANGA";
+      let coverElem = elem.getElementsByClassName("cover")[0];
+      let seriesID = Number(coverElem.getAttribute("href").split("/")[2]);
+      let seriesType = elem.classList.contains("activity-anime_list") ? "ANIME" : "MANGA";
 
-    let dMatches = text.match(/\d+/g);
-    var progress;
-    if (dMatches) {
-      let progresses = dMatches.map(n => Number(n));
-      progress = progresses[progresses.length - 1];
-    } else {
-      progress = null;
-    }
-
-    let words = text.toLowerCase().split(" ");
-    let firstWord = words[0];
-    var type;
-    if (firstWord === "watched" || firstWord === "read") {
-      type = "watch";
-    } else if (firstWord === "plans") {
-      type = "plan";
-    } else if (firstWord === "completed") {
-      type = "complete";
-    } else if (firstWord === "paused") {
-      type = "pause";
-    }
-
-    let timeElem = elem.getElementsByTagName("time")[0];
-    let timestamp = timeElem.getAttribute("datetime");
-    let time = new Date(timestamp);
-    let timeRelative = timeElem.textContent;
-    let timeAbsolute = timeElem.getAttribute("title");
-
-    activity.push({
-      progress: progress,
-      seriesType: seriesType,
-      seriesID: seriesID,
-      type: type,
-      time: {
-        timestamp: timestamp,
-        time: time,
-        relative: timeRelative,
-        absolute: timeAbsolute
+      let dMatches = text.match(/\d+/g);
+      var progress;
+      if (dMatches) {
+        let progresses = dMatches.map(n => Number(n));
+        progress = progresses[progresses.length - 1];
+      } else {
+        progress = null;
       }
-    });
+
+      let words = text.toLowerCase().split(" ");
+      let firstWord = words[0];
+      var type;
+      if (firstWord === "watched" || firstWord === "read") {
+        type = "watch";
+      } else if (firstWord === "plans") {
+        type = "plan";
+      } else if (firstWord === "completed") {
+        type = "complete";
+      } else if (firstWord === "paused") {
+        type = "pause";
+      }
+
+      let timeElem = elem.getElementsByTagName("time")[0];
+      let timestamp = timeElem.getAttribute("datetime");
+      let time = new Date(timestamp);
+      let timeRelative = timeElem.textContent;
+      let timeAbsolute = timeElem.getAttribute("title");
+
+      activity.push({
+        progress: progress,
+        seriesType: seriesType,
+        seriesID: seriesID,
+        type: type,
+        time: {
+          timestamp: timestamp,
+          time: time,
+          relative: timeRelative,
+          absolute: timeAbsolute
+        }
+      });
+    }
   });
 
   getProgresses(activity);
