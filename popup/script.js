@@ -1,5 +1,6 @@
 const promptsContainer = document.getElementById("prompts");
 const notifsContainer = document.getElementById("notifs");
+const notifsUpdateButton = document.getElementById("notifs-update");
 
 let notificationElemTemplate = document.createElement("div");
 notificationElemTemplate.classList.add("aes", "amn");
@@ -40,11 +41,22 @@ function makeNotificationElem(info) {
   return elem;
 }
 
+function displayNotifs(notifs) {
+  notifsContainer.innerHTML = "";
+  for (let notif of notifs) {
+    notifsContainer.appendChild(makeNotificationElem(notif));
+  }
+}
+
 chrome.storage.local.get(["notifcache"], r => {
   if (r.notifcache) {
     let notifs = JSON.parse(r.notifcache);
-    for (let notif of notifs) {
-      notifsContainer.appendChild(makeNotificationElem(notif));
-    }
+    displayNotifs(notifs);
   }
+});
+
+notifsUpdateButton.addEventListener("click", e => {
+  chrome.runtime.sendMessage({ command: "notifCheck" }, response => {
+    displayNotifs(response.notifs);
+  });
 });

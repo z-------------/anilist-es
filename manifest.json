@@ -14,7 +14,7 @@
     "js": [ "common.js", "scripts/bars.js", "scripts/infocards.js" ]
   }],
   "background": {
-    "scripts": [ "background/script.js" ],
+    "scripts": [ "background.js" ],
     "persistent": false
   },
   "web_accessible_resources": [

@@ -216,7 +216,7 @@ chrome.alarms.create("notifCheck", {
   periodInMinutes: 10
 });
 
-function updateNotifs() {
+function updateNotifs(cb) {
   chrome.storage.sync.get(["token"], r => {
     if (r.token) {
       let options = {
@@ -271,7 +271,11 @@ function updateNotifs() {
                 }
               }
 
-              chrome.storage.local.set({ "notifcache": JSON.stringify(notifs) });
+              chrome.storage.local.set({ "notifcache": JSON.stringify(notifs) }, function() {
+                if (cb) {
+                  cb(notifs);
+                }
+              });
             });
           });
         })
@@ -288,4 +292,13 @@ chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === "notifCheck") {
     updateNotifs();
   }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, respond) => {
+  if (request.command === "notifCheck") {
+    updateNotifs(notifs => {
+      respond({ notifs: notifs });
+    });
+  }
+  return true; // allow async respond()
 });
