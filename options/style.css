@@ -4,7 +4,7 @@ html {
 }
 
 body {
-  width: 350px;
+  width: 500px;
   max-width: 100%;
 }
 
@@ -24,4 +24,14 @@ input {
 
 input[type=number] {
   max-width: 50px;
+}
+
+textarea, button {
+  display: block;
+}
+
+textarea {
+  min-height: 300px;
+  min-width: 500px;
+  max-width: 100%;
 }
