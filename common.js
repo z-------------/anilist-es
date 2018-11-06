@@ -148,7 +148,7 @@ function getSeriesInfo(id, type) {
           let newStorage = {};
           newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r.Media);
           chrome.storage.local.set(newStorage);
-          resolve(r);
+          resolve(r.Media);
         });
       }
     });
