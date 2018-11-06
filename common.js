@@ -6,7 +6,7 @@ const getSettings = function() {
   return new Promise(function(resolve, reject) {
     let settings = {};
 
-    fetch(chrome.runtime.getURL("defaults.json")).then(response => {
+    fetch(chrome.runtime.getURL("options.json")).then(response => {
       return response.json();
     }).then(defaults => {
       let keys = Object.keys(defaults);
