@@ -94,7 +94,7 @@ function showPrompt(info) {
     });
   });
   promptsContainer.appendChild(elem);
-  document.body.removeChild("no-prompts");
+  document.body.classList.remove("no-prompts");
 }
 
 chrome.tabs.query({
