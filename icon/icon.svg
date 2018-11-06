@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 33.866666 33.866668"
+   height="128"
+   width="128">
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-263.13332)"
+     id="layer1">
+    <rect
+       y="263.13333"
+       x="16.933334"
+       height="33.866665"
+       width="16.933332"
+       id="rect815"
+       style="fill:#02a9ff;fill-opacity:1;stroke:none;stroke-width:0.21960557;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       y="263.13333"
+       x="0"
+       height="33.866665"
+       width="16.933332"
+       id="rect815-5"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.21960557;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       id="text838"
+       y="278.42004"
+       x="1.3673666"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#02a9ff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:16.93333244px;font-family:'Avenir Next';-inkscape-font-specification:'Avenir Next Heavy';stroke-width:0.26458332;fill:#02a9ff;fill-opacity:1;"
+         y="278.42004"
+         x="1.3673666"
+         id="tspan836">A</tspan></text>
+    <text
+       id="text838-8"
+       y="293.31494"
+       x="2.2690663"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#02a9ff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:16.93333244px;font-family:'Avenir Next';-inkscape-font-specification:'Avenir Next Heavy';stroke-width:0.26458332;fill:#02a9ff;fill-opacity:1;"
+         y="293.31494"
+         x="2.2690663"
+         id="tspan836-9">L</tspan></text>
+    <text
+       id="text838-9"
+       y="278.42004"
+       x="21.073536"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:16.93333244px;font-family:'Avenir Next';-inkscape-font-specification:'Avenir Next Heavy';stroke-width:0.26458332;fill:#ffffff;fill-opacity:1;"
+         y="278.42004"
+         x="21.073536"
+         id="tspan836-8">E</tspan></text>
+    <text
+       id="text838-0"
+       y="293.36337"
+       x="21.302135"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:16.93333244px;font-family:'Avenir Next';-inkscape-font-specification:'Avenir Next Heavy';stroke-width:0.26458332;fill:#ffffff;fill-opacity:1;"
+         y="293.36337"
+         x="21.302135"
+         id="tspan836-1">S</tspan></text>
+  </g>
+</svg>
