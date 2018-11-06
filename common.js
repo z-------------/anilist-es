@@ -88,7 +88,7 @@ function api(query, variables, token) {
       return json.data;
     })
     .catch(error => {
-      console.error(error);
+      return Promise.reject(error);
     });
 }
 

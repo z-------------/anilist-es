@@ -28,5 +28,9 @@
     "key": "cardsHoverTimeout",
     "default": 500,
     "label": "Infocard hover timeout (ms)"
+  }, {
+    "key": "notifsEnable",
+    "default": true,
+    "label": "Enable notifications (authentication required)"
   }]
 }

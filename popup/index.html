@@ -6,12 +6,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="prompts"></div>
-    <div id="notifs-header">
-      <h2>Notifications</h2>
-      <button id="notifs-update">Update now</button>
+    <div id="empty-message">
+      <span>Nothing to see here.</span>
+      <a target="_blank" href="/options/index.html">Options</a>
     </div>
-    <div id="notifs"></div>
+    <div id="prompts"></div>
+    <div class="notifs" id="notifs-header">
+      <h2>Notifications</h2>
+      <button id="notifs-update"></button>
+    </div>
+    <div class="notifs" id="notifs"></div>
     <script src="/common.js"></script>
     <script src="script.js"></script>
   </body>

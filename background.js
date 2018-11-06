@@ -217,8 +217,8 @@ chrome.alarms.create("notifCheck", {
 });
 
 function updateNotifs(cb) {
-  chrome.storage.sync.get(["token"], r => {
-    if (r.token) {
+  chrome.storage.sync.get(["token", "notifsEnable"], r => {
+    if (r.token && r.notifsEnable !== false) { // no access to getSettings() so default value hardcoded. sorry.
       let options = {
         method: "POST",
         headers: {
@@ -282,8 +282,6 @@ function updateNotifs(cb) {
         .catch(error => {
           console.error(error);
         });
-    } else {
-      console.error("no auth token");
     }
   });
 }
