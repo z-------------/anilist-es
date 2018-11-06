@@ -12,6 +12,8 @@ label {
   display: flex;
   margin-bottom: 0.5em;
   justify-content: space-between;
+  min-height: 22px;
+  align-items: center;
 }
 
 input, button, select {
