@@ -1,38 +1,32 @@
 {
-  "titleLanguage": {
+  "options": [{
+    "key": "titleLanguage",
     "default": "romaji",
     "options": [ "english", "native" ],
-    "label": "Title language",
-    "order": 0
-  },
-  "barsEnable": {
+    "label": "Title language"
+  }, {
+    "key": "barsEnable",
     "default": true,
-    "label": "Enable progress bars",
-    "order": 1
-  },
-  "insertIndex": {
+    "label": "Enable progress bars"
+  }, {
+    "key": "insertIndex",
     "default": 1,
-    "label": "Position in page",
-    "order": 2
-  },
-  "headingText": {
+    "label": "Position in page"
+  }, {
+    "key": "headingText",
     "default": "Recent Progress",
-    "label": "Heading text",
-    "order": 3
-  },
-  "barsCount": {
+    "label": "Heading text"
+  }, {
+    "key": "barsCount",
     "default": 5,
-    "label": "No. of progress bars",
-    "order": 4
-  },
-  "cardsEnable": {
+    "label": "No. of progress bars"
+  }, {
+    "key": "cardsEnable",
     "default": true,
-    "label": "Enable infocards",
-    "order": 5
-  },
-  "cardsHoverTimeout": {
+    "label": "Enable infocards"
+  }, {
+    "key": "cardsHoverTimeout",
     "default": 500,
-    "label": "Infocard hover timeout (ms)",
-    "order": 6
-  }
+    "label": "Infocard hover timeout (ms)"
+  }]
 }

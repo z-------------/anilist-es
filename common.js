@@ -8,11 +8,19 @@ const getSettings = function() {
 
     fetch(chrome.runtime.getURL("options.json")).then(response => {
       return response.json();
-    }).then(defaults => {
-      let keys = Object.keys(defaults);
-      for (let key of keys) {
-        settings[key] = defaults[key].default;
+    }).then(json => {
+      let optionInfos = json.options;
+      let defaults = {};
+      for (let optionInfo of optionInfos) {
+        settings[optionInfo.key] = optionInfo.default;
+        defaults[optionInfo.key] = {};
+        defaults[optionInfo.key].default = optionInfo.default;
+        defaults[optionInfo.key].label = optionInfo.label;
+        if (optionInfo.hasOwnProperty("options")) {
+          defaults[optionInfo.key].options = optionInfo.options;
+        }
       }
+      let keys = optionInfos.map(optionInfo => optionInfo.key);
       chrome.storage.sync.get(keys, results => {
         for (let key in results) {
           settings[key] = results[key];
