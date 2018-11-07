@@ -8,7 +8,7 @@ query ($page: Int, $types: [NotificationType]) {
       lastPage
       hasNextPage
     }
-    notifications (type_in: $types, resetNotificationCount: true) {
+    notifications (type_in: $types, resetNotificationCount: false) {
       ... on AiringNotification {
         id
         type
