@@ -262,8 +262,8 @@ function updateNotifs(cb) {
                       chrome.notifications.create(`anilist_${id}`, {
                         type: "basic",
                         iconUrl: blobUrl,
-                        title: text,
-                        message: "AniList Enhancement Suite",
+                        message: text,
+                        title: "AniList Enhancement Suite",
                         eventTime: new Date(notif.createdAt * 1000).getTime()
                       });
                     });
