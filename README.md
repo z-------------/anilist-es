@@ -5,7 +5,7 @@ A Chrome Extension.
 * MAL-inspired "Recent Progress" section in profiles
 * Infocards upon hovering over anime/manga title
 * Notifications in Chrome toolbar and OS notification area
-* Open corresponding AniList page from MyAnimeList
+* Open corresponding AniList page from MAL
 
 Work in progress.
 
@@ -13,8 +13,10 @@ Work in progress.
 
 ## Screenshots
 
-![Screenshot 1](https://i.imgur.com/Cu72tRE.png)
-![Screenshot 2](https://i.imgur.com/KmCcTXQ.png)
+![Bars](https://i.imgur.com/Cu72tRE.png)
+![Infocards](https://i.imgur.com/KmCcTXQ.png)
+![Popup](https://i.imgur.com/tCqL6Rf.png)
+![Notifications](https://i.imgur.com/b73lcYF.png)
 
 ## Install
 
