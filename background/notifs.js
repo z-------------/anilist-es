@@ -321,8 +321,16 @@ chrome.notifications.onClicked.addListener(notifId => {
             url = `https://anilist.co/forum/thread/${notif.threadId}`;
           }
           if (url) {
-            chrome.tabs.create({
-              url: url
+            chrome.windows.getCurrent(currentWindow => {
+              if (chrome.runtime.lastError || typeof currentWindow === "undefined") {
+                chrome.windows.create({
+                  url: url
+                });
+              } else {
+                chrome.tabs.create({ // defaults to current window
+                  url: url
+                });
+              }
             });
           }
         }
