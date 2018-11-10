@@ -216,70 +216,71 @@ browser.alarms.create("notifCheck", {
   periodInMinutes: 10
 });
 
-function updateNotifs(cb) {
-  browser.storage.sync.get(["token", "notifsEnable"]).then(r => {
-    if (r.token && r.notifsEnable !== false) { // no access to getSettings() so default value hardcoded. sorry.
-      let options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": `Bearer ${r.token}`
-        },
-        body: JSON.stringify({
-          query: query,
-          variables: variables
-        })
-      };
+function updateNotifs() {
+  return new Promise((resolve, reject) => {
+    browser.storage.sync.get(["token", "notifsEnable"]).then(r => {
+      if (r.token && r.notifsEnable !== false) { // no access to getSettings() so default value hardcoded. sorry.
+        let options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${r.token}`
+          },
+          body: JSON.stringify({
+            query: query,
+            variables: variables
+          })
+        };
 
-      fetch("https://graphql.anilist.co", options)
-        .then(res => {
-          res.json().then(json => {
-            let notifs = json.data.Page.notifications;
-            browser.storage.local.get(["notifcache"]).then(r => {
-              let oldIds = [];
-              if (r.notifcache) {
-                oldIds = JSON.parse(r.notifcache).map(notif => notif.id);
-              }
-              let ids = notifs.map(notif => notif.id);
-              for (let id of ids) {
-                if (oldIds.indexOf(id) === -1) {
-                  let notif = notifs.filter(function(notif) {
-                    return notif.id === id;
-                  })[0];
-                  let text = "";
-                  if (notif.type === "AIRING") {
-                    text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
-                  } else {
-                    text = `${notif.user.name}${notif.context}`;
-                  }
-                  fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
-                    r.blob().then(blob => {
-                      let blobUrl = URL.createObjectURL(blob);
-                      browser.notifications.create(`anilist_${id}`, {
-                        type: "basic",
-                        iconUrl: blobUrl,
-                        message: text,
-                        title: "AniList Enhancement Suite",
-                        eventTime: new Date(notif.createdAt * 1000).getTime()
+        fetch("https://graphql.anilist.co", options)
+          .then(res => {
+            res.json().then(json => {
+              let notifs = json.data.Page.notifications;
+              browser.storage.local.get(["notifcache"]).then(r => {
+                let oldIds = [];
+                if (r.notifcache) {
+                  oldIds = JSON.parse(r.notifcache).map(notif => notif.id);
+                }
+                let ids = notifs.map(notif => notif.id);
+                for (let id of ids) {
+                  if (oldIds.indexOf(id) === -1) {
+                    let notif = notifs.filter(function(notif) {
+                      return notif.id === id;
+                    })[0];
+                    let text = "";
+                    if (notif.type === "AIRING") {
+                      text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
+                    } else {
+                      text = `${notif.user.name}${notif.context}`;
+                    }
+                    fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
+                      r.blob().then(blob => {
+                        let blobUrl = URL.createObjectURL(blob);
+                        console.log("creating notif", text, blobUrl)
+                        browser.notifications.create(`anilist_${id}`, {
+                          type: "basic",
+                          iconUrl: blobUrl,
+                          message: text,
+                          title: "AniList Enhancement Suite",
+                          eventTime: new Date(notif.createdAt * 1000).getTime()
+                        });
                       });
                     });
-                  });
+                  }
                 }
-              }
 
-              browser.storage.local.set({ "notifcache": JSON.stringify(notifs) }).then(function() {
-                if (cb) {
-                  cb(notifs);
-                }
+                browser.storage.local.set({ "notifcache": JSON.stringify(notifs) }).then(function() {
+                  resolve(notifs);
+                });
               });
             });
+          })
+          .catch(error => {
+            reject(error);
           });
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
+      }
+    });
   });
 }
 
@@ -289,9 +290,9 @@ browser.alarms.onAlarm.addListener(alarm => {
   }
 });
 
-browser.runtime.onMessage.addListener((request, sender) => {
+browser.runtime.onMessage.addListener(async (request, sender) => {
   if (request.command === "notifCheck") {
-    updateNotifs(notifs => {
+    return await updateNotifs().then(notifs => {
       return { notifs };
     });
   }
