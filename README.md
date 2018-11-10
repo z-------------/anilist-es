@@ -1,6 +1,6 @@
 # AniList Enhancement Suite
 
-A Chrome Extension. **Not affiliated with AniList.**
+A WebExtension. **Not affiliated with AniList.**
 
 * MAL-inspired "Recent Progress" section in profiles
 * Infocards upon hovering over anime/manga title
@@ -9,7 +9,15 @@ A Chrome Extension. **Not affiliated with AniList.**
 
 Work in progress.
 
-[Screenshots](#screenshots) • [Install](#install)
+[Browser support](#browser-support) • [Screenshots](#screenshots) • [Install](#install)
+
+## Browser support
+
+| Browser | Support |
+|---|---|
+| Chrome | Full |
+| Firefox | Partial — notifications don't always display |
+| Edge | None |
 
 ## Screenshots
 
