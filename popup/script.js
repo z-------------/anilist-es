@@ -62,7 +62,7 @@ function displayNotifs(notifs) {
   notifsContainer.appendChild(viewAllElem);
 }
 
-chrome.storage.local.get(["notifcache"], r => {
+browser.storage.local.get(["notifcache"]).then(r => {
   if (r.notifcache) {
     let notifs = JSON.parse(r.notifcache);
     displayNotifs(notifs);
@@ -70,7 +70,7 @@ chrome.storage.local.get(["notifcache"], r => {
 });
 
 notifsUpdateButton.addEventListener("click", e => {
-  chrome.runtime.sendMessage({ command: "notifCheck" }, response => {
+  browser.runtime.sendMessage({ command: "notifCheck" }).then(response => {
     displayNotifs(response.notifs);
   });
 });
@@ -89,7 +89,7 @@ function showPrompt(info) {
   elem.classList.add("amp");
   elem.innerHTML = innerHTML;
   elem.addEventListener("click", e => {
-    chrome.tabs.create({
+    browser.tabs.create({
       url: info.url
     });
   });
@@ -97,10 +97,10 @@ function showPrompt(info) {
   document.body.classList.remove("no-prompts");
 }
 
-chrome.tabs.query({
+browser.tabs.query({
   active: true,
   currentWindow: true
-}, tabs => {
+}).then(tabs => {
   if (tabs && tabs[0] && tabs[0].url) {
     let tab = tabs[0];
     let url = new URL(tab.url);

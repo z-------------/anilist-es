@@ -9,7 +9,7 @@ onGotSettings(function() {
     const CLASS_NOARROW = "amc--noarrow";
 
     function icon(icon) {
-      return `<img class="amc_icon" src="${chrome.runtime.getURL(`img/${icon}.svg`)}" />`;
+      return `<img class="amc_icon" src="${browser.runtime.getURL(`img/${icon}.svg`)}" />`;
     }
 
     function showCard(info, position) {

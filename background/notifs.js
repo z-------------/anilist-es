@@ -212,12 +212,12 @@ let variables = {
   ]
 };
 
-chrome.alarms.create("notifCheck", {
+browser.alarms.create("notifCheck", {
   periodInMinutes: 10
 });
 
 function updateNotifs(cb) {
-  chrome.storage.sync.get(["token", "notifsEnable"], r => {
+  browser.storage.sync.get(["token", "notifsEnable"]).then(r => {
     if (r.token && r.notifsEnable !== false) { // no access to getSettings() so default value hardcoded. sorry.
       let options = {
         method: "POST",
@@ -236,7 +236,7 @@ function updateNotifs(cb) {
         .then(res => {
           res.json().then(json => {
             let notifs = json.data.Page.notifications;
-            chrome.storage.local.get(["notifcache"], r => {
+            browser.storage.local.get(["notifcache"]).then(r => {
               let oldIds = [];
               if (r.notifcache) {
                 oldIds = JSON.parse(r.notifcache).map(notif => notif.id);
@@ -256,7 +256,7 @@ function updateNotifs(cb) {
                   fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
                     r.blob().then(blob => {
                       let blobUrl = URL.createObjectURL(blob);
-                      chrome.notifications.create(`anilist_${id}`, {
+                      browser.notifications.create(`anilist_${id}`, {
                         type: "basic",
                         iconUrl: blobUrl,
                         message: text,
@@ -268,7 +268,7 @@ function updateNotifs(cb) {
                 }
               }
 
-              chrome.storage.local.set({ "notifcache": JSON.stringify(notifs) }, function() {
+              browser.storage.local.set({ "notifcache": JSON.stringify(notifs) }).then(function() {
                 if (cb) {
                   cb(notifs);
                 }
@@ -283,25 +283,25 @@ function updateNotifs(cb) {
   });
 }
 
-chrome.alarms.onAlarm.addListener(alarm => {
+browser.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === "notifCheck") {
     updateNotifs();
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, respond) => {
+browser.runtime.onMessage.addListener((request, sender) => {
   if (request.command === "notifCheck") {
     updateNotifs(notifs => {
-      respond({ notifs: notifs });
+      return { notifs };
     });
   }
-  return true; // allow async respond()
+  // return true; // allow async respond()
 });
 
-chrome.notifications.onClicked.addListener(notifId => {
+browser.notifications.onClicked.addListener(notifId => {
   let idSplit = notifId.split("_");
   if (idSplit[0] === "anilist" && idSplit[1]) {
-    chrome.storage.local.get(["notifcache"], r => {
+    browser.storage.local.get(["notifcache"]).then(r => {
       if (r.notifcache) {
         let notifs = JSON.parse(r.notifcache);
         let matches = notifs.filter(notif => notif.id === Number(idSplit[1]));
@@ -321,17 +321,17 @@ chrome.notifications.onClicked.addListener(notifId => {
             url = `https://anilist.co/forum/thread/${notif.threadId}`;
           }
           if (url) {
-            chrome.windows.getCurrent(currentWindow => {
-              if (chrome.runtime.lastError || typeof currentWindow === "undefined") {
-                chrome.windows.create({
-                  url: url
-                });
-              } else {
-                chrome.tabs.create({ // defaults to current window
-                  url: url
-                });
-              }
-            });
+            browser.windows.getCurrent()
+              .then(currentWindow => {
+                if (typeof currentWindow === "undefined") {
+                  browser.windows.create({ url });
+                } else {
+                  browser.tabs.create({ url }); // defaults to current window
+                }
+              })
+              .catch(e => {
+                browser.windows.create({ url });
+              });
           }
         }
       }

@@ -3,7 +3,7 @@ let saveButton = document.getElementById("submit");
 
 saveButton.addEventListener("click", e => {
   if (textarea.value.length) {
-    chrome.storage.sync.set({ token: textarea.value }, () => {
+    browser.storage.sync.set({ token: textarea.value }).then(() => {
       alert("Success.");
     });
   } else {
@@ -11,7 +11,7 @@ saveButton.addEventListener("click", e => {
   }
 });
 
-chrome.storage.sync.get(["token"], r => {
+browser.storage.sync.get(["token"]).then(r => {
   if (r.token) {
     textarea.value = r.token;
   }

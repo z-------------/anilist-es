@@ -69,5 +69,5 @@ saveButton.addEventListener("click", e => {
     newSettings[key] = newValue;
   });
 
-  chrome.storage.sync.set(newSettings);
+  browser.storage.sync.set(newSettings);
 });

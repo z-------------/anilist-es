@@ -1,3 +1,7 @@
+html, body {
+  box-sizing: border-box;
+}
+
 body {
   background-color: rgb(237, 241, 245);
   color: rgb(92, 114, 138);
@@ -6,6 +10,7 @@ body {
   margin: 0;
   width: 350px;
   user-select: none;
+  max-width: 100%;
 }
 
 a {

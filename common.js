@@ -6,7 +6,7 @@ const getSettings = function() {
   return new Promise(function(resolve, reject) {
     let settings = {};
 
-    fetch(chrome.runtime.getURL("options.json")).then(response => {
+    fetch(browser.runtime.getURL("options.json")).then(response => {
       return response.json();
     }).then(json => {
       let optionInfos = json.options;
@@ -21,7 +21,7 @@ const getSettings = function() {
         }
       }
       let keys = optionInfos.map(optionInfo => optionInfo.key);
-      chrome.storage.sync.get(keys, results => {
+      browser.storage.sync.get(keys).then(results => {
         for (let key in results) {
           settings[key] = results[key];
         }
@@ -99,7 +99,7 @@ function stripHTML(html) {
 function getSeriesInfo(id, type) {
   return new Promise(function(resolve, reject) {
     let cacheKey = `seriescache_${type}:${id}`;
-    chrome.storage.local.get([cacheKey], result => {
+    browser.storage.local.get([cacheKey]).then(result => {
       if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < 86400000) { // 1 day
         resolve(result[cacheKey]);
       } else {
@@ -147,7 +147,7 @@ function getSeriesInfo(id, type) {
         api(query, variables).then(r => {
           let newStorage = {};
           newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r.Media);
-          chrome.storage.local.set(newStorage);
+          browser.storage.local.set(newStorage);
           resolve(r.Media);
         });
       }
