@@ -7,7 +7,7 @@ saveButton.addEventListener("click", e => {
       alert("Success.");
     });
   } else {
-    alert("Please get an authetication token and paste it in the text box.");
+    alert("Please get an authentication token and paste it in the text box.");
   }
 });
 
