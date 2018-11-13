@@ -169,7 +169,7 @@ getSettings().then(r => {
   });
 });
 
-let strings = {
+const strings = {
   format: {
     TV: "TV",
     TV_SHORT: "TV Short",
