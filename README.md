@@ -13,11 +13,11 @@ Work in progress.
 
 ## Browser support
 
-| Browser | Support                                      |
-|---------|----------------------------------------------|
-| Chrome  | Full                                         |
-| Firefox | Partial — notifications don't always display |
-| Edge    | None                                         |
+| Browser | Support                                            |
+|---------|----------------------------------------------------|
+| Chrome  | Full                                               |
+| Firefox | Partial — can only show one notification at a time |
+| Edge    | None                                               |
 
 ## Screenshots
 
