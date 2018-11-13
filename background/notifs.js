@@ -225,42 +225,39 @@ function updateNotifs() {
           if (r.token) {
             api(query, variables, r.token)
               .then(data => {
-                let notifs = data.Page.notifications;
+                let notifsCurrent = data.Page.notifications;
                 browser.storage.local.get(["notifcache"]).then(r => {
-                  let oldIds = [];
-                  if (r.notifcache) {
-                    oldIds = JSON.parse(r.notifcache).map(notif => notif.id);
-                  }
-                  let ids = notifs.map(notif => notif.id);
-                  for (let id of ids) {
-                    if (oldIds.indexOf(id) === -1) {
-                      let notif = notifs.filter(function(notif) {
-                        return notif.id === id;
-                      })[0];
-                      let text = "";
-                      if (notif.type === "AIRING") {
-                        text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
-                      } else {
-                        text = `${notif.user.name}${notif.context}`;
-                      }
-                      fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
-                        r.blob().then(blob => {
-                          let blobUrl = URL.createObjectURL(blob);
-                          console.log("creating notif", text, blobUrl)
-                          browser.notifications.create(`anilist_${id}`, {
-                            type: "basic",
-                            iconUrl: blobUrl,
-                            message: text,
-                            title: "AniList Enhancement Suite",
-                            eventTime: new Date(notif.createdAt * 1000).getTime()
-                          });
+                  let notifsCached = r.notifcache ? JSON.parse(r.notifcache) : [];
+                  let notifsCachedIds = notifsCached.map(notif => notif.id);
+                  let notifsNew = notifsCurrent.filter(notif => notifsCachedIds.indexOf(notif.id) === -1);
+
+                  let end = /\sFirefox\/\d+\.\d+$/.test(navigator.userAgent) ? 1 : notifsNew.length;
+
+                  for (let i = 0; i < end; i++) {
+                    let notif = notifsNew[i];
+                    let text = "";
+                    if (notif.type === "AIRING") {
+                      text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
+                    } else {
+                      text = `${notif.user.name}${notif.context}`;
+                    }
+                    fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
+                      r.blob().then(blob => {
+                        let blobUrl = URL.createObjectURL(blob);
+                        console.log("creating notif", text, blobUrl)
+                        browser.notifications.create(`anilist_${notif.id}`, {
+                          type: "basic",
+                          iconUrl: blobUrl,
+                          message: text,
+                          title: "AniList Enhancement Suite",
+                          eventTime: new Date(notif.createdAt * 1000).getTime()
                         });
                       });
-                    }
+                    });
                   }
 
-                  browser.storage.local.set({ "notifcache": JSON.stringify(notifs) }).then(function() {
-                    resolve(notifs);
+                  browser.storage.local.set({ "notifcache": JSON.stringify(notifsCurrent) }).then(function() {
+                    resolve(notifsCurrent);
                   });
                 });
               })
