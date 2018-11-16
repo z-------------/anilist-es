@@ -67,4 +67,8 @@ saveButton.addEventListener("click", e => {
   });
 
   browser.storage.sync.set(newSettings);
+
+  if (settings.titleLanguage !== newSettings.titleLanguage) {
+    clearSeriesInfoCache();
+  }
 });

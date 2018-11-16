@@ -3,7 +3,7 @@
     "key": "titleLanguage",
     "default": "romaji",
     "options": [ "english", "native" ],
-    "label": "Title language"
+    "label": "Title language (overridden if authenticated)"
   }, {
     "key": "barsEnable",
     "default": true,

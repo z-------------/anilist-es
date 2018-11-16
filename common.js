@@ -1,4 +1,5 @@
 let settings = {};
+let token;
 
 const BULLET = "·";
 
@@ -21,11 +22,14 @@ const getSettings = function() {
         }
       }
       let keys = optionInfos.map(optionInfo => optionInfo.key);
-      browser.storage.sync.get(keys).then(results => {
-        for (let key in results) {
-          settings[key] = results[key];
-        }
-        resolve([settings, defaults]);
+      browser.storage.sync.get(["token"]).then(results => {
+        token = results.token;
+        browser.storage.sync.get(keys).then(results => {
+          for (let key in results) {
+            settings[key] = results[key];
+          }
+          resolve([settings, defaults, token]);
+        });
       });
     }).catch(err => reject(err));
   });
@@ -38,7 +42,7 @@ const onGotSettings = (function() {
     settings = r[0];
 
     handlers.forEach(handler => {
-      handler(r[0], r[1]);
+      handler(...r);
     });
   });
 
@@ -70,7 +74,9 @@ let onElementChange = function(target, callback, options) {
 };
 
 function getTitle(titles, preferred) {
-  if (titles.hasOwnProperty(preferred)) {
+  if (titles.hasOwnProperty("userPreferred")) { // getSeriesInfo() only includes this key if we have a token
+    return titles.userPreferred;
+  } else if (titles.hasOwnProperty(preferred)) {
     return titles[preferred];
   } else {
     return titles[Object.keys(titles)[0]];
@@ -124,9 +130,7 @@ function getSeriesInfo(id, type) {
     Media (id: $id, type: $type) {
       id
       title {
-        romaji (stylised: true)
-        english (stylised: true)
-        native (stylised: true)
+        ${token ? "userPreferred" : `${settings.titleLanguage} (stylised: true)`}
       }
       type
       episodes
@@ -168,6 +172,17 @@ function getSeriesInfo(id, type) {
         });
       }
     });
+  });
+}
+
+function clearSeriesInfoCache() {
+  return new Promise((resolve, reject) => {
+    browser.storage.local.get(null)
+      .then(r => {
+        let cacheKeys = Object.keys(r).filter(key => key.split("_")[0] === "seriescache");
+        browser.storage.local.remove(cacheKeys).then(resolve).catch(e => reject(e));
+      })
+      .catch(e => reject(e));
   });
 }
 
