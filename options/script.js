@@ -7,10 +7,7 @@ templateElem.innerHTML = `
 let settingsElem = document.getElementsByClassName("settings")[0];
 let saveButton = document.getElementById("save-btn");
 
-getSettings().then(r => {
-  let settings = r[0];
-  let defaults = r[1];
-
+onGotSettings((settings, defaults) => {
   let keys = Object.keys(settings).sort((a, b) => {
     return a.order - b.order;
   });

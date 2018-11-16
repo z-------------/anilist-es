@@ -2,8 +2,7 @@ const promptsContainer = document.getElementById("prompts");
 const notifsContainer = document.getElementById("notifs");
 const notifsUpdateButton = document.getElementById("notifs-update");
 
-getSettings().then(r => {
-  let settings = r[0];
+onGotSettings(function() {
   if (!settings.notifsEnable) {
     document.body.classList.add("notifs-disabled");
   }

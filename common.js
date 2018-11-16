@@ -29,7 +29,23 @@ const getSettings = function() {
       });
     }).catch(err => reject(err));
   });
-}
+};
+
+const onGotSettings = (function() {
+  let handlers = [];
+
+  getSettings().then(r => {
+    settings = r[0];
+
+    handlers.forEach(handler => {
+      handler(r[0], r[1]);
+    });
+  });
+
+  return function(handler) {
+    handlers.push(handler);
+  };
+}());
 
 let onNavigate = (function() {
   let handlers = [];
@@ -154,20 +170,6 @@ function getSeriesInfo(id, type) {
     });
   });
 }
-
-let handlers = [];
-
-function onGotSettings(handler) {
-  handlers.push(handler);
-}
-
-getSettings().then(r => {
-  settings = r[0];
-
-  handlers.forEach(handler => {
-    handler(settings);
-  });
-});
 
 const strings = {
   format: {
