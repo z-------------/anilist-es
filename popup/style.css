@@ -61,7 +61,7 @@ body.notifs-disabled.no-prompts #empty-message {
 .amn_image {
   width: 60px;
   height: 100%;
-  background-color: lightgrey;
+  /* background-color: lightgrey; */
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
