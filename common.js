@@ -152,6 +152,8 @@ function getSeriesInfo(id, type) {
         rank
         type
         allTime
+        year
+        season
       }
       studios (isMain: true) {
         nodes {
@@ -210,5 +212,11 @@ const strings = {
     SUMMER: "Summer",
     FALL: "Fall",
     WINTER: "Winter"
+  },
+  seasonShort: {
+    SPRING: "Sp",
+    SUMMER: "Su",
+    FALL: "F",
+    WINTER: "W"
   }
 };

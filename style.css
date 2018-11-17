@@ -170,17 +170,25 @@
 .amc_ranking {
   line-height: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-.amc_ranking .amc_icon {
-  margin-right: 0.3em;
+.amc_ranking_period {
+  color: rgb(var(--color-text-lighter));
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  height: 1em;
 }
 
 .amc_cover {
   padding: var(--padding);
   display: flex;
   flex-direction: column;
+}
+
+.amc:not(.amc--nonumbers) .amc_cover {
+  padding-bottom: calc(var(--padding) / 2);
 }
 
 .amc_info {

@@ -12,6 +12,14 @@ onGotSettings(function() {
       return `<img class="amc_icon" src="${browser.runtime.getURL(`img/${icon}.svg`)}" />`;
     }
 
+    function makeRankingPeriodString(ranking) {
+      if (!ranking.season && ranking.year === null) {
+        return "";
+      } else {
+        return `(${ranking.season ? strings.seasonShort[ranking.season] + " " : ""}${ranking.year ? ranking.year : ""})`;
+      }
+    }
+
     function showCard(info, position) {
       let elem = document.createElement("div");
       elem.classList.add("amc");
@@ -22,7 +30,10 @@ onGotSettings(function() {
       elem.style.top = position.top + "px";
 
       let isAnime = info.type === "ANIME";
-      let hasRankings = info.rankings[0] && info.rankings[1];
+      let hasRankings = info.rankings.length >= 2;
+
+      let rankRated = info.rankings[0];
+      let rankPopular = info.rankings[1];
 
       if (!info.bannerImage) {
         elem.classList.add(CLASS_NOBANNERIMAGE);
@@ -41,8 +52,14 @@ onGotSettings(function() {
       ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
       ${hasRankings ? `
         <div class="amc_rankings">
-          <div class="amc_ranking amc_ranking--rated">${icon("star")} #${info.rankings[0].rank}</div>
-          <div class="amc_ranking amc_ranking--popular">${icon("heart")} #${info.rankings[1].rank}</div>
+          <div class="amc_ranking amc_ranking--rated">
+            <span class="amc_ranking_ranking">${icon("star")} #${rankRated.rank}</span>
+            <span class="amc_ranking_period">${makeRankingPeriodString(rankRated)}</span>
+          </div>
+          <div class="amc_ranking amc_ranking--popular">
+            <span class="amc_ranking_ranking">${icon("heart")} #${rankPopular.rank}</span>
+            <span class="amc_ranking_period">${makeRankingPeriodString(rankPopular)}</span>
+          </div>
         </div>
         ` : ""}
     </div>
