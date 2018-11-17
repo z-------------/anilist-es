@@ -6,6 +6,38 @@ onGotSettings(function() {
   if (!settings.notifsEnable) {
     document.body.classList.add("notifs-disabled");
   }
+
+  /* updates */
+
+  if (settings.updateCheckEnable) {
+    browser.storage.local.get(["updatecache"]).then(r => {
+      let currentVersion = browser.runtime.getManifest().version;
+
+      if (r.updatecache && new Date() - new Date(r.updatecache.dateChecked) <= 86400000) { // 1 day
+        gotUpdateInfo({
+          currentVersion,
+          availableVersion: r.updatecache.availableVersion
+        });
+      } else {
+        fetch("https://raw.githubusercontent.com/z-------------/anilist-es/master/manifest.json")
+          .then(response => {
+            return response.json();
+          })
+          .then(json => {
+            gotUpdateInfo({
+              currentVersion,
+              availableVersion: json.version
+            });
+            browser.storage.local.set({
+              updatecache: {
+                availableVersion,
+                dateChecked: new Date().getTime()
+              }
+            });
+          });
+      }
+    });
+  }
 });
 
 /* notifs */
@@ -78,10 +110,10 @@ notifsUpdateButton.addEventListener("click", e => {
 
 function showPrompt(info) {
   let innerHTML = `
-<div class="image" style="background-image: url(${info.image});"></div>
+<div class="image"${info.image ? ` style="background-image: url(${info.image});"` : ""}></div>
 <div class="info">
   <h3 class="title">${info.title}</h3>
-  <div>Open in AniList</div>
+  <div>${info.text}</div>
 </div>
   `;
   let elem = document.createElement("div");
@@ -124,7 +156,8 @@ browser.tabs.query({
             showPrompt({
               title: pageTitle.substring(0, pageTitle.lastIndexOf(" - MyAnimeList")),
               url: r.Media.siteUrl,
-              image: r.Media.coverImage.medium
+              image: r.Media.coverImage.medium,
+              text: "Open in AniList"
             });
           })
           .catch(err => { console.log(err) });
@@ -136,3 +169,28 @@ browser.tabs.query({
     document.body.classList.add("no-prompts");
   }
 });
+
+/* updates */
+
+function gotUpdateInfo(info) {
+  if (semverIsGreater(info.availableVersion, info.currentVersion)) {
+    showPrompt({
+      title: "AniList Enhancement Suite update available",
+      text: `${info.currentVersion} → ${info.availableVersion}`,
+      image: "/img/update.svg",
+      url: "https://github.com/z-------------/anilist-es"
+    });
+  }
+}
+
+function semverIsGreater(subjectVer, referenceVer) {
+  let subjectVerSplit = subjectVer.split(".").map(v => Number(v));
+  let referenceVerSplit = referenceVer.split(".").map(v => Number(v));
+  for (let i = 0; i < 3; i++) {
+    if (subjectVerSplit[i] > referenceVerSplit[i]) {
+      return true;
+    } else if (subjectVerSplit[i] < referenceVerSplit[i]) {
+      return false;
+    }
+  }
+}

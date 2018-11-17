@@ -32,5 +32,9 @@
     "key": "notifsEnable",
     "default": true,
     "label": "Enable notifications (authentication required)"
+  }, {
+    "key": "updateCheckEnable",
+    "default": false,
+    "label": "Check for extension updates"
   }]
 }
