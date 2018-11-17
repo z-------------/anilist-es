@@ -53,12 +53,12 @@ onGotSettings(function() {
       ${hasRankings ? `
         <div class="amc_rankings">
           <div class="amc_ranking amc_ranking--rated">
-            <span class="amc_ranking_ranking">${icon("heart")}#${rankRated.rank}</span>
             <span class="amc_ranking_period">${makeRankingPeriodString(rankRated)}</span>
+            <span class="amc_ranking_ranking">${icon("heart")}#${rankRated.rank}</span>
           </div>
           <div class="amc_ranking amc_ranking--popular">
-            <span class="amc_ranking_ranking">${icon("star")}#${rankPopular.rank}</span>
             <span class="amc_ranking_period">${makeRankingPeriodString(rankPopular)}</span>
+            <span class="amc_ranking_ranking">${icon("star")}#${rankPopular.rank}</span>
           </div>
         </div>
         ` : ""}
