@@ -104,8 +104,18 @@ body.notifs-disabled .notifs {
   display: flex;
   background-color: rgba(0, 0, 0, 0.05);
   padding: 8px;
-  border-radius: 4px;
   cursor: pointer;
+  --border-radius: 4px;
+}
+
+.amp:first-child {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.amp:last-child {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .amp .image {

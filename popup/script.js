@@ -124,7 +124,11 @@ function showPrompt(info) {
       url: info.url
     });
   });
-  promptsContainer.appendChild(elem);
+  if (info.insertAtTop && promptsContainer.children.length > 0) {
+    promptsContainer.insertBefore(elem, promptsContainer.children[0]);
+  } else {
+    promptsContainer.appendChild(elem);
+  }
   document.body.classList.remove("no-prompts");
 }
 
@@ -178,7 +182,8 @@ function gotUpdateInfo(info) {
       title: "AniList Enhancement Suite update available",
       text: `${info.currentVersion} → ${info.availableVersion}`,
       image: "/img/update.svg",
-      url: "https://github.com/z-------------/anilist-es"
+      url: "https://github.com/z-------------/anilist-es",
+      insertAtTop: true
     });
   }
 }
