@@ -13,13 +13,13 @@
     "default": 1,
     "label": "Position in page"
   }, {
-    "key": "headingText",
-    "default": "Recent Progress",
-    "label": "Heading text"
-  }, {
     "key": "barsCount",
     "default": 5,
     "label": "No. of progress bars"
+  }, {
+    "key": "barsSeparateByType",
+    "default": false,
+    "label": "Separate anime and manga progress bars"
   }, {
     "key": "cardsEnable",
     "default": true,

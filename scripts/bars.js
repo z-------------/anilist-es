@@ -1,4 +1,4 @@
-function displayProgressBars(progresses, seriesInfos) {
+let makeProgressBarElem = (function() {
   let barTemplate = document.createElement("div");
   barTemplate.classList.add("amb");
   barTemplate.innerHTML = `
@@ -14,19 +14,7 @@ function displayProgressBars(progresses, seriesInfos) {
   </div>
 </div>`;
 
-  let containerElem = document.getElementsByClassName("amb-container")[0];
-  if (!containerElem) {
-    containerElem = document.createElement("div");
-    containerElem.classList.add("amb-container");
-    let sectionElem = document.getElementsByClassName("section")[0];
-    sectionElem.insertBefore(containerElem, sectionElem.children[settings.insertIndex]);
-  }
-  containerElem.innerHTML = `
-<h2 class="section-header">${settings.headingText}</h2>
-<div class="content-wrap"></div>`;
-  let contentElem = containerElem.getElementsByClassName("content-wrap")[0];
-
-  progresses.forEach(progressItem => {
+  return function(progressItem, seriesInfos) {
     let elem = barTemplate.cloneNode(true);
 
     let seriesID = progressItem.seriesID;
@@ -51,14 +39,50 @@ function displayProgressBars(progresses, seriesInfos) {
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="${seriesInfo.siteUrl}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
     elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
-<strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
-${strings.format[seriesInfo.format]}
-${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
-`;
+  <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
+  ${strings.format[seriesInfo.format]}
+  ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
+  `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;
 
-    contentElem.appendChild(elem);
-  });
+    return elem;
+  }
+}());
+
+function displayProgressBars(progresses, seriesInfos) {
+  let containers = [...document.getElementsByClassName("amb-container")];
+
+  let progressesSep = [];
+
+  if (settings.barsSeparateByType) {
+    progressesSep[0] = progresses.filter(progressItem => progressItem.seriesType === "ANIME");
+    progressesSep[1] = progresses.filter(progressItem => progressItem.seriesType === "MANGA");
+  } else {
+    progressesSep[0] = progresses;
+  }
+
+  let end = settings.barsSeparateByType ? 2 : 1;
+
+  for (let i = 0; i < end; i++) {
+    if (progressesSep[i].length) {
+      if (!containers[i]) {
+        containers[i] = document.createElement("div");
+        containers[i].classList.add("amb-container");
+        let sectionElem = document.getElementsByClassName("section")[0];
+        sectionElem.insertBefore(containers[i], sectionElem.children[settings.insertIndex + i]);
+      }
+
+      containers[i].innerHTML = `
+    <h2 class="section-header">Recent ${settings.barsSeparateByType ? ["Anime", "Manga"][i] + " " : ""}Progress</h2>
+    <div class="content-wrap"></div>`;
+      let contentElem = containers[i].getElementsByClassName("content-wrap")[0];
+
+      let end = Math.min(settings.barsCount, progressesSep[i].length);
+      for (let j = 0; j < end; j++) {
+        contentElem.appendChild(makeProgressBarElem(progressesSep[i][j], seriesInfos));
+      }
+    }
+  }
 }
 
 function getSeriesInfos(progresses) { // not to be confused with getSeriesInfo()
@@ -87,7 +111,7 @@ function getProgresses(activity) {
       seriesInProgresses.push(seriesID);
       progresses.push(activity[i]);
     }
-    if (progresses.length === settings.barsCount) break;
+    if (!settings.barsSeparateByType && progresses.length === settings.barsCount) break;
   }
   getSeriesInfos(progresses);
 }
