@@ -1,6 +1,8 @@
 let settings = {};
 let token;
 
+const TIME_ONE_DAY = 86400000;
+
 const BULLET = "·";
 
 const getSettings = function() {
@@ -122,7 +124,7 @@ function getSeriesInfo(id, type) {
   return new Promise(function(resolve, reject) {
     let cacheKey = `seriescache_${type}:${id}`;
     browser.storage.local.get([cacheKey]).then(result => {
-      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < 86400000) { // 1 day
+      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < TIME_ONE_DAY) {
         resolve(result[cacheKey]);
       } else {
         let query = `
@@ -174,6 +176,38 @@ function getSeriesInfo(id, type) {
         });
       }
     });
+  });
+}
+
+function getUserInfo() {
+  return new Promise((resolve, reject) => {
+    if (token) {
+      browser.storage.local.get(["usercache"]).then(r => {
+        if (r.usercache && new Date() - new Date(r.usercache._dateFetched) <= TIME_ONE_DAY) {
+          resolve({
+            id: r.usercache.id,
+            name: r.usercache.name
+          });
+        } else {
+          let query = `query { Viewer { id name } }`;
+          api(query, {}, token)
+            .then(response => {
+              let id = response.Viewer.id;
+              let name = response.Viewer.name;
+              browser.storage.local.set({
+                usercache: {
+                  id, name,
+                  _dateFetched: new Date().getTime()
+                }
+              });
+              resolve({ id, name });
+            })
+            .catch(e => reject(e));
+        }
+      });
+    } else {
+      reject("No authentication token");
+    }
   });
 }
 

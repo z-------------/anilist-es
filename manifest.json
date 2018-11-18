@@ -8,6 +8,7 @@
     "alarms",
     "notifications",
     "tabs",
+    "contextMenus",
     "*://*.anilist.co/*"
   ],
   "icons": {
@@ -28,7 +29,8 @@
     "scripts": [
       "browser-polyfill.min.js",
       "common.js",
-      "background/notifs.js"
+      "background/notifs.js",
+      "background/contextMenu.js"
     ],
     "persistent": false
   },

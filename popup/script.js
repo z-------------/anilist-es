@@ -13,7 +13,7 @@ onGotSettings(function() {
     browser.storage.local.get(["updatecache"]).then(r => {
       let currentVersion = browser.runtime.getManifest().version;
 
-      if (r.updatecache && new Date() - new Date(r.updatecache.dateChecked) <= 86400000) { // 1 day
+      if (r.updatecache && new Date() - new Date(r.updatecache.dateChecked) <= TIME_ONE_DAY) {
         gotUpdateInfo({
           currentVersion,
           availableVersion: r.updatecache.availableVersion
