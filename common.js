@@ -1,5 +1,4 @@
-let settings = {};
-let token;
+let settings, defaults, token;
 
 const TIME_ONE_DAY = 86400000;
 
@@ -8,13 +7,13 @@ const BULLET = "·";
 const getSettings = function() {
   return new Promise(function(resolve, reject) {
     let settings = {};
+    let defaults = {};
+    let token;
 
     fetch(browser.runtime.getURL("options.json")).then(response => {
       return response.json();
     }).then(json => {
-      let optionInfos = json.options;
-      let defaults = {};
-      for (let optionInfo of optionInfos) {
+      for (let optionInfo of json.options) {
         settings[optionInfo.key] = optionInfo.default;
         defaults[optionInfo.key] = {};
         defaults[optionInfo.key].default = optionInfo.default;
@@ -23,7 +22,7 @@ const getSettings = function() {
           defaults[optionInfo.key].options = optionInfo.options;
         }
       }
-      let keys = optionInfos.map(optionInfo => optionInfo.key);
+      let keys = json.options.map(optionInfo => optionInfo.key);
       browser.storage.sync.get(["token"]).then(results => {
         token = results.token;
         browser.storage.sync.get(keys).then(results => {
@@ -42,6 +41,8 @@ const onGotSettings = (function() {
 
   getSettings().then(r => {
     settings = r[0];
+    defaults = r[1];
+    token = r[2];
 
     handlers.forEach(handler => {
       handler(...r);
@@ -49,7 +50,11 @@ const onGotSettings = (function() {
   });
 
   return function(handler) {
-    handlers.push(handler);
+    if (settings) {
+      handler(settings, defaults, token);
+    } else {
+      handlers.push(handler);
+    }
   };
 }());
 
@@ -181,33 +186,35 @@ function getSeriesInfo(id, type) {
 
 function getUserInfo() {
   return new Promise((resolve, reject) => {
-    if (token) {
-      browser.storage.local.get(["usercache"]).then(r => {
-        if (r.usercache && new Date() - new Date(r.usercache._dateFetched) <= TIME_ONE_DAY) {
-          resolve({
-            id: r.usercache.id,
-            name: r.usercache.name
-          });
-        } else {
-          let query = `query { Viewer { id name } }`;
-          api(query, {}, token)
-            .then(response => {
-              let id = response.Viewer.id;
-              let name = response.Viewer.name;
-              browser.storage.local.set({
-                usercache: {
-                  id, name,
-                  _dateFetched: new Date().getTime()
-                }
-              });
-              resolve({ id, name });
-            })
-            .catch(e => reject(e));
-        }
-      });
-    } else {
-      reject("No authentication token");
-    }
+    onGotSettings((settings, defaults, token) => {
+      if (token) {
+        browser.storage.local.get(["usercache"]).then(r => {
+          if (r.usercache && new Date() - new Date(r.usercache._dateFetched) <= TIME_ONE_DAY) {
+            resolve({
+              id: r.usercache.id,
+              name: r.usercache.name
+            });
+          } else {
+            let query = `query { Viewer { id name } }`;
+            api(query, {}, token)
+              .then(response => {
+                let id = response.Viewer.id;
+                let name = response.Viewer.name;
+                browser.storage.local.set({
+                  usercache: {
+                    id, name,
+                    _dateFetched: new Date().getTime()
+                  }
+                });
+                resolve({ id, name });
+              })
+              .catch(e => reject(e));
+          }
+        });
+      } else {
+        reject("No authentication token");
+      }
+    });
   });
 }
 
