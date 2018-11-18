@@ -24,9 +24,10 @@ onGotSettings(function() {
             return response.json();
           })
           .then(json => {
+            let availableVersion = json.version;
             gotUpdateInfo({
               currentVersion,
-              availableVersion: json.version
+              availableVersion
             });
             browser.storage.local.set({
               updatecache: {
