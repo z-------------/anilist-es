@@ -198,7 +198,7 @@ query ($page: Int, $types: [ActivityType], $sort: [ActivitySort], $userId: Int) 
 
 function barsCheckURL(url) {
   let path = new URL(url).pathname.substring(1).split("/");
-  if (path[0] === "user") {
+  if (path[0] === "user" && !path[2]) {
     getActivity(path[1]);
   }
 }
