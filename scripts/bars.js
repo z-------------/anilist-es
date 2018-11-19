@@ -34,6 +34,10 @@ let makeProgressBarElem = (function() {
     }
 
     let time = progressItem.time;
+    let timestamp = time.toString();
+    let timeAbsolute = dateFns.format(time, "M/D/YYYY, h:mm:ss A");
+    let timeRelative = dateFns.distanceInWordsToNow(time, { addSuffix: true })
+      .replace(/almost\s/gi, "").replace(/about\s/gi, "");
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="${seriesInfo.siteUrl}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
@@ -43,7 +47,7 @@ let makeProgressBarElem = (function() {
   ${strings.format[seriesInfo.format]}
   ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
   `;
-    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${time.timestamp}" title="${time.absolute}">${time.relative}</time>`;
+    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${timestamp}" title="${timeAbsolute}">${timeRelative}</time>`;
 
     return elem;
   }
@@ -116,88 +120,95 @@ function getProgresses(activity) {
   getSeriesInfos(progresses);
 }
 
-function getActivity() {
+function getActivity(username) {
   let activity = [];
 
-  [...document.getElementsByClassName("activity-entry")].forEach(elem => {
-    if (!elem.classList.contains("activity-text") && !elem.classList.contains("activity-message")) {
-      let statusElem = elem.getElementsByClassName("status")[0];
-      let text = statusElem.childNodes[0].textContent.trim();
+  let queryUser = `
+query ($name: String) {
+  User (name: $name) {
+    id
+  }
+}
+  `;
 
-      let coverElem = elem.getElementsByClassName("cover")[0];
-      let seriesID = Number(coverElem.getAttribute("href").split("/")[2]);
-      let seriesType = elem.classList.contains("activity-anime_list") ? "ANIME" : "MANGA";
-
-      let dMatches = text.match(/\d+/g);
-      var progress;
-      if (dMatches) {
-        let progresses = dMatches.map(n => Number(n));
-        progress = progresses[progresses.length - 1];
-      } else {
-        progress = null;
+  api(queryUser, { name: username }).then(r => {
+    if (r.User) {
+      let queryActivities = `
+query ($page: Int, $types: [ActivityType], $sort: [ActivitySort], $userId: Int) {
+  Page (page: $page) {
+    pageInfo {
+      total perPage currentPage lastPage hasNextPage
+    }
+    activities (userId: $userId, type_in: $types, sort: $sort) {
+      ... on ListActivity {
+        id status progress createdAt
+        media { ${makeMediaQueryKeys()} }
       }
+    }
+  }
+}
+      `;
 
-      let words = text.toLowerCase().split(" ");
-      let firstWord = words[0];
-      var type;
-      if (firstWord === "watched" || firstWord === "read") {
-        type = "watch";
-      } else if (firstWord === "plans") {
-        type = "plan";
-      } else if (firstWord === "completed") {
-        type = "complete";
-      } else if (firstWord === "paused") {
-        type = "pause";
-      }
+      api(queryActivities, {
+        page: 0,
+        types: ["ANIME_LIST", "MANGA_LIST"],
+        sort: "ID_DESC",
+        userId: r.User.id
+      }).then(r => {
+        let listActivities = r.Page.activities
+          .sort((a, b) => b - a)
+          .filter(activity => {
+            return activity.status === "completed" || activity.status === "watched episode" || activity.status === "read chapter";
+          });
+        let activitiesProcessed = [];
+        listActivities.forEach(activity => {
+          let progress;
+          if (activity.progress) {
+            let progressSplit = activity.progress.split(" - ");
+            progress = Number(progressSplit[progressSplit.length - 1]);
+          }
 
-      let timeElem = elem.getElementsByTagName("time")[0];
-      let timestamp = timeElem.getAttribute("datetime");
-      let time = new Date(timestamp);
-      let timeRelative = timeElem.textContent;
-      let timeAbsolute = timeElem.getAttribute("title");
+          let seriesType = activity.media.type;
+          let seriesID = activity.media.id;
 
-      activity.push({
-        progress: progress,
-        seriesType: seriesType,
-        seriesID: seriesID,
-        type: type,
-        time: {
-          timestamp: timestamp,
-          time: time,
-          relative: timeRelative,
-          absolute: timeAbsolute
-        }
+          let words = activity.status.toLowerCase().split(" ");
+          let firstWord = words[0];
+          let type;
+          if (firstWord === "watched" || firstWord === "read") {
+            type = "watch";
+          } else if (firstWord === "completed") {
+            type = "complete";
+          }
+
+          let time = new Date(activity.createdAt * 1000);
+
+          activitiesProcessed.push({
+            progress, seriesType, seriesID, type, time
+          });
+
+          writeSeriesInfoCache(activity.media);
+        });
+        getProgresses(activitiesProcessed);
       });
     }
   });
+}
 
-  getProgresses(activity);
+function barsCheckURL(url) {
+  let path = new URL(url).pathname.substring(1).split("/");
+  if (path[0] === "user") {
+    getActivity(path[1]);
+  }
 }
 
 onGotSettings(function() {
+  onNavigate(function() {
+    if (settings.barsEnable) {
+      barsCheckURL(window.location.href);
+    }
+  });
+
   if (settings.barsEnable) {
-    onElementChange(document.getElementsByClassName("page-content")[0], changes => {
-      if (window.location.pathname.slice(1).split("/")[0] === "user") {
-        for (let i = 0; i < changes.length; i++) {
-          let change = changes[i];
-          if (
-            (
-              change.addedNodes[0] &&
-              change.addedNodes[0] instanceof HTMLElement &&
-              change.addedNodes[0].classList.contains("activity-entry")
-            ) ||
-            (
-              change.target.classList &&
-              change.target.classList.contains("status") &&
-              change.addedNodes[0] &&
-              change.addedNodes[0] instanceof Text || change.addedNodes[1] instanceof Text
-            )
-          ) {
-            getActivity();
-            break;
-          }
-        }
-      }
-    });
+    barsCheckURL(window.location.href);
   }
 });

@@ -90,6 +90,44 @@ function getTitle(titles, preferred) {
   }
 }
 
+function makeMediaQueryKeys() {
+  return `
+id
+title {
+  ${token ? "userPreferred" : `${settings.titleLanguage} (stylised: true)`}
+}
+type
+episodes
+chapters
+volumes
+status
+format
+startDate {
+  year
+}
+description (asHtml: true)
+genres
+coverImage {
+  large
+}
+bannerImage
+averageScore
+rankings {
+  rank
+  type
+  allTime
+  year
+  season
+}
+studios (isMain: true) {
+  nodes {
+    name
+  }
+}
+siteUrl
+  `;
+}
+
 function api(query, variables, token) {
   let options = {
     method: "POST",
@@ -125,9 +163,19 @@ function stripHTML(html) {
   return html.replace(/(<([^>]+)>)/ig, "");
 }
 
+function makeCacheKey(type, id) {
+  return `seriescache_${type}:${id}`;
+}
+
+function writeSeriesInfoCache(mediaInfo) {
+  let newStorage = {};
+  newStorage[makeCacheKey(mediaInfo.type, mediaInfo.id)] = Object.assign({ _dateFetched: new Date().getTime() }, mediaInfo);
+  return browser.storage.local.set(newStorage);
+}
+
 function getSeriesInfo(id, type) {
   return new Promise(function(resolve, reject) {
-    let cacheKey = `seriescache_${type}:${id}`;
+    let cacheKey = makeCacheKey(type, id);
     browser.storage.local.get([cacheKey]).then(result => {
       if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < TIME_ONE_DAY) {
         resolve(result[cacheKey]);
@@ -135,48 +183,14 @@ function getSeriesInfo(id, type) {
         let query = `
   query ($id: Int, $type: MediaType) {
     Media (id: $id, type: $type) {
-      id
-      title {
-        ${token ? "userPreferred" : `${settings.titleLanguage} (stylised: true)`}
-      }
-      type
-      episodes
-      chapters
-      volumes
-      status
-      format
-      startDate {
-        year
-      }
-      description (asHtml: true)
-      genres
-      coverImage {
-        large
-      }
-      bannerImage
-      averageScore
-      rankings {
-        rank
-        type
-        allTime
-        year
-        season
-      }
-      studios (isMain: true) {
-        nodes {
-          name
-        }
-      }
-      siteUrl
+      ${makeMediaQueryKeys()}
     }
   }
         `;
         let variables = { id: id, type: type };
 
         api(query, variables).then(r => {
-          let newStorage = {};
-          newStorage[cacheKey] = Object.assign({ _dateFetched: new Date().getTime() }, r.Media);
-          browser.storage.local.set(newStorage);
+          writeSeriesInfoCache(r.Media);
           resolve(r.Media);
         });
       }
