@@ -63,11 +63,10 @@ function displayProgressBars(progresses, seriesInfos) {
     progressesSep[1] = progresses.filter(progressItem => progressItem.seriesType === "MANGA");
   } else {
     progressesSep[0] = progresses;
+    progressesSep[1] = [];
   }
 
-  let end = settings.barsSeparateByType ? 2 : 1;
-
-  for (let i = 0; i < end; i++) {
+  for (let i = 0; i < progressesSep.length; i++) {
     if (progressesSep[i].length) {
       if (!containers[i]) {
         containers[i] = document.createElement("div");
@@ -85,6 +84,9 @@ function displayProgressBars(progresses, seriesInfos) {
       for (let j = 0; j < end; j++) {
         contentElem.appendChild(makeProgressBarElem(progressesSep[i][j], seriesInfos));
       }
+    } else if (containers[i]) {
+      containers[i].parentElement.removeChild(containers[i]);
+      containers[i] = undefined;
     }
   }
 }
