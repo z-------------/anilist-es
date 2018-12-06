@@ -47,7 +47,10 @@ let notificationElemTemplate = document.createElement("div");
 notificationElemTemplate.classList.add("aes", "amn");
 notificationElemTemplate.innerHTML = `
 <div class="amn_image"></div>
-<a target="_blank" class="amn_text"></a>
+<div class="amn_info">
+  <a target="_blank" class="amn_text"></a>
+  <time class="amn_date"></time>
+</div>
 `;
 
 function makeNotificationElem(info) {
@@ -55,6 +58,9 @@ function makeNotificationElem(info) {
 
   let imageElem = elem.getElementsByClassName("amn_image")[0];
   let textElem = elem.getElementsByClassName("amn_text")[0];
+  let dateElem = elem.getElementsByClassName("amn_date")[0];
+
+  /* image */
 
   let imageUrl = "";
   if (info.media) {
@@ -62,6 +68,9 @@ function makeNotificationElem(info) {
   } else if (info.user) {
     imageUrl = info.user.avatar.large;
   }
+  imageElem.style.backgroundImage = `url(${imageUrl})`;
+
+  /* text */
 
   let html = "";
   if (info.type === "AIRING") {
@@ -71,13 +80,18 @@ function makeNotificationElem(info) {
     let url = `https://anilist.co/user/${info.user.name}/`;
     html = `<a target="_blank" href="${url}">${info.user.name}</a>${info.context}`;
   }
-
-  imageElem.style.backgroundImage = `url(${imageUrl})`;
   textElem.innerHTML = html;
-
   if (info.type.split("_")[0] === "ACTIVITY") {
     textElem.setAttribute("href", `https://anilist.co/activity/${info.activityId}`);
   }
+
+  /* date */
+
+  let date = new Date(info.createdAt * 1000);
+  let dateFormatted = dateFormat(date);
+  dateElem.setAttribute("datetime", dateFormatted.iso);
+  dateElem.textContent = dateFormatted.relative;
+  dateElem.setAttribute("title", dateFormatted.absolute);
 
   return elem;
 }

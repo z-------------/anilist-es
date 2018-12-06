@@ -52,10 +52,15 @@ body.notifs-disabled.no-prompts #empty-message {
   margin-bottom: 0;
 }
 
+.amn_info {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
 .amn_text {
   color: inherit;
   /* text-decoration: none; */
-  margin: 16px;
 }
 
 .amn_image {
@@ -67,6 +72,11 @@ body.notifs-disabled.no-prompts #empty-message {
   flex-shrink: 0;
   position: absolute;
   left: 0;
+}
+
+.amn_date {
+  font-size: 11px;
+  margin-top: 12px;
 }
 
 #notifs-header {

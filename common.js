@@ -243,6 +243,15 @@ function clearSeriesInfoCache() {
   });
 }
 
+function dateFormat(date) {
+  return {
+    iso: date.toISOString(),
+    absolute: dateFns.format(date, "M/D/YYYY, h:mm:ss A"),
+    relative: dateFns.distanceInWordsToNow(date, { addSuffix: true })
+      .replace(/almost\s/gi, "").replace(/about\s/gi, "")
+  };
+}
+
 const strings = {
   format: {
     TV: "TV",

@@ -34,10 +34,7 @@ let makeProgressBarElem = (function() {
     }
 
     let time = progressItem.time;
-    let timestamp = time.toString();
-    let timeAbsolute = dateFns.format(time, "M/D/YYYY, h:mm:ss A");
-    let timeRelative = dateFns.distanceInWordsToNow(time, { addSuffix: true })
-      .replace(/almost\s/gi, "").replace(/about\s/gi, "");
+    let timeFormatted = dateFormat(time);
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="${seriesInfo.siteUrl}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
@@ -47,7 +44,7 @@ let makeProgressBarElem = (function() {
   ${strings.format[seriesInfo.format]}
   ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
   `;
-    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${timestamp}" title="${timeAbsolute}">${timeRelative}</time>`;
+    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${timeFormatted.iso}" title="${timeFormatted.absolute}">${timeFormatted.relative}</time>`;
 
     return elem;
   }
