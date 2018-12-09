@@ -20,6 +20,15 @@ onGotSettings(function() {
       }
     }
 
+    function makeRankingHTML(ranking) {
+      return `
+<div class="amc_ranking">
+  <span class="amc_ranking_period">${makeRankingPeriodString(ranking)}</span>
+  <span class="amc_ranking_ranking">${icon(ranking.type === "POPULAR" ? "heart" : "star")}#${ranking.rank}</span>
+</div>
+      `;
+    }
+
     function showCard(info, position) {
       let elem = document.createElement("div");
       elem.classList.add("amc");
@@ -32,9 +41,6 @@ onGotSettings(function() {
       let isAnime = info.type === "ANIME";
       let hasRankings = info.rankings.length >= 2;
 
-      let rankRated = info.rankings[0];
-      let rankPopular = info.rankings[1];
-
       if (!info.bannerImage) {
         elem.classList.add(CLASS_NOBANNERIMAGE);
       }
@@ -46,43 +52,37 @@ onGotSettings(function() {
       }
 
       elem.innerHTML = `
-  <div class="amc_cover">
-    <div class="amc_image" style="background-image: url(${info.coverImage.large})"></div>
-    <div class="amc_underimage">
-      ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
-      ${hasRankings ? `
-        <div class="amc_rankings">
-          <div class="amc_ranking amc_ranking--rated">
-            <span class="amc_ranking_period">${makeRankingPeriodString(rankRated)}</span>
-            <span class="amc_ranking_ranking">${icon("heart")}#${rankRated.rank}</span>
-          </div>
-          <div class="amc_ranking amc_ranking--popular">
-            <span class="amc_ranking_period">${makeRankingPeriodString(rankPopular)}</span>
-            <span class="amc_ranking_ranking">${icon("star")}#${rankPopular.rank}</span>
-          </div>
-        </div>
-        ` : ""}
-    </div>
+<div class="amc_cover">
+  <div class="amc_image" style="background-image: url(${info.coverImage.large})"></div>
+  <div class="amc_underimage">
+    ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
+    ${hasRankings ? `
+      <div class="amc_rankings">
+        ${makeRankingHTML(info.rankings[0])}
+        ${makeRankingHTML(info.rankings[1])}
+      </div>
+      ` : ""}
   </div>
-  <div class="amc_info">
-    <h2 class="amc_title">
-      <a href="/${info.type.toLowerCase()}/${info.id}">${getTitle(info.title, settings.titleLanguage)}</a>
-      ${info.bannerImage ? `<div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>` : ""}
-    </h2>
-    <div class="amc_description">${stripHTML(info.description || "")}</div>
-    <div class="amc_stats">
-      ${
-        [
-          info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "?",
-          isAnime
-            ? `<div class="amc_stats_episodes">${info.episodes || "?"} eps.</div>`
-            : `<div class="amc_stats_volumes">${info.volumes || "?"} vols.</div>`,
-          info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "?",
-          info.genres && info.genres.length ? `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>` : "?"
-        ].join(`&nbsp;${BULLET}&nbsp;`)
-      }
-    </div>
+</div>
+<div class="amc_info">
+  <h2 class="amc_title">
+    <a href="/${info.type.toLowerCase()}/${info.id}">${getTitle(info.title, settings.titleLanguage)}</a>
+    ${info.bannerImage ? `<div class="amc_banner" style="background-image: url(${info.bannerImage})"></div>` : ""}
+  </h2>
+  <div class="amc_description">${stripHTML(info.description || "")}</div>
+  <div class="amc_stats">
+    ${
+      [
+        info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "?",
+        isAnime
+          ? `<div class="amc_stats_episodes">${info.episodes || "?"} eps.</div>`
+          : `<div class="amc_stats_volumes">${info.volumes || "?"} vols.</div>`,
+        info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "?",
+        info.genres && info.genres.length ? `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>` : "?"
+      ].join(`&nbsp;${BULLET}&nbsp;`)
+    }
   </div>
+</div>
       `;
 
       document.body.appendChild(elem);
