@@ -30,28 +30,29 @@ onGotSettings(function() {
     }
 
     function showCard(info, position) {
-      let elem = document.createElement("div");
-      elem.classList.add("amc");
-      elem.classList.add(`amc--direction-${position.direction}`);
-      elem.dataset.id = info.id;
+      if (position) {
+        let elem = document.createElement("div");
+        elem.classList.add("amc");
+        elem.classList.add(`amc--direction-${position.direction}`);
+        elem.dataset.id = info.id;
 
-      elem.style.left = position.left + "px";
-      elem.style.top = position.top + "px";
+        elem.style.left = position.left + "px";
+        elem.style.top = position.top + "px";
 
-      let isAnime = info.type === "ANIME";
-      let hasRankings = info.rankings.length >= 2;
+        let isAnime = info.type === "ANIME";
+        let hasRankings = info.rankings.length >= 2;
 
-      if (!info.bannerImage) {
-        elem.classList.add(CLASS_NOBANNERIMAGE);
-      }
-      if (!hasRankings && info.averageScore === null) {
-        elem.classList.add(CLASS_NONUMBERS);
-      }
-      if (position.isOffCenterX) {
-        elem.classList.add(CLASS_NOARROW);
-      }
+        if (!info.bannerImage) {
+          elem.classList.add(CLASS_NOBANNERIMAGE);
+        }
+        if (!hasRankings && info.averageScore === null) {
+          elem.classList.add(CLASS_NONUMBERS);
+        }
+        if (position.isOffCenterX) {
+          elem.classList.add(CLASS_NOARROW);
+        }
 
-      elem.innerHTML = `
+        elem.innerHTML = `
 <div class="amc_cover">
   <div class="amc_image" style="background-image: url(${info.coverImage.large})"></div>
   <div class="amc_underimage">
@@ -83,9 +84,10 @@ onGotSettings(function() {
     }
   </div>
 </div>
-      `;
+        `;
 
-      document.body.appendChild(elem);
+        document.body.appendChild(elem);
+      }
     }
 
     function hideCard(id) {
@@ -107,27 +109,31 @@ onGotSettings(function() {
       let margin = 15;
       let rect = target.getClientRects()[0];
 
-      let result = {};
+      if (rect) {
+        let result = {};
 
-      if (rect.top - 2 * margin - cardHeight < 0) {
-        result.direction = "down";
-        result.top = rect.bottom + margin;
+        if (rect.top - 2 * margin - cardHeight < 0) {
+          result.direction = "down";
+          result.top = rect.bottom + margin;
+        } else {
+          result.direction = "up";
+          result.top = rect.top - margin - cardHeight;
+        }
+
+        if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
+          result.left = margin;
+          result.isOffCenterX = true;
+        } else if (rect.right + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
+          result.left = window.innerWidth - margin - cardWidth;
+          result.isOffCenterX = true;
+        } else {
+          result.left = rect.left + rect.width / 2 - cardWidth / 2;
+        }
+
+        return result;
       } else {
-        result.direction = "up";
-        result.top = rect.top - margin - cardHeight;
+        return null;
       }
-
-      if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
-        result.left = margin;
-        result.isOffCenterX = true;
-      } else if (rect.right + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
-        result.left = window.innerWidth - margin - cardWidth;
-        result.isOffCenterX = true;
-      } else {
-        result.left = rect.left + rect.width / 2 - cardWidth / 2;
-      }
-
-      return result;
     }
 
     document.body.addEventListener("mouseover", e => {
