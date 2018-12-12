@@ -22,7 +22,7 @@
     "js": [
       "browser-polyfill.min.js",
       "common.js",
-      "lib/date-fns/date_fns.min.js",
+      "lib/timeago/timeago.min.js",
       "scripts/bars.js", "scripts/infocards.js"
     ]
   }],

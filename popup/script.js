@@ -49,7 +49,7 @@ notificationElemTemplate.innerHTML = `
 <div class="amn_image"></div>
 <div class="amn_info">
   <a target="_blank" class="amn_text"></a>
-  <time class="amn_date"></time>
+  <time class="amn_date dateformat"></time>
 </div>
 `;
 
@@ -90,7 +90,6 @@ function makeNotificationElem(info) {
   let date = new Date(info.createdAt * 1000);
   let dateFormatted = dateFormat(date);
   dateElem.setAttribute("datetime", dateFormatted.iso);
-  dateElem.textContent = dateFormatted.relative;
   dateElem.setAttribute("title", dateFormatted.absolute);
 
   return elem;
@@ -106,6 +105,7 @@ function displayNotifs(notifs) {
   viewAllElem.setAttribute("target", "_blank");
   viewAllElem.textContent = "View all notifications";
   notifsContainer.appendChild(viewAllElem);
+  renderDateFormat();
 }
 
 browser.storage.local.get(["notifcache"]).then(r => {

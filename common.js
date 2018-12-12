@@ -243,13 +243,32 @@ function clearSeriesInfoCache() {
   });
 }
 
+function zpad(s, n) {
+  if (typeof s !== "string" && typeof s !== "number") throw new TypeError();
+  else if (typeof s === "number") s = s.toString();
+
+  if (s.length >= n) return s;
+  else {
+    return new Array(n - s.length + 1).join("0") + s;
+  }
+}
+
 function dateFormat(date) {
+  let hours = date.getHours();
+  let hoursF;
+  let pm = hours >= 12;
+  if (hours === 0) hoursF = 12;
+  else if (hours >= 13) hoursF = hours - 12;
+  else hoursF = hours;
+
   return {
     iso: date.toISOString(),
-    absolute: dateFns.format(date, "M/D/YYYY, h:mm:ss A"),
-    relative: dateFns.distanceInWordsToNow(date, { addSuffix: true })
-      .replace(/almost\s/gi, "").replace(/about\s/gi, "")
+    absolute: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}, ${hoursF}:${zpad(date.getMinutes(), 2)}:${zpad(date.getSeconds(), 2)} ${pm ? "PM" : "AM"}`
   };
+}
+
+function renderDateFormat() {
+  timeago().render(document.getElementsByClassName("dateformat"));
 }
 
 const strings = {

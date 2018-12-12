@@ -44,7 +44,7 @@ let makeProgressBarElem = (function() {
   ${strings.format[seriesInfo.format]}
   ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
   `;
-    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time datetime="${timeFormatted.iso}" title="${timeFormatted.absolute}">${timeFormatted.relative}</time>`;
+    elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time class="dateformat" datetime="${timeFormatted.iso}" title="${timeFormatted.absolute}"></time>`;
 
     return elem;
   }
@@ -86,6 +86,8 @@ function displayProgressBars(progresses, seriesInfos) {
       containers[i] = undefined;
     }
   }
+
+  renderDateFormat();
 }
 
 function getSeriesInfos(progresses) { // not to be confused with getSeriesInfo()
