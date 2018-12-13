@@ -157,7 +157,7 @@ query ($page: Int, $types: [ActivityType], $sort: [ActivitySort], $userId: Int) 
         userId: r.User.id
       }).then(r => {
         let listActivities = r.Page.activities
-          .sort((a, b) => b - a)
+          .sort((a, b) => b.createdAt - a.createdAt)
           .filter(activity => {
             return activity.status === "completed" || activity.status === "watched episode" || activity.status === "read chapter";
           });
