@@ -83,10 +83,10 @@ let onElementChange = function(target, callback, options) {
 function getTitle(titles, preferred) {
   if (titles.hasOwnProperty("userPreferred")) { // getSeriesInfo() only includes this key if we have a token
     return titles.userPreferred;
-  } else if (titles.hasOwnProperty(preferred)) {
+  } else if (titles.hasOwnProperty(preferred) && titles[preferred] !== null) {
     return titles[preferred];
   } else {
-    return titles[Object.keys(titles)[0]];
+    return titles.romaji || titles.native;
   }
 }
 
@@ -94,7 +94,7 @@ function makeMediaQueryKeys() {
   return `
 id
 title {
-  ${token ? "userPreferred" : `${settings.titleLanguage} (stylised: true)`}
+  ${token ? "userPreferred" : `romaji(stylised: true)\nenglish(stylised: true)\nnative(stylised: true)`}
 }
 type
 episodes
