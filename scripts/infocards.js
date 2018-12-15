@@ -98,9 +98,10 @@ onGotSettings(function() {
     }
 
     function hideAllCards() {
-      [...document.getElementsByClassName("amc")].forEach(elem => {
-        elem.parentElement.removeChild(elem);
-      });
+      let amcElems = document.getElementsByClassName("amc");
+      for (let i = 0, l = amcElems.length; i < l; i++) {
+        amcElems[i].parentElement.removeChild(amcElems[i]);
+      }
     }
 
     function calculatePosition(target) {
@@ -172,5 +173,7 @@ onGotSettings(function() {
     });
 
     onNavigate(hideAllCards);
+    window.addEventListener("scroll", hideAllCards);
+    window.addEventListener("click", hideAllCards);
   }
 });
