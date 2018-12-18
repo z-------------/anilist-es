@@ -141,34 +141,48 @@ onGotSettings(function() {
       let elem = e.target;
       if (
         elem.classList &&
-        elem.classList.contains("title") &&
-        !elem.classList.contains(CLASS_WAITING) &&
-        elem.href
+        (
+          elem.classList.contains("title") ||
+          (
+            elem.classList.contains("name") &&
+            elem.parentElement.parentElement.classList.contains("media")
+          )
+        ) &&
+        !elem.classList.contains(CLASS_WAITING)
       ) {
-        elem.classList.add(CLASS_WAITING);
+        let href;
+        if (elem.classList.contains("title")) {
+          href = elem.href;
+        } else if (elem.classList.contains("name")) {
+          href = elem.parentElement.href;
+        }
 
-        let url = new URL(elem.href);
-        let path = url.pathname.slice(1).split("/");
-        let id = Number(path[1]);
-        let type = path[0].toUpperCase();
+        if (href) {
+          elem.classList.add(CLASS_WAITING);
 
-        let timeout = setTimeout(function() {
-          getSeriesInfo(id, type).then(r => {
-            showCard(r, calculatePosition(elem));
+          let url = new URL(href);
+          let path = url.pathname.slice(1).split("/");
+          let id = Number(path[1]);
+          let type = path[0].toUpperCase();
+
+          let timeout = setTimeout(function() {
+            getSeriesInfo(id, type).then(r => {
+              showCard(r, calculatePosition(elem));
+              elem.classList.remove(CLASS_WAITING);
+              elem.classList.add(CLASS_ACTIVE);
+              if (!elem.classList.contains(CLASS_ATTACHED)) {
+                elem.classList.add(CLASS_ATTACHED);
+                elem.addEventListener("mouseout", e => {
+                  hideCard(id);
+                });
+              }
+            });
+          }, settings.cardsHoverTimeout);
+          elem.addEventListener("mouseout", e => {
+            clearTimeout(timeout);
             elem.classList.remove(CLASS_WAITING);
-            elem.classList.add(CLASS_ACTIVE);
-            if (!elem.classList.contains(CLASS_ATTACHED)) {
-              elem.classList.add(CLASS_ATTACHED);
-              elem.addEventListener("mouseout", e => {
-                hideCard(id);
-              });
-            }
           });
-        }, settings.cardsHoverTimeout);
-        elem.addEventListener("mouseout", e => {
-          clearTimeout(timeout);
-          elem.classList.remove(CLASS_WAITING);
-        });
+        }
       }
     });
 
