@@ -109,8 +109,8 @@ function displayNotifs(notifs) {
 }
 
 browser.storage.local.get(["notifcache"]).then(r => {
-  if (r.notifcache) {
-    let notifs = JSON.parse(r.notifcache);
+  let notifs = r.notifcache;
+  if (notifs && notifs.length) {
     displayNotifs(notifs);
   }
 });

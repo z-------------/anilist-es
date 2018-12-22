@@ -229,10 +229,14 @@ function updateNotifs() {
             api(query, variables, r.token)
               .then(data => {
                 let notifsCurrent = data.Page.notifications;
-                browser.storage.local.get(["notifcache"]).then(r => {
-                  let notifsCached = r.notifcache ? JSON.parse(r.notifcache) : [];
+                browser.storage.local.get(["notifcache", "authLastChangedTime"]).then(r => {
+                  let authLastChangedTime = r.authLastChangedTime || 0;
+
+                  let notifsCached = (r.notifcache && r.notifcache.length) ? r.notifcache : [];
                   let notifsCachedIds = notifsCached.map(notif => notif.id);
-                  let notifsNew = notifsCurrent.filter(notif => notifsCachedIds.indexOf(notif.id) === -1);
+                  let notifsNew = notifsCurrent.filter(notif => {
+                    return notifsCachedIds.indexOf(notif.id) === -1 && notif.createdAt * 1000 >= authLastChangedTime;
+                  });
 
                   let end = /\sFirefox\/\d+\.\d+$/.test(navigator.userAgent) ? 1 : notifsNew.length;
 
@@ -259,7 +263,7 @@ function updateNotifs() {
                     });
                   }
 
-                  browser.storage.local.set({ "notifcache": JSON.stringify(notifsCurrent) }).then(function() {
+                  browser.storage.local.set({ "notifcache": notifsCurrent }).then(function() {
                     resolve(notifsCurrent);
                   });
                 });
