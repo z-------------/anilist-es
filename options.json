@@ -11,7 +11,7 @@
   }, {
     "key": "insertIndex",
     "default": 1,
-    "label": "Position in page"
+    "label": "Progress bars position in page"
   }, {
     "key": "barsCount",
     "default": 5,
@@ -39,6 +39,6 @@
   }, {
     "key": "updateCheckEnable",
     "default": false,
-    "label": "Check for extension updates"
+    "label": "Periodically check for extension updates"
   }]
 }
