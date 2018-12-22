@@ -7,12 +7,20 @@ templateElem.innerHTML = `
 let settingsElem = document.getElementsByClassName("settings")[0];
 let saveButton = document.getElementById("save-btn");
 
+let sectionBreakIndexes = [1, 5, 7, 9];
+
 onGotSettings((settings, defaults) => {
   let keys = Object.keys(settings).sort((a, b) => {
     return a.order - b.order;
   });
 
-  for (let key of keys) {
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+
+    if (sectionBreakIndexes.indexOf(i) !== -1) {
+      settingsElem.appendChild(document.createElement("hr"));
+    }
+
     let elem = templateElem.cloneNode(true);
     elem.dataset.key = key;
 
