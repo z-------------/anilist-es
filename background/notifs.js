@@ -234,9 +234,11 @@ function updateNotifs() {
 
                   let notifsCached = (r.notifcache && r.notifcache.length) ? r.notifcache : [];
                   let notifsCachedIds = notifsCached.map(notif => notif.id);
-                  let notifsNew = notifsCurrent.filter(notif => {
-                    return notifsCachedIds.indexOf(notif.id) === -1 && notif.createdAt * 1000 >= authLastChangedTime;
-                  });
+                  let notifsNew = notifsCurrent
+                    .filter(notif => {
+                      return notifsCachedIds.indexOf(notif.id) === -1 && notif.createdAt * 1000 >= authLastChangedTime;
+                    })
+                    .sort((a, b) => a.createdAt - b.createdAt);
 
                   let end = /\sFirefox\/\d+\.\d+$/.test(navigator.userAgent) ? 1 : notifsNew.length;
 
