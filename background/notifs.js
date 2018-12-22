@@ -1,4 +1,5 @@
-let query = `
+function makeQueryString(options) {
+  return `
 query ($page: Int, $types: [NotificationType]) {
   Page (page: $page) {
     pageInfo {
@@ -8,7 +9,7 @@ query ($page: Int, $types: [NotificationType]) {
       lastPage
       hasNextPage
     }
-    notifications (type_in: $types, resetNotificationCount: false) {
+    notifications (type_in: $types, resetNotificationCount: ${options.resetNotificationCount || false}) {
       ... on AiringNotification {
         id
         type
@@ -201,7 +202,8 @@ query ($page: Int, $types: [NotificationType]) {
     }
   }
 }
-  `; // lifted from AniList's source because I have no idea about GraphQL. sorry.
+    `; // lifted from AniList's source because I have no idea about GraphQL. sorry.
+}
 let variables = {
   page: 0,
   types: [
@@ -223,6 +225,7 @@ function updateNotifs() {
       if (settings.notifsEnable) {
         browser.storage.sync.get(["token"]).then(r => {
           if (r.token) {
+            let query = makeQueryString({ resetNotificationCount: settings.notifsUnreadResetOnQuery });
             api(query, variables, r.token)
               .then(data => {
                 let notifsCurrent = data.Page.notifications;

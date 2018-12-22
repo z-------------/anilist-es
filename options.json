@@ -33,6 +33,10 @@
     "default": true,
     "label": "Enable notifications (authentication required)"
   }, {
+    "key": "notifsUnreadResetOnQuery",
+    "default": false,
+    "label": "Reset unread notification count when new notification received"
+  }, {
     "key": "updateCheckEnable",
     "default": false,
     "label": "Check for extension updates"
