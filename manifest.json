@@ -30,6 +30,7 @@
     "scripts": [
       "browser-polyfill.min.js",
       "common.js",
+      "background/startup.js",
       "background/notifs.js",
       "background/contextMenu.js"
     ],
