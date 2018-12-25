@@ -300,7 +300,7 @@ browser.notifications.onClicked.addListener(notifId => {
   if (idSplit[0] === "anilist" && idSplit[1]) {
     browser.storage.local.get(["notifcache"]).then(r => {
       if (r.notifcache) {
-        let notifs = JSON.parse(r.notifcache);
+        let notifs = r.notifcache;
         let matches = notifs.filter(notif => notif.id === Number(idSplit[1]));
         if (matches[0]) {
           let notif = matches[0];
