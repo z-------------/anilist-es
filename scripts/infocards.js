@@ -41,11 +41,12 @@ onGotSettings(function() {
 
         let isAnime = info.type === "ANIME";
         let hasRankings = info.rankings.length >= 2;
+        let displayedScore = info.averageScore || info.meanScore || null;
 
         if (!info.bannerImage) {
           elem.classList.add(CLASS_NOBANNERIMAGE);
         }
-        if (!hasRankings && info.averageScore === null) {
+        if (!hasRankings && displayedScore === null) {
           elem.classList.add(CLASS_NONUMBERS);
         }
         if (position.isOffCenterX) {
@@ -56,7 +57,7 @@ onGotSettings(function() {
 <div class="amc_cover">
   <div class="amc_image" style="background-image: url(${info.coverImage.large})"></div>
   <div class="amc_underimage">
-    ${info.averageScore !== null ? `<div class="amc_rating">${info.averageScore}%</div>` : ""}
+    ${displayedScore !== null ? `<div class="amc_rating">${displayedScore}%</div>` : ""}
     ${hasRankings ? `
       <div class="amc_rankings">
         ${makeRankingHTML(info.rankings[0])}

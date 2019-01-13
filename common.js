@@ -112,6 +112,7 @@ coverImage {
 }
 bannerImage
 averageScore
+meanScore
 rankings {
   rank
   type
