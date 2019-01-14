@@ -282,7 +282,7 @@ const strings = {
     ONA: "ONA",
     MUSIC: "Music",
     MANGA: "Manga",
-    NOVEL: "Novel",
+    NOVEL: "Light Novel",
     ONE_SHOT: "One Shot"
   },
   status: {
