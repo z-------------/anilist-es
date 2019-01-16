@@ -5,9 +5,9 @@ let makeProgressBarElem = (function() {
 <div class='amb_image'></div>
 <div class='amb_info'>
   <div class='amb_title'></div>
-  <div class='amb_bar-container'>
+  <div class='amb_bar-container progress'>
     <div class='amb_bar amb_bar--released'></div>
-    <div class='amb_bar amb_bar--watched'></div>
+    <div class='amb_bar amb_bar--watched bar'></div>
   </div>
   <div class='amb_status'>
     <div class='amb_status_left'></div>
