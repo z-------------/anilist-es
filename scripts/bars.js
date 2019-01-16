@@ -47,6 +47,8 @@ let makeProgressBarElem = (function() {
     ) {
       let releasedProgress = (seriesInfo.airingSchedule.nodes[0].episode - 1) / unitsCount;
       elem.getElementsByClassName("amb_bar--released")[0].style.width = `${Math.floor(releasedProgress * 100)}%`;
+    } else if (seriesInfo.status === "RELEASING") {
+      elem.getElementsByClassName("amb_bar--released")[0].style.width = 0;
     }
     elem.getElementsByClassName("amb_bar--watched")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
