@@ -5,8 +5,9 @@ let makeProgressBarElem = (function() {
 <div class='amb_image'></div>
 <div class='amb_info'>
   <div class='amb_title'></div>
-  <div class='amb_bar-container progress'>
-    <div class='amb_bar bar'></div>
+  <div class='amb_bar-container'>
+    <div class='amb_bar amb_bar--released'></div>
+    <div class='amb_bar amb_bar--watched'></div>
   </div>
   <div class='amb_status'>
     <div class='amb_status_left'></div>
@@ -38,7 +39,16 @@ let makeProgressBarElem = (function() {
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
     elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="${seriesInfo.siteUrl}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
-    elem.getElementsByClassName("amb_bar")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
+    if (
+      unitsCount &&
+      seriesInfo.airingSchedule && seriesInfo.airingSchedule.nodes &&
+      seriesInfo.airingSchedule.nodes.length &&
+      typeof seriesInfo.airingSchedule.nodes[0].episode === "number"
+    ) {
+      let releasedProgress = (seriesInfo.airingSchedule.nodes[0].episode - 1) / unitsCount;
+      elem.getElementsByClassName("amb_bar--released")[0].style.width = `${Math.floor(releasedProgress * 100)}%`;
+    }
+    elem.getElementsByClassName("amb_bar--watched")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
   <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
   ${strings.format[seriesInfo.format]}

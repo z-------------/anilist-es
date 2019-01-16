@@ -105,6 +105,11 @@ format
 startDate {
   year
 }
+airingSchedule (notYetAired: true, page: 0, perPage: 1) {
+  nodes {
+    episode
+  }
+}
 description (asHtml: true)
 genres
 coverImage {
