@@ -23,7 +23,7 @@
       "browser-polyfill.min.js",
       "common.js",
       "lib/timeago/timeago.min.js",
-      "scripts/bars.js", "scripts/infocards.js"
+      "scripts/bars.js", "scripts/infocards.js", "scripts/notifcontent.js"
     ]
   }],
   "background": {

@@ -7,7 +7,7 @@ templateElem.innerHTML = `
 let settingsElem = document.getElementsByClassName("settings")[0];
 let saveButton = document.getElementById("save-btn");
 
-let sectionBreakIndexes = [1, 5, 7, 9];
+let sectionBreakIndexes = [1, 5, 7, 8, 9];
 
 onGotSettings((settings, defaults) => {
   let keys = Object.keys(settings).sort((a, b) => {

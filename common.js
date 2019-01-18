@@ -4,6 +4,8 @@ const TIME_ONE_DAY = 86400000;
 
 const BULLET = "·";
 
+const CAPITALIZE_FIRST = 0, CAPITALIZE_WORDS = 1;
+
 const getSettings = function() {
   return new Promise(function(resolve, reject) {
     let settings = {};
@@ -238,6 +240,77 @@ function getUserInfo() {
   });
 }
 
+function getActivityInfos(options) {
+  let ids = options.ids;
+  return new Promise((resolve, reject) => {
+    let query = `
+query ($ids: [Int], $types: [ActivityType], $perPage: Int) {
+  Page (page: 0, perPage: $perPage) {
+    activities (id_in: $ids, type_in: $types, sort: ID_DESC) {
+      ... on ListActivity {
+        id
+        type
+        status
+        progress
+        media {
+          id
+          type
+        }
+        replies {
+          text
+          user {
+            name
+          }
+          createdAt
+        }
+      }
+      ... on TextActivity {
+        id
+        type
+        text
+        replies {
+          text
+          user {
+            name
+          }
+          createdAt
+        }
+      }
+      ... on MessageActivity {
+        id
+        type
+        message
+        user: recipient {
+          id
+        }
+        replies {
+          text
+          user {
+            name
+          }
+          createdAt
+        }
+      }
+    }
+  }
+}
+      `;
+    api(query, {
+      ids,
+      type: ["TEXT", "ANIME_LIST", "MANGA_LIST", "MESSAGE", "MEDIA_LIST"],
+      perPage: ids.length
+    }).then(r => {
+      // let result = {};
+      // let activities = r.Page.activities;
+      // for (let i = 0; i < activities.length; i++) {
+      //   result[activities[i].id] = activities[i];
+      // }
+      // resolve(result);
+      resolve(r.Page.activities);
+    });
+  });
+}
+
 function clearSeriesInfoCache() {
   return new Promise((resolve, reject) => {
     browser.storage.local.get(null)
@@ -275,6 +348,14 @@ function dateFormat(date) {
 
 function renderDateFormat() {
   timeago().render(document.getElementsByClassName("dateformat"));
+}
+
+function capitalize(str, mode) {
+  if (mode === undefined || mode === CAPITALIZE_FIRST) {
+    return str[0].toUpperCase() + str.substring(1);
+  } else if (mode === CAPITALIZE_WORDS) {
+    throw new Error("not yet implemented");
+  }
 }
 
 const strings = {

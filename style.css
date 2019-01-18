@@ -276,3 +276,19 @@
   height: 12px;
   margin-right: 0.2em;
 }
+
+/* notifcontent */
+
+.notification .details {
+  min-width: 0;
+}
+
+.amnc {
+  color: rgb(var(--color-text-lighter));
+  font-size: 1.1rem;
+  margin-top: 1em;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
