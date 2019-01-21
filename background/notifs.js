@@ -240,6 +240,22 @@ function updateNotifs() {
                     })
                     .sort((a, b) => a.createdAt - b.createdAt);
 
+                  for (let i = 0, l = notifsNew.length; i < l; i++) {
+                    let notif = notifsNew[i];
+                    let typeSplit = notif.type.split("_");
+                    if (typeSplit[0] === "ACTIVITY") {
+                      notif.url = `https://anilist.co/activity/${notif.activityId}`;
+                    } else if (notif.type === "AIRING") {
+                      notif.url = `https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}`;
+                    } else if (notif.type === "FOLLOWING") {
+                      notif.url = `https://anilist.co/user/${notif.user.name}`;
+                    } else if (typeSplit[0] === "THREAD" && (typeSplit[1] === "COMMENT" || typeSplit[1] === "SUBSCRIBED")) {
+                      notif.url = `https://anilist.co/forum/thread/${notif.thread.id}/comment/${notif.commentId}`;
+                    } else if (notif.type === "THREAD_LIKE") {
+                      notif.url = `https://anilist.co/forum/thread/${notif.threadId}`;
+                    }
+                  }
+
                   let end = /\sFirefox\/\d+\.\d+$/.test(navigator.userAgent) ? 1 : notifsNew.length;
 
                   for (let i = 0; i < end; i++) {
@@ -304,30 +320,17 @@ browser.notifications.onClicked.addListener(notifId => {
         let matches = notifs.filter(notif => notif.id === Number(idSplit[1]));
         if (matches[0]) {
           let notif = matches[0];
-          let url;
-          let typeSplit = notif.type.split("_");
-          if (typeSplit[0] === "ACTIVITY") {
-            url = `https://anilist.co/activity/${notif.activityId}`;
-          } else if (notif.type === "AIRING") {
-            url = `https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}`;
-          } else if (notif.type === "FOLLOWING") {
-            url = `https://anilist.co/user/${notif.user.name}`;
-          } else if (notifSplit[0] === "THREAD" && notifSplit[1] === "COMMENT" || notifSplit[1] === "SUBSCRIBED") {
-            url = `https://anilist.co/forum/thread/${notif.thread.id}/comment/${notif.commentId}`;
-          } else if (notif.type === "THREAD_LIKE") {
-            url = `https://anilist.co/forum/thread/${notif.threadId}`;
-          }
-          if (url) {
+          if (notif.url) {
             browser.windows.getCurrent()
               .then(currentWindow => {
                 if (typeof currentWindow === "undefined") {
-                  browser.windows.create({ url });
+                  browser.windows.create({ url: notif.url });
                 } else {
-                  browser.tabs.create({ url }); // defaults to current window
+                  browser.tabs.create({ url: notif.url }); // defaults to current window
                 }
               })
               .catch(e => {
-                browser.windows.create({ url });
+                browser.windows.create({ url: notif.url });
               });
           }
         }

@@ -81,8 +81,8 @@ function makeNotificationElem(info) {
     html = `<a target="_blank" href="${url}">${info.user.name}</a>${info.context}`;
   }
   textElem.innerHTML = html;
-  if (info.type.split("_")[0] === "ACTIVITY") {
-    textElem.setAttribute("href", `https://anilist.co/activity/${info.activityId}`);
+  if (info.type !== "FOLLOWING" && info.url) {
+    textElem.setAttribute("href", info.url);
   }
 
   /* date */
