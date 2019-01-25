@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "AniList Enhancement Suite",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "author": "Zachary Guard",
   "permissions": [
     "storage",
