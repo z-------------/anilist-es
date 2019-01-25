@@ -228,17 +228,17 @@ function updateNotifs() {
             let query = makeQueryString({ resetNotificationCount: settings.notifsUnreadResetOnQuery });
             api(query, variables, r.token)
               .then(data => {
-                let notifsCurrent = data.Page.notifications;
                 browser.storage.local.get(["notifcache", "authLastChangedTime"]).then(r => {
                   let authLastChangedTime = r.authLastChangedTime || 0;
 
                   let notifsCached = (r.notifcache && r.notifcache.length) ? r.notifcache : [];
                   let notifsCachedIds = notifsCached.map(notif => notif.id);
-                  let notifsNew = notifsCurrent
+                  let notifsNew = data.Page.notifications
                     .filter(notif => {
                       return notifsCachedIds.indexOf(notif.id) === -1 && notif.createdAt * 1000 >= authLastChangedTime;
                     })
                     .sort((a, b) => a.createdAt - b.createdAt);
+                  let notifsCurrent = [...notifsNew.reverse(), ...notifsCached];
 
                   for (let i = 0, l = notifsNew.length; i < l; i++) {
                     let notif = notifsNew[i];
