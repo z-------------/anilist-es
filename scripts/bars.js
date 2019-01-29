@@ -81,7 +81,11 @@ function displayProgressBars(progresses, seriesInfos) {
         containers[i] = document.createElement("div");
         containers[i].classList.add("amb-container");
         let sectionElem = document.getElementsByClassName("section")[0];
-        sectionElem.insertBefore(containers[i], sectionElem.children[settings.insertIndex + i]);
+        if (sectionElem.children[settings.insertIndex + i]) {
+          sectionElem.insertBefore(containers[i], sectionElem.children[settings.insertIndex + i]);
+        } else {
+          sectionElem.appendChild(containers[i]);
+        }
       }
 
       containers[i].innerHTML = `
