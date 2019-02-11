@@ -52,9 +52,9 @@ let makeProgressBarElem = (function() {
     }
     elem.getElementsByClassName("amb_bar--watched")[0].style.width = `${Math.floor(displayedProgress * 100)}%`;
     elem.getElementsByClassName("amb_status_left")[0].innerHTML = `
-  <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${BULLET}
+  <strong>${displayedUnits}</strong>/${unitsCount || "?"} ${CHAR_BULLET}
   ${strings.format[seriesInfo.format]}
-  ${seriesInfo.status === "RELEASING" ? `${BULLET} ${strings.status[seriesInfo.status]}` : ""}
+  ${seriesInfo.status === "RELEASING" ? `${CHAR_BULLET} ${strings.status[seriesInfo.status]}` : ""}
   `;
     elem.getElementsByClassName("amb_status_right")[0].innerHTML = `<time class="dateformat" datetime="${timeFormatted.iso}" title="${timeFormatted.absolute}"></time>`;
 

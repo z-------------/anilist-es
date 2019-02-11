@@ -2,7 +2,7 @@ let settings, defaults, token;
 
 const TIME_ONE_DAY = 86400000;
 
-const BULLET = "·";
+const CHAR_BULLET = "·";
 
 const CAPITALIZE_FIRST = 0, CAPITALIZE_WORDS = 1;
 
