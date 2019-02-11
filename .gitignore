@@ -1,2 +1,6 @@
 .tern-project
 *.zip
+node_modules
+yarn.lock
+.eslintrc.yaml
+package.json
