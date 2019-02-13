@@ -138,8 +138,6 @@ function getProgresses(activity) {
 }
 
 function getActivity(username) {
-  let activity = [];
-
   let queryUser = `
 query ($name: String) {
   User (name: $name) {

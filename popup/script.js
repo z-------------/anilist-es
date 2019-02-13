@@ -115,7 +115,7 @@ browser.storage.local.get(["notifcache"]).then(r => {
   }
 });
 
-notifsUpdateButton.addEventListener("click", e => {
+notifsUpdateButton.addEventListener("click", () => {
   browser.runtime.sendMessage({ command: "notifCheck" }).then(response => {
     displayNotifs(response.notifs);
   });
@@ -134,7 +134,7 @@ function showPrompt(info) {
   let elem = document.createElement("div");
   elem.classList.add("amp");
   elem.innerHTML = innerHTML;
-  elem.addEventListener("click", e => {
+  elem.addEventListener("click", () => {
     browser.tabs.create({
       url: info.url
     });
@@ -179,7 +179,7 @@ browser.tabs.query({
               text: "Open in AniList"
             });
           })
-          .catch(err => { console.log(err) });
+          // .catch(err => { console.log(err) });
       }
     } else {
       document.body.classList.add("no-prompts");

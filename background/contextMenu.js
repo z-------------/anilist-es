@@ -35,7 +35,7 @@ onGotSettings((settings, defaults, token) => {
   }
 });
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener(info => {
   let id = info.menuItemId;
   if (id === "ba_go_anilist") {
     browser.tabs.create({ url: "https://anilist.co/" });

@@ -269,7 +269,7 @@ function updateNotifs() {
                     fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
                       r.blob().then(blob => {
                         let blobUrl = URL.createObjectURL(blob);
-                        console.log("creating notif", text, blobUrl)
+                        // console.log("creating notif", text, blobUrl)
                         browser.notifications.create(`anilist_${notif.id}`, {
                           type: "basic",
                           iconUrl: blobUrl,
@@ -302,7 +302,7 @@ browser.alarms.onAlarm.addListener(alarm => {
   }
 });
 
-browser.runtime.onMessage.addListener(async (request, sender) => {
+browser.runtime.onMessage.addListener(async request => {
   if (request.command === "notifCheck") {
     return await updateNotifs().then(notifs => {
       return { notifs };
@@ -329,7 +329,7 @@ browser.notifications.onClicked.addListener(notifId => {
                   browser.tabs.create({ url: notif.url }); // defaults to current window
                 }
               })
-              .catch(e => {
+              .catch(() => {
                 browser.windows.create({ url: notif.url });
               });
           }

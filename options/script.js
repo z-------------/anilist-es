@@ -55,7 +55,7 @@ onGotSettings((settings, defaults) => {
   }
 });
 
-saveButton.addEventListener("click", e => {
+saveButton.addEventListener("click", () => {
   let newSettings = {};
 
   [...document.getElementsByTagName("label")].forEach(labelElem => {

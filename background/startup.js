@@ -37,7 +37,7 @@ function storageUpgradesDone() {
             seriesCacheKeys.push(key);
           }
         }
-        seriesCacheKeys.sort((a, b) => seriescache[b]._dateFetched - seriescache[a]._dateFetched);
+        seriesCacheKeys.sort((a, b) => seriescaches[b]._dateFetched - seriescaches[a]._dateFetched);
         for (let i = SERIESCACHE_KEEPCOUNT; i < seriesCacheKeys.length; i++) {
           browser.storage.local.remove(seriesCacheKeys[i]);
         }

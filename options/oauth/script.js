@@ -7,7 +7,7 @@ browser.storage.sync.get(["token"]).then(r => {
   }
 });
 
-saveButton.addEventListener("click", e => {
+saveButton.addEventListener("click", () => {
   browser.storage.sync.set({ token: textarea.value }).then(() => {
     browser.storage.local.set({
       authLastChangedTime: new Date().getTime()
