@@ -244,73 +244,77 @@ function getUserInfo() {
 
 function getActivityInfos(options) {
   let ids = options.ids;
-  return new Promise((resolve, reject) => {
-    let query = `
-query ($ids: [Int], $types: [ActivityType], $perPage: Int) {
-  Page (page: 0, perPage: $perPage) {
-    activities (id_in: $ids, type_in: $types, sort: ID_DESC) {
-      ... on ListActivity {
-        id
-        type
-        status
-        progress
-        media {
+  if (ids.length) {
+    return new Promise((resolve, reject) => {
+      let query = `
+  query ($ids: [Int], $types: [ActivityType], $perPage: Int) {
+    Page (page: 0, perPage: $perPage) {
+      activities (id_in: $ids, type_in: $types, sort: ID_DESC) {
+        ... on ListActivity {
           id
           type
-        }
-        replies {
-          text
-          user {
-            name
+          status
+          progress
+          media {
+            id
+            type
           }
-          createdAt
-        }
-      }
-      ... on TextActivity {
-        id
-        type
-        text
-        replies {
-          text
-          user {
-            name
+          replies {
+            text
+            user {
+              name
+            }
+            createdAt
           }
-          createdAt
         }
-      }
-      ... on MessageActivity {
-        id
-        type
-        message
-        user: recipient {
+        ... on TextActivity {
           id
-        }
-        replies {
+          type
           text
-          user {
-            name
+          replies {
+            text
+            user {
+              name
+            }
+            createdAt
           }
-          createdAt
+        }
+        ... on MessageActivity {
+          id
+          type
+          message
+          user: recipient {
+            id
+          }
+          replies {
+            text
+            user {
+              name
+            }
+            createdAt
+          }
         }
       }
     }
   }
-}
-      `;
-    api(query, {
-      ids,
-      type: ["TEXT", "ANIME_LIST", "MANGA_LIST", "MESSAGE", "MEDIA_LIST"],
-      perPage: ids.length
-    }).then(r => {
-      // let result = {};
-      // let activities = r.Page.activities;
-      // for (let i = 0; i < activities.length; i++) {
-      //   result[activities[i].id] = activities[i];
-      // }
-      // resolve(result);
-      resolve(r.Page.activities);
+        `;
+      api(query, {
+        ids,
+        type: ["TEXT", "ANIME_LIST", "MANGA_LIST", "MESSAGE", "MEDIA_LIST"],
+        perPage: ids.length
+      }).then(r => {
+        // let result = {};
+        // let activities = r.Page.activities;
+        // for (let i = 0; i < activities.length; i++) {
+        //   result[activities[i].id] = activities[i];
+        // }
+        // resolve(result);
+        resolve(r.Page.activities);
+      });
     });
-  });
+  } else {
+    return Promise.reject("No activity IDs provided");
+  }
 }
 
 function clearSeriesInfoCache() {
@@ -359,6 +363,10 @@ function capitalize(str, mode) {
     throw new Error("not yet implemented");
   }
 }
+
+const stringContains = function(string, substring) {
+  return string.indexOf(substring) !== -1;
+};
 
 const strings = {
   format: {
