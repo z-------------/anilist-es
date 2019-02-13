@@ -63,6 +63,26 @@ onGotSettings(function() {
       });
     }
 
+    function waitElementChange(elem) {
+      onElementChange(elem, (changes, observer) => {
+        if (
+          changes[0].addedNodes[0] &&
+          changes[0].addedNodes[0].classList &&
+          changes[0].addedNodes[0].classList.contains("notification")
+        ) { // notifications have loaded
+          processNotifications(elem);
+          observer.disconnect();
+        } else if (
+          changes[0].addedNodes[0] &&
+          changes[0].addedNodes[0].classList &&
+          changes[0].addedNodes[0].classList.contains("notifications")
+        ) { // notif filter type changed, wait for notifs to load
+          waitElementChange(changes[0].addedNodes[0]);
+          observer.disconnect();
+        }
+      });
+    }
+
     function checkContainerElem() {
       let containerElem = document.getElementsByClassName("notifications")[0];
       let pattern = /(http|https):\/\/(www.)*anilist.co\/notifications$/i;
@@ -71,17 +91,19 @@ onGotSettings(function() {
         if (notificationElems.length) {
           processNotifications(containerElem);
         } else {
-          onElementChange(containerElem, function(changes, observer) {
-            if (changes[0].addedNodes[0] && changes[0].addedNodes[0].classList.contains("notification")) {
-              processNotifications(containerElem);
-              observer.disconnect();
-            }
-          });
+          waitElementChange(containerElem);
         }
+
+        document.getElementsByClassName("filter-group")[0].onclick = function(e) {
+          if (e.target.classList.contains("link")) {
+            waitElementChange(document.getElementsByClassName("notifications-feed")[0]);
+          }
+        };
       }
     }
 
     checkContainerElem();
+    
     onNavigate(function() {
       checkContainerElem();
     });
