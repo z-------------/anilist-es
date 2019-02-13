@@ -82,8 +82,13 @@ onGotSettings(function() {
           changes[0].addedNodes[0] &&
           changes[0].addedNodes[0].classList &&
           changes[0].addedNodes[0].classList.contains("notifications")
-        ) { // notif filter type changed, wait for notifs to load
-          waitElementChange(changes[0].addedNodes[0]);
+        ) { // notif filter type changed
+          let containerElem = changes[0].addedNodes[0];
+          if (containerElem.getElementsByClassName("notification").length) {
+            processNotifications(containerElem);
+          } else {
+            waitElementChange(containerElem);
+          }
           observer.disconnect();
         }
       });
