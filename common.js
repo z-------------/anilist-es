@@ -2,6 +2,8 @@ let settings, defaults, token;
 
 const TIME_ONE_DAY = 86400000;
 
+const INFOCARDS_MAX_GENRES = 4;
+
 const CHAR_BULLET = "·";
 
 const CAPITALIZE_FIRST = 0, CAPITALIZE_WORDS = 1;

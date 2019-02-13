@@ -75,13 +75,18 @@ onGotSettings(function() {
   <div class="amc_stats">
     ${
       [
-        info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "?",
+        info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "",
         isAnime
-          ? `<div class="amc_stats_episodes">${info.episodes || "?"} eps.</div>`
-          : `<div class="amc_stats_volumes">${info.volumes || "?"} vols.</div>`,
-        info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "?",
-        info.genres && info.genres.length ? `<div class="amc_stats_genres">${info.genres.slice(0, 4).join(", ")}</div>` : "?"
-      ].join(`&nbsp;${CHAR_BULLET}&nbsp;`)
+          ? (info.episodes ? `<div class="amc_stats_episodes">${info.episodes} eps.</div>` : "")
+          : (info.volumes ? `<div class="amc_stats_volumes">${info.volumes} vols.</div>` : ""),
+        info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "",
+        info.genres && info.genres.length
+          ? `<div class="amc_stats_genres">
+            ${info.genres.slice(0, INFOCARDS_MAX_GENRES).join(", ")}
+            ${info.genres.length - INFOCARDS_MAX_GENRES > 0 ? ` (+${info.genres.length - INFOCARDS_MAX_GENRES})` : ""}
+            </div>`
+          : ""
+      ].filter(str => str.length).join(`&nbsp;${CHAR_BULLET}&nbsp;`)
     }
   </div>
 </div>
