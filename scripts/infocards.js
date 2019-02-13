@@ -178,13 +178,13 @@ onGotSettings(function() {
               elem.classList.add(CLASS_ACTIVE);
               if (!elem.classList.contains(CLASS_ATTACHED)) {
                 elem.classList.add(CLASS_ATTACHED);
-                elem.addEventListener("mouseout", e => {
+                elem.addEventListener("mouseout", () => {
                   hideCard(id);
                 });
               }
             });
           }, settings.cardsHoverTimeout);
-          elem.addEventListener("mouseout", e => {
+          elem.addEventListener("mouseout", () => {
             clearTimeout(timeout);
             elem.classList.remove(CLASS_WAITING);
           });
