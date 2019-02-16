@@ -127,12 +127,18 @@ function getTitle(titles, preferred) {
   }
 }
 
-function makeMediaQueryKeys() {
+function makeMediaQueryKeys(options) {
+  options = options || {};
   return `
-id
 title {
   ${token ? "userPreferred" : `romaji(stylised: true)\nenglish(stylised: true)\nnative(stylised: true)`}
 }
+siteUrl
+coverImage {
+  large
+}
+  ` + (!options.short ? `
+id
 type
 episodes
 chapters
@@ -149,9 +155,6 @@ airingSchedule (notYetAired: true, page: 0, perPage: 1) {
 }
 description (asHtml: true)
 genres
-coverImage {
-  large
-}
 bannerImage
 averageScore
 meanScore
@@ -167,8 +170,7 @@ studios (isMain: true) {
     name
   }
 }
-siteUrl
-  `;
+  ` : "");
 }
 
 function api(query, variables, token) {

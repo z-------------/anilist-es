@@ -156,26 +156,25 @@ browser.tabs.query({
     let url = new URL(tab.url);
     let hostname = url.hostname;
     let path = url.pathname.split("/").slice(1);
-    let pageTitle = tab.title;
 
     if (hostname === "myanimelist.net") {
       if (path[0] === "anime" || path[0] === "manga") {
         let type = path[0].toUpperCase();
         let id = Number(path[1]);
         let query = `
-  query ($idMal: Int, $type: MediaType) {
-    Media (idMal: $idMal, type: $type) {
-      siteUrl
-      coverImage { medium }
-    }
+query ($idMal: Int, $type: MediaType) {
+  Media (idMal: $idMal, type: $type) {
+    ${makeMediaQueryKeys({ short: true })}
   }
+}
         `;
         api(query, { idMal: id, type: type })
           .then(r => {
+            let media = r.Media;
             showPrompt({
-              title: pageTitle.substring(0, pageTitle.lastIndexOf(" - MyAnimeList")),
-              url: r.Media.siteUrl,
-              image: r.Media.coverImage.medium,
+              title: getTitle(media.title),
+              url: media.siteUrl,
+              image: media.coverImage.large,
               text: "Open in AniList"
             });
           })
