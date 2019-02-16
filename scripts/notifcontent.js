@@ -25,7 +25,7 @@ onGotSettings(function() {
             let activity = activityInfos[a];
             let handledTypes = ["TEXT", "ANIME_LIST", "MANGA_LIST", "MESSAGE"];
             if (handledTypes.indexOf(activity.type) !== -1) {
-              [...containerElem.querySelectorAll(`[data-amnc-id="${activity.id}"]`)].forEach((elem, i) => {
+              [...containerElem.querySelectorAll(`[data-amnc-id="${activity.id}"]`)].forEach(elem => {
                 let detailsElem = elem.getElementsByClassName("details")[0];
 
                 let contentElem = document.createElement("div");
