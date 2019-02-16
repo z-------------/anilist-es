@@ -8,6 +8,39 @@ const CHAR_BULLET = "·";
 
 const CAPITALIZE_FIRST = 0, CAPITALIZE_WORDS = 1;
 
+const strings = {
+  format: {
+    TV: "TV",
+    TV_SHORT: "TV Short",
+    MOVIE: "Movie",
+    SPECIAL: "Special",
+    OVA: "OVA",
+    ONA: "ONA",
+    MUSIC: "Music",
+    MANGA: "Manga",
+    NOVEL: "Light Novel",
+    ONE_SHOT: "One Shot"
+  },
+  status: {
+    FINISHED: "Finished",
+    RELEASING: "Releasing",
+    NOT_YET_RELEASED: "Not yet released",
+    CANCELLED: "Cancelled"
+  },
+  season: {
+    SPRING: "Spring",
+    SUMMER: "Summer",
+    FALL: "Fall",
+    WINTER: "Winter"
+  },
+  seasonShort: {
+    SPRING: "Sp",
+    SUMMER: "Su",
+    FALL: "F",
+    WINTER: "W"
+  }
+};
+
 const getSettings = function() {
   return new Promise(function(resolve, reject) {
     let settings = {};
@@ -366,37 +399,4 @@ function capitalize(str, mode) {
 
 const stringContains = function(string, substring) {
   return string.indexOf(substring) !== -1;
-};
-
-const strings = {
-  format: {
-    TV: "TV",
-    TV_SHORT: "TV Short",
-    MOVIE: "Movie",
-    SPECIAL: "Special",
-    OVA: "OVA",
-    ONA: "ONA",
-    MUSIC: "Music",
-    MANGA: "Manga",
-    NOVEL: "Light Novel",
-    ONE_SHOT: "One Shot"
-  },
-  status: {
-    FINISHED: "Finished",
-    RELEASING: "Releasing",
-    NOT_YET_RELEASED: "Not yet released",
-    CANCELLED: "Cancelled"
-  },
-  season: {
-    SPRING: "Spring",
-    SUMMER: "Summer",
-    FALL: "Fall",
-    WINTER: "Winter"
-  },
-  seasonShort: {
-    SPRING: "Sp",
-    SUMMER: "Su",
-    FALL: "F",
-    WINTER: "W"
-  }
 };
