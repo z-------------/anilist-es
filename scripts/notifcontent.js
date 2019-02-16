@@ -20,8 +20,9 @@ onGotSettings(function() {
       }
       getActivityInfos({ ids: uniqueIDs })
         .then(activityInfos => {
-          for (let i = 0; i < activityInfos.length; i++) {
-            let activity = activityInfos[i];
+          let replyCounts = {};
+          for (let a = 0; a < activityInfos.length; a++) {
+            let activity = activityInfos[a];
             let handledTypes = ["TEXT", "ANIME_LIST", "MANGA_LIST", "MESSAGE"];
             if (handledTypes.indexOf(activity.type) !== -1) {
               [...containerElem.querySelectorAll(`[data-amnc-id="${activity.id}"]`)].forEach((elem, i) => {
@@ -31,16 +32,10 @@ onGotSettings(function() {
                 contentElem.classList.add("amnc");
 
                 if (stringContains(detailsElem.textContent, "replied to your activity")) {
-                  let username = detailsElem.getElementsByClassName("link")[0].textContent.trim().split(" ")[0].trim();
-                  let j = 0;
-                  for (let k = activity.replies.length - 1; k >= 0; k--) {
-                    if (activity.replies[k].user.name === username) j++;
-                    if (j === i) {
-                      contentElem.textContent = activity.replies[k].text;
-                      detailsElem.insertBefore(contentElem, detailsElem.children[1]);
-                      break;
-                    }
-                  }
+                  if (!replyCounts[activity.id]) replyCounts[activity.id] = 0;
+                  let j = ++replyCounts[activity.id] - 1;
+                  contentElem.textContent = activity.replies[activity.replies.length - j - 1].text;
+                  detailsElem.insertBefore(contentElem, detailsElem.children[1]);
                 } else if (activity.type === "TEXT") {
                   contentElem.textContent = activity.text;
                   detailsElem.insertBefore(contentElem, detailsElem.children[1]);
