@@ -130,7 +130,7 @@ onGotSettings(function() {
         if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
           result.left = margin;
           result.isOffCenterX = true;
-        } else if (rect.right + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
+        } else if (rect.left + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
           result.left = window.innerWidth - margin - cardWidth;
           result.isOffCenterX = true;
         } else {
