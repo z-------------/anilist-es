@@ -181,7 +181,7 @@ query ($idMal: Int, $type: MediaType) {
           // .catch(err => { console.log(err) });
       }
     } else if (hostname === "anilist.co") {
-      if (path[0] === "anime" || path[1] === "manga") {
+      if (path[0] === "anime" || path[0] === "manga") {
         let type = path[0].toUpperCase();
         let id = Number(path[1]);
         let query = `
