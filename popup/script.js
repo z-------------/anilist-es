@@ -180,6 +180,31 @@ query ($idMal: Int, $type: MediaType) {
           })
           // .catch(err => { console.log(err) });
       }
+    } else if (hostname === "anilist.co") {
+      if (path[0] === "anime" || path[1] === "manga") {
+        let type = path[0].toUpperCase();
+        let id = Number(path[1]);
+        let query = `
+query ($id: Int, $type: MediaType) {
+  Media (id: $id, type: $type) {
+    ${makeMediaQueryKeys({ short: true })}
+    idMal
+  }
+}
+        `;
+        api(query, { type, id }).then(r => {
+          let media = r.Media;
+          let idMal = media.idMal;
+          if (idMal) {
+            showPrompt({
+              title: getTitle(media.title),
+              url: `https://myanimelist.net/${type.toLowerCase()}/${idMal}`,
+              image: media.coverImage.large,
+              text: "Open in MyAnimeList"
+            });
+          }
+        });
+      }
     } else {
       document.body.classList.add("no-prompts");
     }
