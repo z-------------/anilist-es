@@ -145,6 +145,7 @@ chapters
 volumes
 status
 format
+season
 startDate {
   year
 }

@@ -79,7 +79,11 @@ onGotSettings(function() {
         isAnime
           ? (info.episodes ? `<div class="amc_stats_episodes">${info.episodes} eps.</div>` : "")
           : (info.volumes ? `<div class="amc_stats_volumes">${info.volumes} vols.</div>` : ""),
-        info.startDate.year ? `<div class="amc_stats_season">${info.startDate.year}</div>` : "",
+        info.startDate.year
+          ? info.season && info.startDate.year >= new Date().getFullYear()
+            ? `<div class="amc_stats_season">${strings.seasonShort[info.season]} ${info.startDate.year}</div>`
+            : `<div class="amc_stats_season">${info.startDate.year}</div>`
+          : "",
         info.genres && info.genres.length
           ? `<div class="amc_stats_genres">
             ${info.genres.slice(0, INFOCARDS_MAX_GENRES).join(", ")}
