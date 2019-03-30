@@ -32,9 +32,12 @@ onGotSettings(function() {
                 contentElem.classList.add("amnc");
 
                 if (stringContains(detailsElem.textContent, "replied to your activity")) {
-                  if (!replyCounts[activity.id]) replyCounts[activity.id] = 0;
-                  let j = ++replyCounts[activity.id] - 1;
-                  contentElem.textContent = activity.replies[activity.replies.length - j - 1].text;
+                  let username = detailsElem.children[0].children[0].childNodes[0].textContent.trim();
+                  if (!replyCounts[activity.id]) replyCounts[activity.id] = {};
+                  if (!replyCounts[activity.id][username]) replyCounts[activity.id][username] = 0;
+                  let j = ++replyCounts[activity.id][username] - 1;
+                  let repliesFromUser = activity.replies.filter(reply => reply.user.name === username);
+                  contentElem.textContent = repliesFromUser[repliesFromUser.length - j - 1].text;
                   detailsElem.insertBefore(contentElem, detailsElem.children[1]);
                 } else if (activity.type === "TEXT") {
                   contentElem.textContent = activity.text;
