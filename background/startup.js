@@ -1,5 +1,5 @@
-const NOTIFCACHE_KEEPCOUNT = 50;
-const SERIESCACHE_KEEPCOUNT = 50;
+const KEEPCOUNT = 50;
+// const KEEPCOUNT = 1;
 
 /* storage format updates */
 
@@ -11,36 +11,48 @@ browser.storage.local.get(["notifcache"]).then(r => {
     } catch (exp) {
       browser.storage.local.set({ notifcache: [] }).then(storageUpgradesDone);
     }
+  } else {
+    storageUpgradesDone();
   }
 });
 
-function storageUpgradesDone() {
-  /* free up storage space */
+/* helper function for filtering caches to n newest elements and RETURN KEYS OF OLDEST ELEMENTS */
+function ageFilter(keys, r, n) {
+  let keysCopy = [].slice.call(keys);
+  keysCopy.sort((a, b) => r[a]._dateFetched - r[b]._dateFetched); // date ascending
+  keysCopy.length = Math.max(0, keys.length - n);
+  return keysCopy;
+}
 
-  browser.storage.local.getBytesInUse(bytesInUse => {
+/* free up storage space */
+function storageUpgradesDone() {
+  browser.storage.local.getBytesInUse().then(bytesInUse => {
     let bytesFree = browser.storage.local.QUOTA_BYTES - bytesInUse;
     if (bytesFree <= 1000000) { // 1 MB
+    // if (true) {
       browser.storage.local.get(null).then(r => {
+        /* notifcache */
         if (r.hasOwnProperty("notifcache")) {
           let notifcache = r.notifcache;
           notifcache.sort((a, b) => b.createdAt - a.createdAt);
-          notifcache.length = NOTIFCACHE_KEEPCOUNT;
+          notifcache.length = KEEPCOUNT;
           browser.storage.local.set({ notifcache });
         }
 
-        let seriescaches = {};
-        let seriesCacheKeys = [];
-        const pattern = /^seriescache_(MANGA|ANIME):\d+$/g;
-        for (let key in r) {
-          if (pattern.test(key)) {
-            seriescaches[key] = r[key];
-            seriesCacheKeys.push(key);
-          }
-        }
-        seriesCacheKeys.sort((a, b) => seriescaches[b]._dateFetched - seriescaches[a]._dateFetched);
-        for (let i = SERIESCACHE_KEEPCOUNT; i < seriesCacheKeys.length; i++) {
-          browser.storage.local.remove(seriesCacheKeys[i]);
-        }
+        const keys = Object.keys(r);
+
+        /* seriescache */
+        const seriesCacheKeyPattern = /seriescache_(ANIME|MANGA):\d+/;
+        let seriesCacheKeys = keys.filter(key => seriesCacheKeyPattern.test(key));
+        let oldSeriesCacheKeys = ageFilter(seriesCacheKeys, r, KEEPCOUNT);
+        browser.storage.local.remove(oldSeriesCacheKeys);
+
+        /* activitycache -- seems to be unused */
+        const activityCachePattern = /activitycache:\d+/;
+        let activityCacheKeys = keys.filter(key => activityCachePattern.test(key));
+        // let oldActivityCacheKeys = ageFilter(activityCacheKeys, r, KEEPCOUNT);
+        // browser.storage.local.remove(oldActivityCacheKeys);
+        browser.storage.local.remove(activityCacheKeys);
       });
     }
   });
