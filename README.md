@@ -6,6 +6,7 @@ A WebExtension. **Not affiliated with AniList.**
 * Infocards upon hovering over anime/manga title
 * Notifications in browser toolbar and OS notification area
 * Open corresponding AniList page from MAL
+* Preview activity content in website's Notifications area
 
 Work in progress.
 
