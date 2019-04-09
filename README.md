@@ -30,6 +30,7 @@ Work in progress.
 ![Infocards](https://i.imgur.com/KmCcTXQ.png)
 ![Popup](https://i.imgur.com/tCqL6Rf.png)
 ![Notifications](https://i.imgur.com/b73lcYF.png)
+![Notification content previews](https://i.imgur.com/t6O8UPp.png)
 
 ## Install
 
