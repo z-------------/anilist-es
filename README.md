@@ -18,9 +18,11 @@ Work in progress.
 |---------|---------------------|
 | Chrome  | Full                |
 | Firefox | Partial<sup>1</sup> |
-| Edge    | None                |
+| Edge    | None<sup>2</sup>    |
 
-<sup>1</sup> Can only show one notification at a time
+<sup>1</sup> Can only show one notification at a time.
+
+<sup>2</sup> Works perfectly in the new Chromium-based Edge builds, naturally. 
 
 ## Screenshots
 
