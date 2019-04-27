@@ -42,3 +42,5 @@ Instructions for Chrome:
 4. Enable Developer mode
 5. Click "Load unpacked"
 6. Select the unzipped folder
+
+You can also [get the "Lite" version](https://greasyfork.org/en/scripts/382294-anilist-enhancement-suite-lite) as a userscript. It lacks everything but the content scripts and does not use cache media info etc. locally.
