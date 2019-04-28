@@ -145,9 +145,10 @@ onGotSettings(function() {
 
     document.body.addEventListener("mouseover", e => {
       let elem = e.target;
+      // console.log(elem);
       let href;
       if (elem.classList && !elem.classList.contains(CLASS_WAITING)) { // proceed to check if it is a valid link
-        if (elem.classList.contains("title")) {
+        if (elem.classList.contains("title") && elem.href) {
           href = elem.href;
         } else if (elem.classList.contains("name") && elem.parentElement.parentElement.classList.contains("media")) {
           href = elem.parentElement.href;
