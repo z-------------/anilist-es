@@ -4,3 +4,5 @@ node_modules
 yarn.lock
 .eslintrc.yaml
 package.json
+
+userscript/userscript.js
