@@ -145,50 +145,50 @@ onGotSettings(function() {
 
     document.body.addEventListener("mouseover", e => {
       let elem = e.target;
-      if (
-        elem.classList &&
-        (
-          elem.classList.contains("title") ||
-          (
-            elem.classList.contains("name") &&
-            elem.parentElement.parentElement.classList.contains("media")
-          )
-        ) &&
-        !elem.classList.contains(CLASS_WAITING)
-      ) {
-        let href;
+      let href;
+      if (elem.classList && !elem.classList.contains(CLASS_WAITING)) { // proceed to check if it is a valid link
         if (elem.classList.contains("title")) {
           href = elem.href;
-        } else if (elem.classList.contains("name")) {
+        } else if (elem.classList.contains("name") && elem.parentElement.parentElement.classList.contains("media")) {
           href = elem.parentElement.href;
+        } else if (elem.tagName === "A" && elem.parentElement.classList.contains("title")) {
+          href = elem.href;
+        } else if (
+          (elem.classList.contains("title") || elem.classList.contains("info"))
+          && elem.parentElement.parentElement.parentElement.parentElement.classList.contains("media-embed")
+          && (
+            elem.parentElement.parentElement.parentElement.parentElement.dataset.mediaType === "anime"
+            || elem.parentElement.parentElement.parentElement.parentElement.dataset.mediaType === "manga"
+          )
+        ) {
+          href = elem.parentElement.parentElement.parentElement.parentElement.href;
         }
+      }
+      if (href) {
+        elem.classList.add(CLASS_WAITING);
 
-        if (href) {
-          elem.classList.add(CLASS_WAITING);
+        let url = new URL(href);
+        let path = url.pathname.slice(1).split("/");
+        let id = Number(path[1]);
+        let type = path[0].toUpperCase();
 
-          let url = new URL(href);
-          let path = url.pathname.slice(1).split("/");
-          let id = Number(path[1]);
-          let type = path[0].toUpperCase();
-
-          let timeout = setTimeout(function() {
-            getSeriesInfo(id, type).then(r => {
-              showCard(r, calculatePosition(elem));
-              elem.classList.remove(CLASS_WAITING);
-              elem.classList.add(CLASS_ACTIVE);
-              if (!elem.classList.contains(CLASS_ATTACHED)) {
-                elem.classList.add(CLASS_ATTACHED);
-                elem.addEventListener("mouseout", () => {
-                  hideCard(id);
-                });
-              }
-            });
-          }, settings.cardsHoverTimeout);
-          elem.addEventListener("mouseout", () => {
-            clearTimeout(timeout);
+        let timeout = setTimeout(function() {
+          getSeriesInfo(id, type).then(r => {
+            showCard(r, calculatePosition(elem));
             elem.classList.remove(CLASS_WAITING);
+            elem.classList.add(CLASS_ACTIVE);
+            if (!elem.classList.contains(CLASS_ATTACHED)) {
+              elem.classList.add(CLASS_ATTACHED);
+              elem.addEventListener("mouseout", () => {
+                hideCard(id);
+              });
+            }
           });
-        }
+        }, settings.cardsHoverTimeout);
+        elem.addEventListener("mouseout", () => {
+          clearTimeout(timeout);
+          elem.classList.remove(CLASS_WAITING);
+        });
       }
     });
 
