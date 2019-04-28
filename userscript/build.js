@@ -62,7 +62,7 @@ contentScripts = contentScripts.trim();
 
 /* wrap and format */
 
-const wrapped = `${preamble}\n(function() { ${settingsScript}\n ${commonModifiedScript} ${stylesheetInjectScript}\n ${contentScripts} })();`;
+const wrapped = `${preamble}\n(function() { ${settingsScript}\n\n ${commonModifiedScript} ${stylesheetInjectScript}\n ${contentScripts} })();`;
 const formatted = beautify(wrapped);
 
 /* write to file */
