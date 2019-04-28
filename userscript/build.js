@@ -16,6 +16,7 @@ const preamble = `
 // @version      ${require(path.join(__dirname, "..", "manifest.json")).version}
 // @description  A userscript version of ALES.
 // @author       z-------------
+// @license      MIT; https://opensource.org/licenses/MIT
 // @match        https://anilist.co/*
 // @grant        none
 // @require      https://cdnjs.cloudflare.com/ajax/libs/timeago.js/3.0.2/timeago.min.js
