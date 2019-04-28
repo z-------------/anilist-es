@@ -34,7 +34,7 @@ const settingsScript = `const settings = ${JSON.stringify(settings)};`;
 
 /* common */
 
-const commonModifiedScript = fs.readFileSync(path.join(__dirname, "common_userscript.js"), readFileOptions);
+const commonModifiedScript = fs.readFileSync(path.join(__dirname, "common.js"), readFileOptions);
 
 /* css */
 
