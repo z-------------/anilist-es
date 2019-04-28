@@ -403,3 +403,7 @@ function capitalize(str, mode) {
 const stringContains = function(string, substring) {
   return string.indexOf(substring) !== -1;
 };
+
+const icon = function(ic) {
+  return `<img class="amc_icon" src="${browser.runtime.getURL(`img/${ic}.svg`)}" />`;
+};

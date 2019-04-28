@@ -8,10 +8,6 @@ onGotSettings(function() {
     const CLASS_NONUMBERS = "amc--nonumbers";
     const CLASS_NOARROW = "amc--noarrow";
 
-    function icon(icon) {
-      return `<img class="amc_icon" src="${browser.runtime.getURL(`img/${icon}.svg`)}" />`;
-    }
-
     function makeRankingPeriodString(ranking) {
       if (!ranking.season && ranking.year === null) {
         return "";
