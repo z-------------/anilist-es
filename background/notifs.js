@@ -1,4 +1,5 @@
 function makeQueryString(options) {
+  options = options || {};
   return `
 query ($page: Int, $types: [NotificationType]) {
   Page (page: $page) {
