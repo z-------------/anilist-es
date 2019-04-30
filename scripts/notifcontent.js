@@ -27,11 +27,12 @@ onGotSettings(function() {
             if (handledTypes.indexOf(activity.type) !== -1) {
               [...containerElem.querySelectorAll(`[data-amnc-id="${activity.id}"]`)].forEach(elem => {
                 let detailsElem = elem.getElementsByClassName("details")[0];
+                const detailsText = detailsElem.textContent;
 
                 let contentElem = document.createElement("div");
                 contentElem.classList.add("amnc");
 
-                if (stringContains(detailsElem.textContent, "replied to your activity")) {
+                if (stringContains(detailsText, "replied to your activity")) {
                   let username = detailsElem.children[0].children[0].childNodes[0].textContent.trim();
                   if (!replyCounts[activity.id]) replyCounts[activity.id] = {};
                   if (!replyCounts[activity.id][username]) replyCounts[activity.id][username] = 0;
@@ -56,7 +57,7 @@ onGotSettings(function() {
                     contentElem.textContent = text;
                     detailsElem.insertBefore(contentElem, detailsElem.children[1]);
                   });
-                } else if (activity.type === "MESSAGE") {
+                } else if (activity.type === "MESSAGE" && !stringContains(detailsText, "liked your activity reply")) {
                   contentElem.textContent = activity.message;
                   detailsElem.insertBefore(contentElem, detailsElem.children[1]);
                 }
