@@ -6,7 +6,7 @@ onGotSettings(function() {
 
     const CLASS_NOBANNERIMAGE = "amc--nobannerimage";
     const CLASS_NONUMBERS = "amc--nonumbers";
-    const CLASS_NOARROW = "amc--noarrow";
+    const CLASS_NOARROW = "ales-card--noarrow";
 
     function makeRankingPeriodString(ranking) {
       if (!ranking.season && ranking.year === null) {
@@ -28,8 +28,8 @@ onGotSettings(function() {
     function showCard(info, position) {
       if (position) {
         let elem = document.createElement("div");
-        elem.classList.add("amc");
-        elem.classList.add(`amc--direction-${position.direction}`);
+        elem.classList.add("amc", "ales-card");
+        elem.classList.add(`ales-card--direction-${position.direction}`);
         elem.dataset.id = info.id;
 
         elem.style.left = position.left + "px";
@@ -110,39 +110,6 @@ onGotSettings(function() {
       }
     }
 
-    function calculatePosition(target) {
-      let cardHeight = 250;
-      let cardWidth = 500;
-      let margin = 15;
-      let rect = target.getClientRects()[0];
-
-      if (rect) {
-        let result = {};
-
-        if (rect.top - 2 * margin - cardHeight < 0) {
-          result.direction = "down";
-          result.top = rect.bottom + margin;
-        } else {
-          result.direction = "up";
-          result.top = rect.top - margin - cardHeight;
-        }
-
-        if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
-          result.left = margin;
-          result.isOffCenterX = true;
-        } else if (rect.left + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
-          result.left = window.innerWidth - margin - cardWidth;
-          result.isOffCenterX = true;
-        } else {
-          result.left = rect.left + rect.width / 2 - cardWidth / 2;
-        }
-
-        return result;
-      } else {
-        return null;
-      }
-    }
-
     document.body.addEventListener("mouseover", e => {
       let elem = e.target;
       // console.log(elem);
@@ -175,7 +142,7 @@ onGotSettings(function() {
 
         let timeout = setTimeout(function() {
           getSeriesInfo(id, type).then(r => {
-            showCard(r, calculatePosition(elem));
+            showCard(r, calculateCardPosition(elem));
             elem.classList.remove(CLASS_WAITING);
             elem.classList.add(CLASS_ACTIVE);
             if (!elem.classList.contains(CLASS_ATTACHED)) {

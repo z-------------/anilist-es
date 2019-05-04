@@ -1,4 +1,4 @@
-.amb, .amc {
+.amb, .ales-card {
   --border-radius: 4px;
 }
 
@@ -78,11 +78,11 @@
   color: rgb(var(--color-text-lighter));
 }
 
-/* hovercards */
+/* cards */
 
-.amc {
+.ales-card {
+  --width: 500px;
   --padding: 15px;
-  --height: 250px;
 
   position: fixed;
   top: 50px;
@@ -90,14 +90,15 @@
   background-color: rgb(var(--color-foreground));
   box-shadow: 0 0 29px rgba(49, 54, 68, .25);
   display: flex;
-  width: 500px;
+  width: var(--width);
   height: var(--height);
   font-size: 1.4rem;
   border-radius: var(--border-radius);
   z-index: 999;
+  overflow: hidden;
 }
 
-.amc:after {
+.ales-card:after {
   --x: 5px;
   content: "";
   width: 0;
@@ -108,23 +109,27 @@
   margin-left: calc(var(--x) * -1);
 }
 
-.amc--noarrow:after {
+.ales-card--noarrow:after {
   content: none;
 }
 
-.amc.amc--direction-up:after {
+.ales-card--direction-up:after {
   border-width: 6px var(--x) 0 var(--x);
   border-color: rgb(var(--color-foreground)) transparent transparent transparent;
   top: 100%;
 }
 
-.amc.amc--direction-down:after {
+.ales-card--direction-down:after {
   border-width: 0 var(--x) 6px var(--x);
   border-color: transparent transparent rgb(var(--color-foreground)) transparent;
   bottom: 100%;
 }
 
-.amc.amc--nonumbers {
+.amc {
+  --height: 250px;
+}
+
+.amc--nonumbers {
   height: auto;
   max-height: var(--height);
 }
@@ -276,6 +281,69 @@
   height: 12px;
   margin-right: 0.2em;
 }
+
+.ales-usercard {
+  --width: 450px;
+  --height: 102px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.ales-usercard_wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--padding);
+  padding-right: 0;
+  background-color: rgba(var(--color-background), 0.9);
+  display: flex;
+}
+
+.ales-usercard_name {
+  font-size: 1.3em;
+  margin-bottom: 0.5em;
+}
+
+.ales-usercard_avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--border-radius);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.ales-usercard_right {
+  padding-left: var(--padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ales-usercard_stats {
+  display: flex;
+  flex-grow: 1;
+}
+
+.ales-usercard_stats_left, .ales-usercard_stats_right {
+  line-height: 1.5em;
+}
+
+.ales-usercard_stats_left {
+  margin-right: calc(var(--padding) / 2);
+}
+
+/* .ales-usercard_stat {
+  display: block;
+} */
+
+/* .ales-usercard_stat:not(:last-child) {
+  margin-right: var(--padding);
+} */
 
 /* notifcontent */
 

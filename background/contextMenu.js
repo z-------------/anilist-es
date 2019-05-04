@@ -40,7 +40,7 @@ browser.contextMenus.onClicked.addListener(info => {
   if (id === "ba_go_anilist") {
     browser.tabs.create({ url: "https://anilist.co/" });
   } else if (id === "ba_go_profile" || id === "ba_go_animelist" || id === "ba_go_mangalist") {
-    getUserInfo().then(userInfo => {
+    getAuthedUserInfo().then(userInfo => {
       let root = `https://anilist.co/user/${userInfo.name}/`;
       let subpath = (id === "ba_go_profile" ? "" : id.split("_")[2]);
       browser.tabs.create({ url: root + subpath });

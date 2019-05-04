@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "AniList Enhancement Suite",
-  "version": "0.10.8",
+  "version": "0.11.0",
   "author": "Zachary Guard",
   "permissions": [
     "storage",
@@ -23,7 +23,7 @@
       "browser-polyfill.min.js",
       "common.js",
       "lib/timeago/timeago.min.js",
-      "scripts/bars.js", "scripts/infocards.js", "scripts/notifcontent.js"
+      "scripts/bars.js", "scripts/infocards.js", "scripts/usercards.js", "scripts/notifcontent.js"
     ]
   }],
   "background": {

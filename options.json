@@ -23,7 +23,16 @@
   }, {
     "key": "cardsEnable",
     "default": true,
-    "label": "Enable infocards"
+    "label": "Enable media infocards"
+  }, {
+    "key": "userCardsEnable",
+    "default": false,
+    "label": "Enable user infocards"
+  }, {
+    "key": "userCardsFavoredDefinition",
+    "default": "meanScore",
+    "options": [ "amount" ],
+    "label": "Definition of 'Top genre/tag'"
   }, {
     "key": "cardsHoverTimeout",
     "default": 500,

@@ -47,6 +47,12 @@ function storageUpgradesDone() {
         let oldSeriesCacheKeys = ageFilter(seriesCacheKeys, r, KEEPCOUNT);
         browser.storage.local.remove(oldSeriesCacheKeys);
 
+        /* userscache */
+        const usersCacheKeyPattern = /userscache:\S+/;
+        let usersCacheKeys = keys.filter(key => usersCacheKeyPattern.test(key));
+        let oldUsersCacheKeys = ageFilter(usersCacheKeys, r, KEEPCOUNT);
+        browser.storage.local.remove(oldUsersCacheKeys);
+
         /* activitycache -- seems to be unused */
         const activityCachePattern = /activitycache:\d+/;
         let activityCacheKeys = keys.filter(key => activityCachePattern.test(key));

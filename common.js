@@ -213,9 +213,19 @@ function makeCacheKey(type, id) {
   return `seriescache_${type}:${id}`;
 }
 
+const makeUsersCacheKey = function(name) {
+  return `userscache:${name.toLowerCase()}`;
+};
+
 function writeSeriesInfoCache(mediaInfo) {
   let newStorage = {};
   newStorage[makeCacheKey(mediaInfo.type, mediaInfo.id)] = Object.assign({ _dateFetched: new Date().getTime() }, mediaInfo);
+  return browser.storage.local.set(newStorage);
+}
+
+function writeUsersCache(user) {
+  let newStorage = {};
+  newStorage[makeUsersCacheKey(user.name)] = Object.assign({ _dateFetched: new Date().getTime() }, user);
   return browser.storage.local.set(newStorage);
 }
 
@@ -244,7 +254,7 @@ function getSeriesInfo(id, type) {
   });
 }
 
-function getUserInfo() {
+function getAuthedUserInfo() {
   return new Promise((resolve, reject) => {
     onGotSettings((settings, defaults, token) => {
       if (token) {
@@ -277,6 +287,50 @@ function getUserInfo() {
     });
   });
 }
+
+const getUserInfo = function(name) {
+  const query = `
+query ($name: String) {
+  User (name: $name) {
+    name
+    avatar { large }
+    bannerImage
+    donatorTier
+    moderatorStatus
+    stats {
+      watchedTime
+      chaptersRead
+      favouredGenres {
+        genre
+        amount
+        meanScore
+      }
+      favouredTags {
+        tag { name }
+        amount
+        meanScore
+      }
+    }
+  }
+}
+  `;
+  const variables = { name };
+  return new Promise(function(resolve, reject) {
+    const cacheKey = makeUsersCacheKey(name);
+    browser.storage.local.get([cacheKey]).then(result => {
+      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < TIME_ONE_DAY) {
+        resolve(result[cacheKey]);
+      } else {
+        api(query, variables)
+          .then(r => {
+            writeUsersCache(r.User);
+            resolve(r.User);
+          })
+          .catch(e => reject(e));
+      }
+    });
+  });
+};
 
 function getActivityInfos(options) {
   let ids = options.ids;
@@ -364,6 +418,17 @@ function clearSeriesInfoCache() {
   });
 }
 
+function clearUsersInfoCache() {
+  return new Promise((resolve, reject) => {
+    browser.storage.local.get(null)
+      .then(r => {
+        let cacheKeys = Object.keys(r).filter(key => key.split(":")[0] === "userscache");
+        browser.storage.local.remove(cacheKeys).then(resolve).catch(e => reject(e));
+      })
+      .catch(e => reject(e));
+  });
+}
+
 function zpad(s, n) {
   if (typeof s !== "string" && typeof s !== "number") throw new TypeError();
   else if (typeof s === "number") s = s.toString();
@@ -407,3 +472,43 @@ const stringContains = function(string, substring) {
 const icon = function(ic) {
   return `<img class="amc_icon" src="${browser.runtime.getURL(`img/${ic}.svg`)}" />`;
 };
+
+const calculateCardPosition = function(target, options) {
+  options = options || {};
+
+  let cardHeight = options.cardHeight || 250;
+  let cardWidth = options.cardWidth || 500;
+  let margin = options.margin || 15;
+  let rect = target.getClientRects()[0];
+
+  if (rect) {
+    let result = {};
+
+    if (rect.top - 2 * margin - cardHeight < 0) {
+      result.direction = "down";
+      result.top = rect.bottom + margin;
+    } else {
+      result.direction = "up";
+      result.top = rect.top - margin - cardHeight;
+    }
+
+    if (rect.left + rect.width / 2 - cardWidth / 2 < 0) {
+      result.left = margin;
+      result.isOffCenterX = true;
+    } else if (rect.left + rect.width / 2 + cardWidth / 2 > window.innerWidth) {
+      result.left = window.innerWidth - margin - cardWidth;
+      result.isOffCenterX = true;
+    } else {
+      result.left = rect.left + rect.width / 2 - cardWidth / 2;
+    }
+
+    return result;
+  } else {
+    return null;
+  }
+};
+
+const round = function(n, d) {
+  d = d || 0;
+  return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+}
