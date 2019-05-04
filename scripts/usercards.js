@@ -85,6 +85,8 @@ onGotSettings(function() {
       if (elem.classList && !elem.classList.contains(CLASS_WAITING)) { // proceed to check if it is a valid link
         if ((elem.classList.contains("name") || elem.classList.contains("user") || elem.classList.contains("author") || elem.classList.contains("avatar") || elem.textContent.trim()[0] === "@") && elem.href && userLinkRegex.test(elem.getAttribute("href"))) {
           href = elem.href;
+        } else if (elem.classList.contains("name") && elem.parentElement.href && userLinkRegex.test(elem.parentElement.getAttribute("href"))) {
+          href = elem.parentElement.href;
         } else if (elem.parentElement.tagName === "A" && elem.parentElement.parentElement.classList.contains("name")) {
           href = elem.parentElement.href;
         }
