@@ -6,7 +6,7 @@ const INFOCARDS_MAX_GENRES = 4;
 
 const CHAR_BULLET = "·";
 
-const CAPITALIZE_FIRST = 0, CAPITALIZE_WORDS = 1;
+const CAPITALIZE_FIRST = 1, CAPITALIZE_WORDS = 2;
 
 const strings = {
   format: {
@@ -292,6 +292,7 @@ const getUserInfo = function(name) {
   const query = `
 query ($name: String) {
   User (name: $name) {
+    id
     name
     avatar { large }
     bannerImage
@@ -330,6 +331,89 @@ query ($name: String) {
       }
     });
   });
+};
+
+const getFollowingLists = function(userId) {
+  return new Promise((resolve, reject) => {
+    if (token) {
+      const queries = {
+        following: `
+  query ($id: Int!, $page: Int) {
+    Page(page: $page) {
+      pageInfo {
+        hasNextPage
+      }
+      following (userId: $id, sort: USERNAME) {
+        id
+      }
+    }
+  }
+        `,
+        followers: `
+  query ($id: Int!, $page: Int) {
+    Page(page: $page) {
+      pageInfo {
+        hasNextPage
+      }
+      followers (userId: $id, sort: USERNAME) {
+        id
+      }
+    }
+  }
+      `
+      };
+      let variables = { id: userId };
+      let done = false;
+      let currentList = "following";
+      let result = {
+        following: [],
+        followers: []
+      };
+      function getPages(page) {
+        page = page || 1;
+        // console.log("getPages(" + page + ")")
+        variables.page = page;
+        return api(queries[currentList], variables, token)
+          .then(r => {
+            result[currentList].push(...r.Page[currentList]);
+            if (r.Page.pageInfo.hasNextPage) {
+              return getPages(page + 1);
+            } else if (currentList === "following") {
+              currentList = "followers";
+              return getPages(1);
+            } else {
+              return;
+            }
+          })
+          .catch(e => reject(e));
+      }
+      getPages(1).then(() => resolve(result));
+    } else {
+      reject("Not authenticated");
+    }
+  });
+};
+
+const getAuthedUserFollowingLists = function() {
+  const STORAGE_KEY = "userfollowinglistscache";
+  return browser.storage.local.get(STORAGE_KEY).then(r => {
+    if (r.userfollowinglistscache && new Date().getTime() - r.userfollowinglistscache._dateFetched < TIME_ONE_DAY) {
+      return r.userfollowinglistscache;
+    } else {
+      return new Promise((resolve, reject) => {
+        getAuthedUserInfo().then(authedUser => {
+          getFollowingLists(authedUser.id)
+          .then(lists => {
+            let newStorage = {};
+            newStorage[STORAGE_KEY] = lists;
+            newStorage[STORAGE_KEY]._dateFetched = new Date().getTime();
+            browser.storage.local.set(newStorage).then(() => resolve(lists));
+          })
+          .catch(e => reject());
+        });
+      });
+    }
+  })
 };
 
 function getActivityInfos(options) {
@@ -429,6 +513,10 @@ function clearUsersInfoCache() {
   });
 }
 
+function clearFollowingListsCache() {
+  return browser.storage.local.remove("userfollowinglistscache");
+}
+
 function zpad(s, n) {
   if (typeof s !== "string" && typeof s !== "number") throw new TypeError();
   else if (typeof s === "number") s = s.toString();
@@ -458,10 +546,10 @@ function renderDateFormat() {
 }
 
 function capitalize(str, mode) {
-  if (mode === undefined || mode === CAPITALIZE_FIRST) {
+  if (!mode || mode === CAPITALIZE_FIRST) {
     return str[0].toUpperCase() + str.substring(1);
   } else if (mode === CAPITALIZE_WORDS) {
-    throw new Error("not yet implemented");
+    return str.split(" ").map(s => capitalize(s)).join(" ");
   }
 }
 
@@ -511,4 +599,4 @@ const calculateCardPosition = function(target, options) {
 const round = function(n, d) {
   d = d || 0;
   return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
-}
+};

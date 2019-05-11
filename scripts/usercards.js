@@ -11,7 +11,7 @@ onGotSettings(function() {
 
     const userLinkRegex = /^\/user\/\S+\/*$/;
 
-    function showCard(user, position) {
+    function showCard(user, followingLists, position) {
       if (position) {
         let elem = document.createElement("div");
         elem.classList.add(CLASS_NS, "ales-card");
@@ -30,11 +30,18 @@ onGotSettings(function() {
         const favTag = user.stats.favouredTags[0];
         const noNumbers = !favGenre || !favGenre[sortKey] || !favTag || !favTag[sortKey];
 
-        if (noNumbers) { // TODO
+        let isFollowing = false;
+        let isFollower = false;
+
+        if (noNumbers) {
           elem.classList.add(CLASS_NONUMBERS);
         }
         if (position.isOffCenterX) {
           elem.classList.add(CLASS_NOARROW);
+        }
+        if (followingLists) {
+          isFollowing = !!followingLists.following.filter(f => f.id === user.id).length;
+          isFollower = !!followingLists.followers.filter(f => f.id === user.id).length;
         }
 
         elem.innerHTML = `
@@ -43,7 +50,12 @@ onGotSettings(function() {
     <div class="${CLASS_NS}_avatar" style="background-image: url(${user.avatar.large});"></div>
   </div>
   <div class="${CLASS_NS}_right">
-    <h2 class="${CLASS_NS}_name">${user.name}</h2>
+    <div class="${CLASS_NS}_name-container">
+      <h2 class="${CLASS_NS}_name">${user.name}</h2>
+      ${user.moderatorStatus ? `<div class="${CLASS_NS}_tag ${CLASS_NS}_tag--mod">${capitalize(user.moderatorStatus, CAPITALIZE_WORDS)}</div>` : ""}
+      ${isFollowing ? `<div class="${CLASS_NS}_tag">Followed</div>` : ""}
+      ${isFollower ? `<div class="${CLASS_NS}_tag">Follows you</div>` : ""}
+    </div>
     <div class="${CLASS_NS}_stats">
       <div class="${CLASS_NS}_stats_left">
         <div class="${CLASS_NS}_stats_hours ${CLASS_NS}_stat">${round(user.stats.watchedTime / 60 / 24, 1)} days</div>
@@ -98,9 +110,15 @@ onGotSettings(function() {
         let path = url.pathname.slice(1).split("/");
         let name = path[1]; // username
 
+        function ready(r, f) { showCard(r, f, calculateCardPosition(elem, { cardWidth: 450, cardHeight: 102 })); }
+
         let timeout = setTimeout(function() {
           getUserInfo(name).then(r => {
-            showCard(r, calculateCardPosition(elem, { cardWidth: 450, cardHeight: 102 }));
+            if (token) {
+              getAuthedUserFollowingLists().then(f => ready(r, f));
+            } else {
+              ready(r, null);
+            }
             elem.classList.remove(CLASS_WAITING);
             elem.classList.add(CLASS_ACTIVE);
             if (!elem.classList.contains(CLASS_ATTACHED)) {

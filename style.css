@@ -303,9 +303,32 @@
   display: flex;
 }
 
+.ales-usercard_name-container {
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  flex-flow: wrap;
+}
+
 .ales-usercard_name {
   font-size: 1.3em;
-  margin-bottom: 0.5em;
+  margin-right: 7px;
+}
+
+.ales-usercard_tag {
+  background-color: rgba(var(--color-text), 0.15);
+  font-size: 1.2rem;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.ales-usercard_tag:not(:last-child) {
+  margin-right: 7px;
+}
+
+.ales-usercard_tag.ales-usercard_tag--mod {
+  background-color: rgb(var(--color-blue));
+  color: rgb(var(--color-text-bright));
 }
 
 .ales-usercard_avatar {
