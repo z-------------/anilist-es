@@ -191,6 +191,8 @@ function api(query, variables, token) {
     options.headers["Authorization"] = `Bearer ${token}`;
   }
 
+  console.log("ALES: API call", { query, variables, token });
+
   return fetch("https://graphql.anilist.co", options)
     .then(response => {
       return response.json().then(json => {
