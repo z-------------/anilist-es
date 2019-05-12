@@ -133,30 +133,31 @@ onGotSettings(function() {
         }
       }
       if (href) {
-        elem.classList.add(CLASS_WAITING);
-
         let url = new URL(href);
         let path = url.pathname.slice(1).split("/");
         let id = Number(path[1]);
         let type = path[0].toUpperCase();
 
-        let timeout = setTimeout(function() {
-          getSeriesInfo(id, type).then(r => {
-            showCard(r, calculateCardPosition(elem));
+        if (type === "ANIME" || type === "MANGA") {
+          elem.classList.add(CLASS_WAITING);
+          let timeout = setTimeout(function() {
+            getSeriesInfo(id, type).then(r => {
+              showCard(r, calculateCardPosition(elem));
+              elem.classList.remove(CLASS_WAITING);
+              elem.classList.add(CLASS_ACTIVE);
+              if (!elem.classList.contains(CLASS_ATTACHED)) {
+                elem.classList.add(CLASS_ATTACHED);
+                elem.addEventListener("mouseout", () => {
+                  hideCard(id);
+                });
+              }
+            });
+          }, settings.cardsHoverTimeout);
+          elem.addEventListener("mouseout", () => {
+            clearTimeout(timeout);
             elem.classList.remove(CLASS_WAITING);
-            elem.classList.add(CLASS_ACTIVE);
-            if (!elem.classList.contains(CLASS_ATTACHED)) {
-              elem.classList.add(CLASS_ATTACHED);
-              elem.addEventListener("mouseout", () => {
-                hideCard(id);
-              });
-            }
           });
-        }, settings.cardsHoverTimeout);
-        elem.addEventListener("mouseout", () => {
-          clearTimeout(timeout);
-          elem.classList.remove(CLASS_WAITING);
-        });
+        }
       }
     });
 
