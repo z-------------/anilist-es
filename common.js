@@ -232,9 +232,9 @@ function writeUsersCache(user) {
 function getSeriesInfo(id, type) {
   return new Promise(function(resolve, reject) {
     let cacheKey = makeCacheKey(type, id);
-    browser.storage.local.get([cacheKey]).then(result => {
-      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < TIME_ONE_DAY) {
-        resolve(result[cacheKey]);
+    findInCache(cacheKey).then(result => {
+      if (result) {
+        resolve(result);
       } else {
         let query = `
   query ($id: Int, $type: MediaType) {
@@ -258,12 +258,9 @@ function getAuthedUserInfo() {
   return new Promise((resolve, reject) => {
     onGotSettings((settings, defaults, token) => {
       if (token) {
-        browser.storage.local.get(["usercache"]).then(r => {
-          if (r.usercache && new Date() - new Date(r.usercache._dateFetched) <= TIME_ONE_DAY) {
-            resolve({
-              id: r.usercache.id,
-              name: r.usercache.name
-            });
+        findInCache("usercache").then(r => {
+          if (r) {
+            resolve(r);
           } else {
             let query = `query { Viewer { id name } }`;
             api(query, {}, token)
@@ -318,9 +315,9 @@ query ($name: String) {
   const variables = { name };
   return new Promise(function(resolve, reject) {
     const cacheKey = makeUsersCacheKey(name);
-    browser.storage.local.get([cacheKey]).then(result => {
-      if (result[cacheKey] && new Date() - result[cacheKey]._dateFetched < TIME_ONE_DAY) {
-        resolve(result[cacheKey]);
+    findInCache(cacheKey).then(result => {
+      if (result) {
+        resolve(result);
       } else {
         api(query, variables)
           .then(r => {
@@ -396,16 +393,16 @@ const getFollowingLists = function(userId) {
 
 const getAuthedUserFollowingLists = function() {
   const STORAGE_KEY = "userfollowinglistscache";
-  return browser.storage.local.get(STORAGE_KEY).then(r => {
-    if (r.userfollowinglistscache && new Date().getTime() - r.userfollowinglistscache._dateFetched < TIME_ONE_DAY) {
-      return r.userfollowinglistscache;
+  return findInCache(STORAGE_KEY).then(r => {
+    if (r) {
+      return r;
     } else {
       return new Promise((resolve, reject) => {
         getAuthedUserInfo().then(authedUser => {
           getFollowingLists(authedUser.id)
           .then(lists => {
             let newStorage = {};
-            newStorage[STORAGE_KEY] = lists;
+            newStorage[STORAGE_KEY] = Object.assign({}, lists);
             newStorage[STORAGE_KEY]._dateFetched = new Date().getTime();
             browser.storage.local.set(newStorage).then(() => resolve(lists));
           })
@@ -599,4 +596,16 @@ const calculateCardPosition = function(target, options) {
 const round = function(n, d) {
   d = d || 0;
   return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+};
+
+const findInCache = function(cacheKey, options) {
+  options = options || { expire: TIME_ONE_DAY };
+  return browser.storage.local.get(cacheKey)
+    .then(r => {
+      if (r[cacheKey] && new Date().getTime() - r[cacheKey]._dateFetched < options.expire) {
+        return r[cacheKey];
+      } else {
+        return null;
+      }
+    });
 };

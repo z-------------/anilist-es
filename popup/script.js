@@ -10,13 +10,12 @@ onGotSettings(function() {
   /* updates */
 
   if (settings.updateCheckEnable) {
-    browser.storage.local.get(["updatecache"]).then(r => {
-      let currentVersion = browser.runtime.getManifest().version;
-
-      if (r.updatecache && new Date() - new Date(r.updatecache.dateChecked) <= TIME_ONE_DAY) {
+    let currentVersion = browser.runtime.getManifest().version;
+    findInCache("updatecache").then(r => {
+      if (r) {
         gotUpdateInfo({
           currentVersion,
-          availableVersion: r.updatecache.availableVersion
+          availableVersion: r.availableVersion
         });
       } else {
         fetch("https://raw.githubusercontent.com/z-------------/anilist-es/master/manifest.json")
@@ -32,7 +31,7 @@ onGotSettings(function() {
             browser.storage.local.set({
               updatecache: {
                 availableVersion,
-                dateChecked: new Date().getTime()
+                _dateFetched: new Date().getTime()
               }
             });
           });
