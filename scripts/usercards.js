@@ -53,7 +53,7 @@ onGotSettings(function() {
     <div class="${CLASS_NS}_name-container">
       <h2 class="${CLASS_NS}_name">${user.name}</h2>
       ${user.moderatorStatus ? `<div class="${CLASS_NS}_tag ${CLASS_NS}_tag--mod">${capitalize(user.moderatorStatus, CAPITALIZE_WORDS)}</div>` : ""}
-      ${isFollowing ? `<div class="${CLASS_NS}_tag">Followed</div>` : ""}
+      ${isFollowing ? `<div class="${CLASS_NS}_tag">Following</div>` : ""}
       ${isFollower ? `<div class="${CLASS_NS}_tag">Follows you</div>` : ""}
     </div>
     <div class="${CLASS_NS}_stats">
