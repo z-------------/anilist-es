@@ -224,17 +224,18 @@ browser.notifications.onClicked.addListener(notifId => {
         let matches = notifs.filter(notif => notif.id === Number(idSplit[1]));
         if (matches[0]) {
           let notif = matches[0];
-          if (notif.url) {
+          const url = processNotif(notif).url;
+          if (url) {
             browser.windows.getCurrent()
               .then(currentWindow => {
                 if (typeof currentWindow === "undefined") {
-                  browser.windows.create({ url: notif.url });
+                  browser.windows.create({ url });
                 } else {
-                  browser.tabs.create({ url: notif.url }); // defaults to current window
+                  browser.tabs.create({ url }); // defaults to current window
                 }
               })
               .catch(() => {
-                browser.windows.create({ url: notif.url });
+                browser.windows.create({ url });
               });
           }
         }
