@@ -611,3 +611,44 @@ const findInCache = function(cacheKey, options) {
       }
     });
 };
+
+const processNotif = function(notif) {
+  let result = {};
+
+  /* url */
+  let typeSplit = notif.type.split("_");
+  if (typeSplit[0] === "ACTIVITY" || typeSplit[0] === "ACTIVITY_REPLY_SUBSCRIBED") {
+    result.url = `https://anilist.co/activity/${notif.activityId}`;
+  } else if (notif.type === "AIRING" || notif.type === "RELATED_MEDIA_ADDITION") {
+    result.url = `https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}`;
+  } else if (notif.type === "FOLLOWING") {
+    result.url = `https://anilist.co/user/${notif.user.name}`;
+  } else if (typeSplit[0] === "THREAD" && (typeSplit[1] === "COMMENT" || typeSplit[1] === "SUBSCRIBED")) {
+    result.url = `https://anilist.co/forum/thread/${notif.thread.id}/comment/${notif.commentId}`;
+  } else if (notif.type === "THREAD_LIKE") {
+    result.url = `https://anilist.co/forum/thread/${notif.threadId}`;
+  }
+
+  /* text */
+  if (notif.type === "AIRING") {
+    result.text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
+  } else if (notif.type === "RELATED_MEDIA_ADDITION") { 
+    result.text = `${notif.media.title.userPreferred}${notif.context}`;
+  } else {
+    result.text = `${notif.user.name}${notif.context}`;
+  }
+
+  /* html */
+  if (notif.type === "AIRING") {
+    result.html = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}<a target="_blank" href="https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}/">${notif.media.title.userPreferred}</a>${notif.contexts[2]}`;
+  } else if (notif.type === "RELATED_MEDIA_ADDITION") { 
+    result.html = `<a target="_blank" href="https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}/">${notif.media.title.userPreferred}</a>${notif.context}`;
+  } else {
+    result.html = `<a target="_blank" href="https://anilist.co/user/${notif.user.name}/">${notif.user.name}</a>${notif.context}`;
+  }
+
+  /* image */
+  result.image = notif.media ? notif.media.coverImage.large : notif.user.avatar.large;
+
+  return result;
+};

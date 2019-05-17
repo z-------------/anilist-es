@@ -52,7 +52,8 @@ notificationElemTemplate.innerHTML = `
 </div>
 `;
 
-function makeNotificationElem(info) {
+function makeNotificationElem(notif) {
+  const processed = processNotif(notif);
   let elem = notificationElemTemplate.cloneNode(true);
 
   let imageElem = elem.getElementsByClassName("amn_image")[0];
@@ -60,33 +61,16 @@ function makeNotificationElem(info) {
   let dateElem = elem.getElementsByClassName("amn_date")[0];
 
   /* image */
+  imageElem.style.backgroundImage = `url(${processed.image})`;
 
-  let imageUrl = "";
-  if (info.media) {
-    imageUrl = info.media.coverImage.large;
-  } else if (info.user) {
-    imageUrl = info.user.avatar.large;
-  }
-  imageElem.style.backgroundImage = `url(${imageUrl})`;
-
-  /* text */
-
-  let html = "";
-  if (info.type === "AIRING") {
-    let url = `https://anilist.co/${info.media.type.toLowerCase()}/${info.media.id}/`;
-    html = `${info.contexts[0]}${info.episode}${info.contexts[1]}<a target="_blank" href="${url}">${info.media.title.userPreferred}</a>${info.contexts[2]}`;
-  } else {
-    let url = `https://anilist.co/user/${info.user.name}/`;
-    html = `<a target="_blank" href="${url}">${info.user.name}</a>${info.context}`;
-  }
-  textElem.innerHTML = html;
-  if (info.type !== "FOLLOWING" && info.url) {
-    textElem.setAttribute("href", info.url);
+  /* html */
+  textElem.innerHTML = processed.html;
+  if (notif.type !== "FOLLOWING" && processed.url) {
+    textElem.setAttribute("href", processed.url);
   }
 
   /* date */
-
-  let date = new Date(info.createdAt * 1000);
+  let date = new Date(notif.createdAt * 1000);
   let dateFormatted = dateFormat(date);
   dateElem.setAttribute("datetime", dateFormatted.iso);
   dateElem.setAttribute("title", dateFormatted.absolute);

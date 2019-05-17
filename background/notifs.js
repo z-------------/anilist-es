@@ -1,5 +1,17 @@
 function makeQueryString(options) {
   options = options || {};
+  const COMMON_KEYS = "id type createdAt";
+  const USER_KEYS = "user { id name avatar { large }}";
+  const MEDIA_KEYS = `media {
+    id
+    type
+    title {
+      userPreferred
+    }
+    coverImage {
+      large
+    }
+  }`;
   return `
 query ($page: Int, $types: [NotificationType]) {
   Page (page: $page) {
@@ -12,206 +24,118 @@ query ($page: Int, $types: [NotificationType]) {
     }
     notifications (type_in: $types, resetNotificationCount: ${options.resetNotificationCount || false}) {
       ... on AiringNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${MEDIA_KEYS}
         episode
         contexts
-        media {
-          id
-          type
-          title {
-            userPreferred
-          }
-          coverImage {
-            large
-          }
-        }
-        createdAt
+      }
+      ... on RelatedMediaAdditionNotification {
+        ${COMMON_KEYS}
+        ${MEDIA_KEYS}
+        context
       }
       ... on FollowingNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ActivityMessageNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         activityId
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ActivityMentionNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         activityId
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ActivityReplyNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         activityId
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ActivityLikeNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         activityId
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ActivityReplyLikeNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         activityId
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
+      }
+      ... on ActivityReplySubscribedNotification {
+        ${COMMON_KEYS}
+        ${USER_KEYS}
+        context
+        activityId
       }
       ... on ThreadCommentMentionNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         commentId
         thread {
           id
           title
         }
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ThreadCommentReplyNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         commentId
         thread {
           id
           title
         }
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ThreadCommentSubscribedNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         commentId
         thread {
           id
           title
         }
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ThreadCommentLikeNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         commentId
         thread {
           id
           title
         }
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
       ... on ThreadLikeNotification {
-        id
-        type
+        ${COMMON_KEYS}
+        ${USER_KEYS}
         context
         thread {
           id
           title
         }
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        createdAt
       }
     }
   }
 }
-    `; // lifted from AniList's source because I have no idea about GraphQL. sorry.
+    `; // mostly lifted from AniList's source because I have no idea about GraphQL. sorry.
 }
 let variables = {
   page: 0,
   types: [
-    "ACTIVITY_MESSAGE", "ACTIVITY_REPLY", "ACTIVITY_LIKE", "ACTIVITY_MENTION", "ACTIVITY_REPLY_LIKE",
-    "THREAD_COMMENT_MENTION", "THREAD_SUBSCRIBED", "THREAD_COMMENT_REPLY", "THREAD_COMMENT_LIKE",
-    "THREAD_LIKE",
-    "FOLLOWING", "AIRING"
+    "ACTIVITY_MESSAGE", "ACTIVITY_REPLY", "ACTIVITY_LIKE", "ACTIVITY_MENTION", "ACTIVITY_REPLY_LIKE", "ACTIVITY_REPLY_SUBSCRIBED",
+    "THREAD_COMMENT_MENTION", "THREAD_SUBSCRIBED", "THREAD_COMMENT_REPLY", "THREAD_COMMENT_LIKE", "THREAD_LIKE",
+    "FOLLOWING",
+    "AIRING", "RELATED_MEDIA_ADDITION"
   ]
 };
 
@@ -241,40 +165,19 @@ function updateNotifs() {
                     .sort((a, b) => a.createdAt - b.createdAt);
                   let notifsCurrent = [...notifsNew.reverse(), ...notifsCached];
 
-                  for (let i = 0, l = notifsNew.length; i < l; i++) {
-                    let notif = notifsNew[i];
-                    let typeSplit = notif.type.split("_");
-                    if (typeSplit[0] === "ACTIVITY") {
-                      notif.url = `https://anilist.co/activity/${notif.activityId}`;
-                    } else if (notif.type === "AIRING") {
-                      notif.url = `https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}`;
-                    } else if (notif.type === "FOLLOWING") {
-                      notif.url = `https://anilist.co/user/${notif.user.name}`;
-                    } else if (typeSplit[0] === "THREAD" && (typeSplit[1] === "COMMENT" || typeSplit[1] === "SUBSCRIBED")) {
-                      notif.url = `https://anilist.co/forum/thread/${notif.thread.id}/comment/${notif.commentId}`;
-                    } else if (notif.type === "THREAD_LIKE") {
-                      notif.url = `https://anilist.co/forum/thread/${notif.threadId}`;
-                    }
-                  }
-
                   let end = /\sFirefox\/\d+\.\d+$/.test(navigator.userAgent) ? 1 : notifsNew.length;
 
                   for (let i = 0; i < end; i++) {
                     let notif = notifsNew[i];
-                    let text = "";
-                    if (notif.type === "AIRING") {
-                      text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
-                    } else {
-                      text = `${notif.user.name}${notif.context}`;
-                    }
-                    fetch(notif.media ? notif.media.coverImage.large : notif.user.avatar.large).then(r => {
+                    let processed = processNotif(notif);
+                    fetch(processed.image).then(r => {
                       r.blob().then(blob => {
                         let blobUrl = URL.createObjectURL(blob);
                         // console.log("creating notif", text, blobUrl)
                         browser.notifications.create(`anilist_${notif.id}`, {
                           type: "basic",
                           iconUrl: blobUrl,
-                          message: text,
+                          message: processed.text,
                           title: "AniList Enhancement Suite",
                           eventTime: new Date(notif.createdAt * 1000).getTime()
                         });
