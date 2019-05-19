@@ -612,6 +612,12 @@ const findInCache = function(cacheKey, options) {
     });
 };
 
+const makeLinkHTML = function(url, text, target) {
+  target = target || "_blank";
+  url = url[0] === "/" ? `https://anilist.co${url}` : url;
+  return `<a target="${target}" href="${url}">${text}</a>`;
+};
+
 const processNotif = function(notif) {
   let result = {};
 
@@ -634,17 +640,21 @@ const processNotif = function(notif) {
     result.text = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${notif.media.title.userPreferred}${notif.contexts[2]}`;
   } else if (notif.type === "RELATED_MEDIA_ADDITION") { 
     result.text = `${notif.media.title.userPreferred}${notif.context}`;
+  } else if (notif.type === "THREAD_COMMENT_REPLY") {
+    result.text = `${notif.user.name}${notif.context}${notif.thread.title}`;
   } else {
     result.text = `${notif.user.name}${notif.context}`;
   }
 
   /* html */
   if (notif.type === "AIRING") {
-    result.html = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}<a target="_blank" href="https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}/">${notif.media.title.userPreferred}</a>${notif.contexts[2]}`;
+    result.html = `${notif.contexts[0]}${notif.episode}${notif.contexts[1]}${makeLinkHTML(`/${notif.media.type.toLowerCase()}/${notif.media.id}`, notif.media.title.userPreferred)}${notif.contexts[2]}`;
   } else if (notif.type === "RELATED_MEDIA_ADDITION") { 
-    result.html = `<a target="_blank" href="https://anilist.co/${notif.media.type.toLowerCase()}/${notif.media.id}/">${notif.media.title.userPreferred}</a>${notif.context}`;
+    result.html = `${makeLinkHTML(`/${notif.media.type.toLowerCase()}/${notif.media.id}`, notif.media.title.userPreferred)}${notif.context}`;
+  } else if (notif.type === "THREAD_COMMENT_REPLY") {
+    result.html = `${makeLinkHTML(`/user/${notif.user.name}`, notif.user.name)}${notif.context}${makeLinkHTML(`/forum/thread/${notif.thread.id}/comment/${notif.commentId}`, notif.thread.title)}`;
   } else {
-    result.html = `<a target="_blank" href="https://anilist.co/user/${notif.user.name}/">${notif.user.name}</a>${notif.context}`;
+    result.html = `${makeLinkHTML(`/user/${notif.user.name}`, notif.user.name)}${notif.context}`;
   }
 
   /* image */
