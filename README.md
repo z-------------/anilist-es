@@ -43,4 +43,8 @@ Instructions for Chrome:
 5. Click "Load unpacked"
 6. Select the unzipped folder
 
-You can also [get the "Lite" version](https://greasyfork.org/en/scripts/382294-anilist-enhancement-suite-lite) as a userscript. It lacks everything but the content scripts and does not cache media info etc. locally.
+You can also [get the "Lite" version](https://greasyfork.org/en/scripts/382294-anilist-enhancement-suite-lite) as a userscript. It lacks everything but the content scripts and does not cache media info etc. locally. It will also be updated much less frequently (if at all).
+
+## Known issues
+
+* Notification content previews are incredibly unreliable. I plan to rework them in the future.
