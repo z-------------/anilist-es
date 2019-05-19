@@ -8,7 +8,8 @@ onGotSettings(function() {
         if (
           detailsElem &&
           !stringContains(detailsElem.textContent, "aired") &&
-          !stringContains(detailsElem.textContent, "commented in your subscribed forum thread")
+          !stringContains(detailsElem.textContent, "commented in your subscribed forum thread") &&
+          !stringContains(detailsElem.textContent, "replied to your comment, in the forum thread")
         ) {
           let path = detailsElem.getElementsByClassName("link")[0].href.split("/");
           let id = Number(path[path.length - 1]);
