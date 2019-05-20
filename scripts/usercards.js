@@ -68,7 +68,7 @@ onGotSettings(function() {
           cardElem.dataset.name = user.name.toLowerCase();
           cardElem.classList.add("ales-usercard");
 
-          cardElem.style.backgroundImage = `url(${user.bannerImage})`;
+          cardElem.style.backgroundImage = user.bannerImage ? `url(${user.bannerImage})` : "";
 
           if (noNumbers) {
             cardElem.classList.add(CLASS_NONUMBERS);
