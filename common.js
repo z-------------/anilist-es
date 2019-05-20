@@ -2,7 +2,8 @@ let settings, defaults, token;
 
 const TIME_ONE_DAY = 86400000;
 
-const INFOCARDS_MAX_GENRES = 4;
+const CARDS_CLASS_WAITING = "ales-card--waiting";
+const CARDS_CLASS_NOARROW = "ales-card--noarrow";
 
 const CHAR_BULLET = "·";
 
@@ -415,6 +416,22 @@ const getAuthedUserFollowingLists = function() {
   })
 };
 
+const getUserInfoWithFollowingStatus = function(name) {
+  return getUserInfo(name).then(user => {
+    if (token) {
+      return getAuthedUserFollowingLists().then(lists => {
+        return {
+          user,
+          following: !!lists.following.filter(f => f.id === user.id).length,
+          follower: !!lists.followers.filter(f => f.id === user.id).length
+        }
+      });
+    } else {
+      return { user };
+    }
+  });
+};
+
 function getActivityInfos(options) {
   let ids = options.ids;
   if (ids.length) {
@@ -661,4 +678,68 @@ const processNotif = function(notif) {
   result.image = notif.media ? notif.media.coverImage.large : notif.user.avatar.large;
 
   return result;
+};
+
+const handleCard = (function() {
+  const hideAllCards = function() {
+    let amcElems = document.getElementsByClassName("ales-card");
+    for (let i = 0, l = amcElems.length; i < l; i++) {
+      amcElems[i].parentElement.removeChild(amcElems[i]);
+    }
+  };
+
+  return function(sourceElem, timeout, callback1, callback2) {
+    if (!sourceElem.classList.contains(CARDS_CLASS_WAITING)) {
+      let cardElem;
+      sourceElem.classList.add(CARDS_CLASS_WAITING);
+      let timer = setTimeout(function() {
+        callback1().then(info => {
+          if (sourceElem.classList.contains(CARDS_CLASS_WAITING)) {
+            sourceElem.classList.remove(CARDS_CLASS_WAITING);
+            cardElem = callback2(info);
+          }
+        });
+      }, timeout);
+      let mouseoutListener = function() {
+        clearTimeout(timer);
+        sourceElem.classList.remove(CARDS_CLASS_WAITING);
+        if (cardElem) {
+          cardElem.parentElement.removeChild(cardElem);
+        }
+        sourceElem.removeEventListener("mouseout", mouseoutListener);
+      };
+      sourceElem.addEventListener("mouseout", mouseoutListener);
+
+      if (!document.body.classList.contains("ales-cards-listeners-attached")) {
+        onNavigate(hideAllCards);
+        window.addEventListener("scroll", hideAllCards);
+        window.addEventListener("click", hideAllCards);
+        document.body.classList.add("ales-cards-listeners-attached")
+      }
+    }
+  };
+}());
+
+const makeCard = function(position, html) {
+  console.log(position);
+  if (position instanceof HTMLElement) position = calculateCardPosition(position);
+  // otherwise, assume it is already an object returned by calculateCardPosition()
+  
+  if (position) {
+    let elem = document.createElement("div");
+    elem.classList.add("ales-card");
+    elem.classList.add(`ales-card--direction-${position.direction}`);
+
+    elem.style.left = position.left + "px";
+    elem.style.top = position.top + "px";
+
+    if (position.isOffCenterX) {
+      elem.classList.add(CARDS_CLASS_NOARROW);
+    }
+
+    elem.innerHTML = html;
+
+    return elem;
+  }
+  return null;
 };
