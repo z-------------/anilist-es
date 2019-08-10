@@ -1,7 +1,16 @@
+const STORAGE_FORMAT_VER = 2;
+
 const KEEPCOUNT = 50;
 // const KEEPCOUNT = 1;
 
 /* storage format updates */
+
+browser.storage.local.get("storage_format_ver").then(r => {
+  if (!r.hasOwnProperty("storage_format_ver") || r["storage_format_ver"] !== STORAGE_FORMAT_VER) {
+    browser.storage.local.clear();
+    browser.storage.local.set({ "storage_format_ver": STORAGE_FORMAT_VER });
+  }
+});
 
 browser.storage.local.get(["notifcache"]).then(r => {
   if (r.hasOwnProperty("notifcache") && typeof r.notifcache === "string") {

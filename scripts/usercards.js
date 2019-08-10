@@ -49,8 +49,8 @@ onGotSettings(function() {
       </div>
       <div class="${CLASS_NS}_stats">
         <div class="${CLASS_NS}_stats_left">
-          <div class="${CLASS_NS}_stats_hours ${CLASS_NS}_stat">${round(user.stats.watchedTime / 60 / 24, 1)} days</div>
-          <div class="${CLASS_NS}_stats_chapters ${CLASS_NS}_stat">${user.stats.chaptersRead} chapters</div>
+          <div class="${CLASS_NS}_stats_hours ${CLASS_NS}_stat">${round(user.statistics.anime.minutesWatched / 60 / 24, 1)} days</div>
+          <div class="${CLASS_NS}_stats_chapters ${CLASS_NS}_stat">${user.statistics.manga.chaptersRead} chapters</div>
         </div>
         ${noNumbers ? "" : `
         <div class="${CLASS_NS}_stats_right">

@@ -299,8 +299,6 @@ query ($name: String) {
     donatorTier
     moderatorStatus
     stats {
-      watchedTime
-      chaptersRead
       favouredGenres {
         genre
         amount
@@ -310,6 +308,14 @@ query ($name: String) {
         tag { name }
         amount
         meanScore
+      }
+    }
+    statistics {
+      anime {
+        minutesWatched
+      }
+      manga {
+        chaptersRead
       }
     }
   }
