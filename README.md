@@ -14,15 +14,7 @@ Work in progress.
 
 ## Browser support
 
-| Browser | Support             |
-|---------|---------------------|
-| Chrome  | Full                |
-| Firefox | Partial<sup>1</sup> |
-| Edge    | None<sup>2</sup>    |
-
-<sup>1</sup> Can only show one notification at a time.
-
-<sup>2</sup> Works perfectly in the new Chromium-based Edge builds, naturally. 
+Development is focused on Google Chrome. There are a few known issues on other WebExtension-supporting browsers.
 
 ## Screenshots
 
