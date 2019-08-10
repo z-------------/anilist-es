@@ -727,7 +727,6 @@ const handleCard = (function() {
 }());
 
 const makeCard = function(position, html) {
-  console.log(position);
   if (position instanceof HTMLElement) position = calculateCardPosition(position);
   // otherwise, assume it is already an object returned by calculateCardPosition()
   
