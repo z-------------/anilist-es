@@ -28,11 +28,21 @@ onGotSettings(function() {
         }, function(info) {
           let user = info.user;
 
-          const sortKey = settings.userCardsFavoredDefinition;
-          user.stats.favouredGenres.sort((a, b) => b[sortKey] - a[sortKey]);
-          user.stats.favouredTags.sort((a, b) => b[sortKey] - a[sortKey]);
-          const favGenre = user.stats.favouredGenres[0];
-          const favTag = user.stats.favouredTags[0];
+          const sortKey = {
+            meanScore: "meanScore", amount: "count"
+          }[settings.userCardsFavoredDefinition];
+          const fieldKeySuffix = {
+            meanScore: "ByScore", count: "ByCount"
+          }[sortKey];
+          
+          const favGenreAnime = user.statistics.anime[`genre${fieldKeySuffix}`][0];
+          const favGenreManga = user.statistics.manga[`genre${fieldKeySuffix}`][0];
+          const favGenre = (favGenreManga[sortKey] > favGenreAnime[sortKey] ? favGenreManga : favGenreAnime);
+
+          const favTagAnime = user.statistics.anime[`tag${fieldKeySuffix}`][0];
+          const favTagManga = user.statistics.manga[`tag${fieldKeySuffix}`][0];
+          const favTag = (favTagManga[sortKey] > favTagAnime[sortKey] ? favTagManga : favTagAnime);
+
           const noNumbers = !favGenre || !favGenre[sortKey] || !favTag || !favTag[sortKey];
 
           let html = `

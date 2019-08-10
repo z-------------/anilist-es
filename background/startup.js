@@ -1,4 +1,4 @@
-const STORAGE_FORMAT_VER = 2;
+const STORAGE_FORMAT_VER = 3;
 
 const KEEPCOUNT = 50;
 // const KEEPCOUNT = 1;

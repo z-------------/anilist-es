@@ -197,6 +197,7 @@ function api(query, variables, token) {
   return fetch("https://graphql.anilist.co", options)
     .then(response => {
       return response.json().then(json => {
+        console.log(json);
         return response.ok ? json : Promise.reject(json);
       });
     })
@@ -298,27 +299,46 @@ query ($name: String) {
     bannerImage
     donatorTier
     moderatorStatus
-    stats {
-      favouredGenres {
-        genre
-        amount
-        meanScore
-      }
-      favouredTags {
-        tag { name }
-        amount
-        meanScore
-      }
-    }
     statistics {
       anime {
         minutesWatched
+        ... UserStatsMediaInfo
       }
       manga {
         chaptersRead
+        ... UserStatsMediaInfo
       }
     }
   }
+}
+
+fragment UserStatsMediaInfo on UserStatistics {
+  genreByScore: genres (limit: 1, sort: MEAN_SCORE_DESC) {
+    ... GenreInfo
+  }
+  genreByCount: genres (limit: 1, sort: COUNT_DESC) {
+    ... GenreInfo
+  }
+  tagByScore: tags (limit: 1, sort: MEAN_SCORE_DESC) {
+    ... TagInfo
+  }
+  tagByCount: tags (limit: 1, sort: COUNT_DESC) {
+    ... TagInfo
+  }
+}
+
+fragment GenreInfo on UserGenreStatistic {
+  genre
+  count
+  meanScore
+}
+
+fragment TagInfo on UserTagStatistic {
+  tag {
+    name
+  }
+  count
+  meanScore
 }
   `;
   const variables = { name };
