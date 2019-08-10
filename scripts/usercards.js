@@ -1,4 +1,12 @@
 onGotSettings(function() {
+  function topDecide(a, b, sortKey) {
+    if (!a && !b) return null;
+    else if (!b) return a;
+    else if (!a) return b;
+    else if (b[sortKey] > a[sortKey]) return b;
+    else return a;
+  }
+
   if (settings.userCardsEnable) {
     const CLASS_NS = "ales-usercard";
     const CLASS_NONUMBERS = `${CLASS_NS}--nonumbers`;
@@ -27,6 +35,7 @@ onGotSettings(function() {
           return getUserInfoWithFollowingStatus(name);
         }, function(info) {
           let user = info.user;
+          const stats = user.statistics;
 
           const sortKey = {
             meanScore: "meanScore", amount: "count"
@@ -35,13 +44,13 @@ onGotSettings(function() {
             meanScore: "ByScore", count: "ByCount"
           }[sortKey];
           
-          const favGenreAnime = user.statistics.anime[`genre${fieldKeySuffix}`][0];
-          const favGenreManga = user.statistics.manga[`genre${fieldKeySuffix}`][0];
-          const favGenre = (favGenreManga[sortKey] > favGenreAnime[sortKey] ? favGenreManga : favGenreAnime);
+          const favGenreAnime = stats.anime[`genre${fieldKeySuffix}`][0];
+          const favGenreManga = stats.manga[`genre${fieldKeySuffix}`][0];
+          const favGenre = topDecide(favGenreAnime, favGenreManga, sortKey);
 
-          const favTagAnime = user.statistics.anime[`tag${fieldKeySuffix}`][0];
-          const favTagManga = user.statistics.manga[`tag${fieldKeySuffix}`][0];
-          const favTag = (favTagManga[sortKey] > favTagAnime[sortKey] ? favTagManga : favTagAnime);
+          const favTagAnime = stats.anime[`tag${fieldKeySuffix}`][0];
+          const favTagManga = stats.manga[`tag${fieldKeySuffix}`][0];
+          const favTag = topDecide(favTagAnime, favTagManga, sortKey);
 
           const noNumbers = !favGenre || !favGenre[sortKey] || !favTag || !favTag[sortKey];
 
