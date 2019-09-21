@@ -197,7 +197,7 @@ function api(query, variables, token) {
   return fetch("https://graphql.anilist.co", options)
     .then(response => {
       return response.json().then(json => {
-        console.log(json);
+        // console.log(json);
         return response.ok ? json : Promise.reject(json);
       });
     })
