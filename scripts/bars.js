@@ -46,10 +46,11 @@ let makeProgressBarElem = (function() {
       typeof seriesInfo.airingSchedule.nodes[0].episode === "number"
     ) {
       const releasedBarElem = elem.getElementsByClassName("amb_bar--released")[0];
-      let releasedProgress = (seriesInfo.airingSchedule.nodes[0].episode - 1) / unitsCount;
+      const latestUnitNumber = seriesInfo.airingSchedule.nodes[0].episode - 1;
+      const releasedProgress = latestUnitNumber / unitsCount;
       releasedBarElem.style.width = `${Math.floor(releasedProgress * 100)}%`;
-      if (displayedUnits < unitsCount) {
-        let behindCount = unitsCount - displayedUnits;
+      if (displayedUnits < latestUnitNumber) {
+        let behindCount = latestUnitNumber - displayedUnits;
         let noun = seriesInfo.type === "ANIME" ? "episode" : "chapter";
         if (behindCount > 1) noun += "s";
         releasedBarElem.setAttribute("title", `${behindCount} ${noun} behind`);
