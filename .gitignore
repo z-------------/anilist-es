@@ -6,3 +6,6 @@ yarn.lock
 package.json
 
 userscript/userscript.js
+
+.web-extension-id
+web-ext-artifacts/
