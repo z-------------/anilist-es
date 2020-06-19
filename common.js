@@ -19,6 +19,8 @@ const strings = {
     ONA: "ONA",
     MUSIC: "Music",
     MANGA: "Manga",
+    MANGA_KR: "Manhwa",
+    MANGA_CN: "Manhua",
     NOVEL: "Light Novel",
     ONE_SHOT: "One Shot"
   },
@@ -141,6 +143,7 @@ coverImage {
   ` + (!options.short ? `
 id
 type
+countryOfOrigin
 episodes
 chapters
 volumes

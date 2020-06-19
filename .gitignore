@@ -5,6 +5,8 @@ yarn.lock
 .eslintrc.yaml
 package.json
 
+.vscode
+
 userscript/userscript.js
 
 .web-extension-id

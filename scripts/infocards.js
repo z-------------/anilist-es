@@ -1,3 +1,15 @@
+function getFormatString(format, countryOfOrigin) {
+  if (!countryOfOrigin || countryOfOrigin == "JP") {
+    return strings.format[format];
+  }
+  const key = `${format}_${countryOfOrigin}`;
+  if (strings.format.hasOwnProperty(key)) {
+    return strings.format[key];
+  } else {
+    return strings.format[format];
+  }
+}
+
 onGotSettings(function() {
   if (settings.cardsEnable) {
     const INFOCARDS_MAX_GENRES = 4;
@@ -42,7 +54,7 @@ onGotSettings(function() {
   <div class="amc_stats">
     ${
       [
-        info.format ? `<div class="amc_stats_format">${strings.format[info.format]}</div>` : "",
+        info.format ? `<div class="amc_stats_format">${getFormatString(info.format, info.countryOfOrigin)}</div>` : "",
         derived.isAnime
           ? (info.episodes ? `<div class="amc_stats_episodes">${info.episodes} eps.</div>` : "")
           : (info.volumes ? `<div class="amc_stats_volumes">${info.volumes} vols.</div>` : ""),
