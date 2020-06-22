@@ -17,6 +17,7 @@ let makeProgressBarElem = (function() {
 
   return function(progressItem, seriesInfos) {
     let elem = barTemplate.cloneNode(true);
+    elem.classList.add(`amb--${progressItem.seriesType.toLowerCase()}`);
 
     let seriesID = progressItem.seriesID;
     let seriesInfo = seriesInfos[seriesID];
