@@ -20,6 +20,7 @@ const strings = {
     MUSIC: "Music",
     MANGA: "Manga",
     MANGA_KR: "Manhwa",
+    MANGA_TW: "Manhua",
     MANGA_CN: "Manhua",
     NOVEL: "Light Novel",
     ONE_SHOT: "One Shot"
