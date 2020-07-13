@@ -70,7 +70,7 @@ onGotSettings(function() {
           const favGenre = topDecide(favs["anime"]["genres"], favs["manga"]["genres"], sortKey);
           const favTag = topDecide(favs["anime"]["tags"], favs["manga"]["tags"], sortKey);
 
-          const noNumbers = !favGenre || !favGenre[sortKey] || !favTag || !favTag[sortKey];
+          const noNumbers = favGenre[sortKey] === -1 || favTag[sortKey] === -1;
 
           let html = `
   <div class="${CLASS_NS}_wrap">
