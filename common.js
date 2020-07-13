@@ -317,16 +317,10 @@ query ($name: String) {
 }
 
 fragment UserStatsMediaInfo on UserStatistics {
-  genreByScore: genres (limit: 1, sort: MEAN_SCORE_DESC) {
+  genres {
     ... GenreInfo
   }
-  genreByCount: genres (limit: 1, sort: COUNT_DESC) {
-    ... GenreInfo
-  }
-  tagByScore: tags (limit: 1, sort: MEAN_SCORE_DESC) {
-    ... TagInfo
-  }
-  tagByCount: tags (limit: 1, sort: COUNT_DESC) {
+  tags {
     ... TagInfo
   }
 }
