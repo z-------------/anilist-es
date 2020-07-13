@@ -179,7 +179,7 @@ studios (isMain: true) {
   ` : "");
 }
 
-function api(query, variables, token) {
+async function api(query, variables, token) {
   let options = {
     method: "POST",
     headers: {
@@ -196,21 +196,15 @@ function api(query, variables, token) {
     options.headers["Authorization"] = `Bearer ${token}`;
   }
 
-  console.log("ALES: API call", { query, variables, token });
+  console.log("ALES: API call", { query, variables, token: !!token });
 
-  return fetch("https://graphql.anilist.co", options)
-    .then(response => {
-      return response.json().then(json => {
-        // console.log(json);
-        return response.ok ? json : Promise.reject(json);
-      });
-    })
-    .then(json => {
-      return json.data;
-    })
-    .catch(error => {
-      return Promise.reject(error);
-    });
+  const response = await fetch("https://graphql.anilist.co", options);
+  const json = await response.json();
+  if (response.ok) {
+    return json.data;
+  } else {
+    throw json;
+  }
 }
 
 function stripHTML(html) {
@@ -440,20 +434,18 @@ const getAuthedUserFollowingLists = function() {
   })
 };
 
-const getUserInfoWithFollowingStatus = function(name) {
-  return getUserInfo(name).then(user => {
-    if (token) {
-      return getAuthedUserFollowingLists().then(lists => {
-        return {
-          user,
-          following: !!lists.following.filter(f => f.id === user.id).length,
-          follower: !!lists.followers.filter(f => f.id === user.id).length
-        }
-      });
-    } else {
-      return { user };
-    }
-  });
+const getUserInfoWithFollowingStatus = async function(name) {
+  const user = await getUserInfo(name);
+  if (token) {
+    const lists = await getAuthedUserFollowingLists();
+    return {
+      user,
+      following: !!lists.following.filter(f => f.id === user.id).length,
+      follower: !!lists.followers.filter(f_1 => f_1.id === user.id).length,
+    };
+  } else {
+    return { user };
+  }
 };
 
 function getActivityInfos(options) {
@@ -641,16 +633,13 @@ const round = function(n, d) {
   return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
 };
 
-const findInCache = function(cacheKey, options) {
-  options = options || { expire: TIME_ONE_DAY };
-  return browser.storage.local.get(cacheKey)
-    .then(r => {
-      if (r[cacheKey] && new Date().getTime() - r[cacheKey]._dateFetched < options.expire) {
-        return r[cacheKey];
-      } else {
-        return null;
-      }
-    });
+async function findInCache(cacheKey, options = { expire: TIME_ONE_DAY }) {
+  const r = await browser.storage.local.get(cacheKey);
+  if (r[cacheKey] && new Date().getTime() - r[cacheKey]._dateFetched < options.expire) {
+    return r[cacheKey];
+  } else {
+    return null;
+  }
 };
 
 const makeLinkHTML = function(url, text, target) {
