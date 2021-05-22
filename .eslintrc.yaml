@@ -1,0 +1,18 @@
+extends: "eslint:recommended"
+parserOptions:
+  ecmaVersion: 8
+env:
+  node: true
+  es6: true
+  browser: true
+  webextensions: true
+rules:
+  no-inner-declarations: 0
+  no-undef: 0
+  no-unused-vars: 1
+  no-console: 1
+  semi: always
+overrides:
+  files: common.js
+  rules:
+    no-unused-vars: 0
