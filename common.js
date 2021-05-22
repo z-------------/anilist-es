@@ -247,7 +247,7 @@ function getSeriesInfo(id, type) {
         `;
         let variables = { id: id, type: type };
 
-        api(query, variables).then(r => {
+        api(query, variables, token).then(r => {
           writeSeriesInfoCache(r.Media);
           resolve(r.Media);
         });

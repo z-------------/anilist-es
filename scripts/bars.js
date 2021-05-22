@@ -178,7 +178,7 @@ query ($page: Int, $types: [ActivityType], $sort: [ActivitySort], $userId: Int) 
         types: ["ANIME_LIST", "MANGA_LIST"],
         sort: "ID_DESC",
         userId: r.User.id
-      }).then(r => {
+      }, token).then(r => {
         let listActivities = r.Page.activities
           .sort((a, b) => b.createdAt - a.createdAt)
           .filter(activity => {
