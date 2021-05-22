@@ -107,16 +107,36 @@ notifsUpdateButton.addEventListener("click", () => {
 /* prompts */
 
 function showPrompt(info) {
-  let innerHTML = `
-<div class="image"${info.image ? ` style="background-image: url(${info.image});"` : ""}></div>
-<div class="info">
-  <h3 class="title">${info.title}</h3>
-  <div>${info.text}</div>
-</div>
-  `;
   let elem = document.createElement("div");
   elem.classList.add("amp");
-  elem.innerHTML = innerHTML;
+
+  elem.appendChild(
+    makeElem("div", {
+      attrs: {
+        "class": "image",
+        ... info.image ? { "style": `background-image: url(${info.image})` } : {},
+      },
+    })
+  );
+  elem.appendChild(
+    makeElem("div", {
+      attrs: {
+        "class": "info",
+      },
+      children: [
+        makeElem("h3", {
+          attrs: {
+            "class": "title",
+          },
+          textContent: info.title,
+        }),
+        makeElem("div", {
+          textContent: info.text,
+        }),
+      ],
+    })
+  );
+
   elem.addEventListener("click", () => {
     browser.tabs.create({
       url: info.url

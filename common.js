@@ -755,3 +755,19 @@ const makeCard = function(position, html) {
   }
   return null;
 };
+
+function makeElem(tagName, { attrs, textContent, children }) {
+  const elem = document.createElement(tagName);
+  for (const attrName in attrs) {
+    elem.setAttribute(attrName, attrs[attrName]);
+  }
+  if (textContent !== undefined) {
+    elem.textContent = textContent;
+  }
+  if (children) {
+    for (const child of children) {
+      elem.appendChild(child);
+    }
+  }
+  return elem;
+}

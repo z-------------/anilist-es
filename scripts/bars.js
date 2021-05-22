@@ -39,7 +39,15 @@ let makeProgressBarElem = (function() {
     let timeFormatted = dateFormat(time);
 
     elem.getElementsByClassName("amb_image")[0].style.backgroundImage = `url(${seriesInfo.coverImage.large})`;
-    elem.getElementsByClassName("amb_title")[0].innerHTML = `<a class="title" href="${seriesInfo.siteUrl}">${getTitle(seriesInfo.title, settings.titleLanguage)}</a>`;
+    elem.getElementsByClassName("amb_title")[0].appendChild(
+      makeElem("a", {
+        attrs: {
+          "class": "title",
+          "href": seriesInfo.siteUrl,
+        },
+        textContent: getTitle(seriesInfo.title, settings.titleLanguage),
+      })
+    );
     if (
       unitsCount &&
       seriesInfo.airingSchedule && seriesInfo.airingSchedule.nodes &&
